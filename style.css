@@ -120,6 +120,14 @@ table tr:hover {
   box-shadow: 0 8px 24px rgba(2,6,23,.06);
 }
 .card h2{margin:0 0 10px;font-size:1.2rem}
+.nav-links a.active{
+  background: var(--accent);
+  color: #ffffff !important;
+  padding: 6px 14px;
+  border-radius: 8px;
+}
+.card ul li { margin-bottom: 12px; }
+.card small { color: var(--muted); }
 
 .grid{display:grid;grid-template-columns:1fr;gap:16px}
 
