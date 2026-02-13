@@ -8,22 +8,46 @@
 </head>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
+  const links = document.querySelectorAll(".nav-links a");
+
+  // Get current file name
+  let path = window.location.pathname;
+  let current = path.substring(path.lastIndexOf("/") + 1);
+
+  // If empty (root), treat as index.html
+  if (current === "") {
+      current = "index.html";
+  }
+
+  links.forEach(link => {
+      const href = link.getAttribute("href");
+
+      if (href === current) {
+          link.classList.add("active");
+      }
+  });
+
+});
+</script>
+
+  
 <body>
 <nav class="navbar">
-  <div class="wrap nav-inner">
-    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
-    <div class="nav-links">
-  <a href="index.html" class="active">Home</a>
-  <a href="research.html" class="">Research</a>
-  <a href="publications.html" class="">Publications</a>
-  <a href="projects.html" class="">Projects</a>
-  <a href="teaching.html" class="">Teaching</a>
-  <a href="students.html" class="">Students</a>
-  <a href="administration.html" class="">Administration</a>
-  <a href="Important_Links.html" class="">Important Links</a>
-</div>
-  </div>
+    <div class="wrap nav-inner">
+      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+      <div class="nav-links">
+      <a href="index.html" class="home-btn">Home</a>
+      <a href="research.html">Research</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+    </div>
 </nav>
   <header class="wrap header">
     <div class="hero hero-flex">

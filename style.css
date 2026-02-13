@@ -101,16 +101,8 @@ table tr:hover {
   background: #f8fafc;
 }
 
-.home-btn{
-  padding:6px 12px;
-  border-radius:6px;
-  background:var(--accent);
-  color:#ffffff !important;
-  font-weight:600;
-}
-.home-btn:hover{
-  opacity:0.9;
-}
+
+
 .card{
   border:1px solid var(--line);
   background: var(--card);
@@ -119,6 +111,13 @@ table tr:hover {
   margin-top:16px;
   box-shadow: 0 8px 24px rgba(2,6,23,.06);
 }
+.nav-links a.active {
+  background-color: #1e293b;
+  color: white;
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
 .card h2{margin:0 0 10px;font-size:1.2rem}
 .nav-links a.active{
   background: var(--accent);
