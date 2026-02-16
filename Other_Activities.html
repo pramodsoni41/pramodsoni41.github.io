@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Research | Dr. Pramod Soni</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const links = document.querySelectorAll(".nav-links a");
+    const current = window.location.pathname.split("/").pop();
+
+    links.forEach(link => {
+      const href = link.getAttribute("href");
+      if (href === current || 
+         (current === "" && href === "index.html")) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>
+<body>
+
+<nav class="navbar">
+    <div class="wrap nav-inner">
+      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+      <div class="nav-links">
+      <a href="index.html" class="home-btn">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+    </div>
+</nav>
+
+  <main class="wrap">
+    
+    <section class="card">
+      <h2>New Media & Digital Outreach</h2>
+      <ul>
+        <li><strong>Smart Laboratory on Clean Rivers:</strong>
+          <ul>
+            <li><a href="https://infra.economictimes.indiatimes.com/news/water/india-denmark-launch-smart-laboratory-on-clean-rivers/112703686" target="_blank">India, Denmark launch Smart Laboratory on Clean Rivers</li>
+            <li><a href="https://www.domain-b.com/environment-1/india-denmark-partner-to-rejuvenate-river-varuna" target="_blank">India, Denmark partner to rejuvenate river Varuna</li>
+            <li><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2047505&reg=3&lang=2" target="_blank">Strategic Alliance between NMCG, IIT (BHU) and Denmark unveils innovative Smart Laboratory on Clean Rivers (SLCR) Project in Varanasi</li>
+
+          </ul>
+        </li>
+        <li><strong>Personal Website:</strong>
+          <a href="https://pramodsoni.in" target="_blank">pramodsoni.in</a>
+        </li>
+
+      </ul>
+    </section>
+  </main>
+<section class="card">
+    <h2>Professional Memberships</h2>
+    <ul>
+      <li>Life Member, Indian Desalination Association (LM-534)</li>
+      <li>Life Member, Indian Concrete Institute (LM-13152)</li>
+      <li>Life Member, Indian Water Works Association (LM-10249)</li>
+    </ul>
+  </section>
+
+  <!-- Skills -->
+  <section class="card">
+    <h2>Technical Skills</h2>
+    <ul>
+      <li><strong>Languages:</strong> Strong reading, writing and speaking competencies in English.</li>
+      <li><strong>Coding:</strong> Java, PHP, Python, R, SQL, XML/XSL, LaTeX</li>
+      <li><strong>Web Development:</strong> HTML, CSS, JavaScript</li>
+      <li><strong>Academic & Professional:</strong> Research, Teaching, Training, Consultancy, LaTeX typesetting and publishing</li>
+    </ul>
+  </section>
+
+  <!-- Awards -->
+  <section class="card">
+    <h2>Awards & Achievements</h2>
+    <ul>
+      <li>2016 – Certificate of Appreciation, Director IIT Kanpur (Excellent Student Feedback, ESO208A)</li>
+      <li>2015 – Best Poster Award, Monsoon Simulation & Prediction, Annual Monsoon Workshop (IITM Pune)</li>
+      <li>2014–2016 – Winner, Institute Pool Championship, IIT Kanpur</li>
+      <li>2012 – Academic Excellence Award (Highest CPI, M.Tech Civil Engineering, IIT Kanpur)</li>
+      <li>2011 – First Prize, Snooker Inter-Hall Tournament, IIT Kanpur</li>
+      <li>DAAD Masters Sandwich Program – Awarded DAAD Scholarship</li>
+      <li>2010 – Second Prize, Billiards Inter-Hall Tournament, IIT Kanpur</li>
+    </ul>
+  </section>
+
+  <!-- Expert Lectures -->
+  <section class="card">
+    <h2>Expert Lectures Delivered</h2>
+    <ul>
+      <li>Forecasting Hydrological Events Using SWAT-GFS Models – Shelter Academy 2025 (Arcadis–UN-Habitat–UNHCR Consortium)</li>
+      <li>Waste Management under Green Skill Development Program – MoEFCC, AFRI Jodhpur (2018–2019)</li>
+      <li>Basics of Linux and MATLAB; InSAR: Theory, Processing and Applications (2019)</li>
+      <li>Numerical Modeling using Finite Difference Methods – NOT-2019</li>
+      <li>National Innovation & Start-up Policy (NISP) – Sadanlal Savaldas Khanna Girls Degree College</li>
+      <li>Site Visit to STP – NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li>
+      <li>World Water Day Webinar – Lakshya NGO Lucknow (2022)</li>
+      <li>Chaired Session – 54th Annual Convention & Exhibition (IWWA Lucknow & Prayagraj Centres)</li>
+    </ul>
+  </section>
+
+  <!-- Short Term Courses -->
+  <section class="card">
+    <h2>Short Term Courses Organized</h2>
+    <ul>
+      <li>Numerical and Optimization Techniques (NOT-2019)</li>
+      <li>Online Numerical and Optimization Techniques (NOT-2020)</li>
+      <li>NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li>
+      <li>Drought and Flood Management (DAM-22)</li>
+      <li>National Brainstorming Workshop</li>
+      <li>People’s Varuna: Culturally Connecting with the River</li>
+    </ul>
+  </section>
+
+  <footer class="wrap footer">
+    <small>© Dr. Pramod Soni</small>
+  </footer>
+</body>
+</html>
