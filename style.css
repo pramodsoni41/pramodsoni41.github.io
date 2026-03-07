@@ -164,8 +164,8 @@ li{line-height:1.6;color:var(--text)}
 .nav.prev{ left:12px; }
 .nav.next{ right:12px; }
 .publications ol {
-  font-size: 1.1rem;
-  line-height: 1.7;
+  font-size: 1.4rem;
+  line-height: 1.9;
 }
 .dots{
   position:absolute; left:50%; transform:translateX(-50%);
