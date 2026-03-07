@@ -33,7 +33,11 @@ body{
   display:flex;
   justify-content:flex-end;
 }
-
+.card h2 {
+  color: #1f3c88;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 6px;
+}
 .hero-photo img{
   width: 200px;
   height: 240px;
