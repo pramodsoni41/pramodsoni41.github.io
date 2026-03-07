@@ -163,7 +163,10 @@ li{line-height:1.6;color:var(--text)}
 .nav:hover{ background: rgba(255,255,255,0.95); }
 .nav.prev{ left:12px; }
 .nav.next{ right:12px; }
-
+.publications ol {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
 .dots{
   position:absolute; left:50%; transform:translateX(-50%);
   bottom:10px; display:flex; gap:8px; padding:8px 10px;
