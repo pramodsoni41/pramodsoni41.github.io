@@ -14,30 +14,26 @@ body{
   background: linear-gradient(180deg,#ffffff,var(--bg));
   color:var(--text);
 }
-/* --- Hero with photo (fix for online layout) --- */
+
 .hero-flex{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:24px;
-  flex-wrap:wrap;            /* allows stacking on small screens */
+  flex-wrap:wrap;
 }
 
 .hero-text{
-  flex: 1 1 520px;           /* text takes space */
+  flex: 1 1 520px;
   min-width: 280px;
 }
 
 .hero-photo{
-  flex: 0 0 220px;           /* fixed photo block */
+  flex: 0 0 220px;
   display:flex;
   justify-content:flex-end;
 }
-.card h2 {
-  color: #1f3c88;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 6px;
-}
+
 .hero-photo img{
   width: 200px;
   height: 240px;
@@ -47,7 +43,6 @@ body{
   box-shadow: 0 10px 24px rgba(2,6,23,.10);
 }
 
-/* Smaller screens: center photo */
 @media (max-width: 720px){
   .hero-photo{
     justify-content:center;
@@ -80,6 +75,7 @@ h1{margin:0;font-size:2.1rem}
 
 .links{margin:14px 0;display:flex;flex-wrap:wrap;gap:12px}
 .contact{display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.95rem}
+
 .link-btn{
   padding:8px 14px;
   border-radius:8px;
@@ -105,8 +101,6 @@ table tr:hover {
   background: #f8fafc;
 }
 
-
-
 .card{
   border:1px solid var(--line);
   background: var(--card);
@@ -115,20 +109,22 @@ table tr:hover {
   margin-top:16px;
   box-shadow: 0 8px 24px rgba(2,6,23,.06);
 }
-.nav-links a.active {
-  background-color: #1e293b;
-  color: white;
-  border-radius: 6px;
-  padding: 6px 12px;
+
+.card h2{
+  margin:0 0 10px;
+  font-size:1.2rem;
+  color:#1f3c88;
+  border-bottom:2px solid #e5e7eb;
+  padding-bottom:6px;
 }
 
-.card h2{margin:0 0 10px;font-size:1.2rem}
-.nav-links a.active{
+.nav-links a.active {
   background: var(--accent);
   color: #ffffff !important;
-  padding: 6px 14px;
   border-radius: 8px;
+  padding: 6px 14px;
 }
+
 .card ul li { margin-bottom: 12px; }
 .card small { color: var(--muted); }
 
@@ -143,7 +139,9 @@ li{line-height:1.6;color:var(--text)}
 
 .footer{color:var(--muted);padding-top:10px;padding-bottom:30px}
 
-@media (min-width: 820px){.grid{grid-template-columns:1fr 1fr}}
+@media (min-width: 820px){
+  .grid{grid-template-columns:1fr 1fr}
+}
 
 /* Slideshow */
 .slider { position: relative; overflow: hidden; border-radius: 16px; border: 1px solid var(--line); }
