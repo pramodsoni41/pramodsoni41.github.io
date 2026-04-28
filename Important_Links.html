@@ -1,63 +1,147 @@
-<section class="wrap">
-  <h2>Important Links</h2>
-  <div id="linksContainer"></div>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Important Links</title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
-<script>
-const SCRIPT_URL = "YOUR_WEBAPP_URL";
+<body>
 
-function fetchJSONP(url, callbackName) {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="wrap nav-inner">
+      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
 
-    window[callbackName] = function(data) {
-      resolve(data);
-      document.body.removeChild(script);
-      delete window[callbackName];
-    };
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="Other_Activities.html">Other Activities</a>
+        <a href="publications.html">Publications</a>
+        <a href="projects.html">Projects</a>
+        <a href="teaching.html">Teaching</a>
+        <a href="students.html">Students</a>
+        <a href="administration.html">Administration</a>
+        <a href="Important_Links.html" class="active">Important Links</a>
+      </div>
+    </div>
+  </nav>
 
-    script.src = `${url}?callback=${callbackName}`;
-    script.onerror = reject;
+  <!-- Main Section -->
+  <main class="wrap">
 
-    document.body.appendChild(script);
-  });
-}
+    <section class="card">
+      <h1>Important Links</h1>
+      <p>
+        Useful academic, research, GIS, hydrology, modelling,
+        and student resource links.
+      </p>
+    </section>
 
-async function loadLinks() {
-  const container = document.getElementById("linksContainer");
+    <!-- Dynamic Content -->
+    <div id="linksContainer"></div>
 
-  try {
-    const response = await fetchJSONP(
-      SCRIPT_URL,
-      "jsonpCallback"
-    );
+  </main>
 
-    if (response.status !== "success") {
-      container.innerHTML = "<p>Failed to load links.</p>";
-      return;
+  <!-- Footer -->
+  <footer class="wrap footer">
+    <small>© Dr. Pramod Soni</small>
+  </footer>
+
+  <!-- Config First -->
+  <script src="config.js"></script>
+
+  <script>
+    function fetchJSONP(url, callbackName = "jsonpCallback") {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+
+        window[callbackName] = function (data) {
+          resolve(data);
+          document.body.removeChild(script);
+          delete window[callbackName];
+        };
+
+        script.src = `${url}&callback=${callbackName}`;
+        script.onerror = function () {
+          reject(new Error("JSONP request failed"));
+        };
+
+        document.body.appendChild(script);
+      });
     }
 
-    let html = "";
+    function groupBySection(data) {
+      return data.reduce((acc, item) => {
+        if (!acc[item.section]) {
+          acc[item.section] = [];
+        }
+        acc[item.section].push(item);
+        return acc;
+      }, {});
+    }
 
-    response.data.forEach(item => {
-      html += `
-        <div class="card">
-          <h3>${item.icon} ${item.title}</h3>
-          <p>${item.description}</p>
-          <a href="${item.url}" target="_blank">
-            Open Link
-          </a>
-        </div>
-      `;
-    });
+    async function loadImportantLinks() {
+      const container = document.getElementById("linksContainer");
 
-    container.innerHTML = html;
+      try {
+        const url =
+          CONFIG.SCRIPT_URL + "?action=getImportantLinks";
 
-  } catch (error) {
-    container.innerHTML = "<p>Error loading content.</p>";
-    console.error(error);
-  }
-}
+        const response = await fetchJSONP(url);
 
-loadLinks();
-</script>
+        if (response.status !== "success") {
+          container.innerHTML =
+            "<p>Failed to load important links.</p>";
+          return;
+        }
+
+        const grouped = groupBySection(response.data);
+
+        let html = "";
+
+        for (const section in grouped) {
+          html += `
+            <section class="card">
+              <h2>${section}</h2>
+              <ul>
+          `;
+
+          grouped[section].forEach(item => {
+            html += `
+              <li style="margin-bottom:15px;">
+                <strong>${item.icon || "🔗"}</strong>
+                <a href="${item.url}"
+                   target="_blank"
+                   rel="noreferrer">
+                  ${item.title}
+                </a>
+                <br>
+                <small>${item.description || ""}</small>
+              </li>
+            `;
+          });
+
+          html += `
+              </ul>
+            </section>
+          `;
+        }
+
+        container.innerHTML = html;
+
+      } catch (error) {
+        console.error(error);
+        container.innerHTML =
+          "<p>Error loading content.</p>";
+      }
+    }
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      loadImportantLinks
+    );
+  </script>
+
+</body>
+</html>
