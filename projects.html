@@ -1,213 +1,196 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Projects | Dr. Pramod Soni</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const links = document.querySelectorAll(".nav-links a");
-    const current = window.location.pathname.split("/").pop();
 
-    links.forEach(link => {
-      const href = link.getAttribute("href");
-      if (href === current || 
-         (current === "" && href === "index.html")) {
-        link.classList.add("active");
-      }
-    });
-  });
-</script>
 <body>
 
+<!-- ================= NAVBAR ================= -->
+
 <nav class="navbar">
-    <div class="wrap nav-inner">
-      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
-      <div class="nav-links">
-      <a href="index.html" class="home-btn">Home</a>
+  <div class="wrap nav-inner">
+
+    <a href="index.html" class="nav-brand">
+      Dr. Pramod Soni
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
       <a href="Other_Activities.html">Other Activities</a>
       <a href="publications.html">Publications</a>
-      <a href="projects.html">Projects</a>
+      <a href="projects.html" class="active">Projects</a>
       <a href="teaching.html">Teaching</a>
       <a href="students.html">Students</a>
       <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
-    </div>
+
+  </div>
 </nav>
+
+
+<!-- ================= MAIN ================= -->
 
 <main class="wrap">
 
-<section class="card">
-  <h2>Research Projects</h2>
+  <section class="card">
+    <h1>Projects</h1>
+    <p>
+      Research projects and consultancy projects
+      dynamically fetched from Google Sheet.
+    </p>
+  </section>
 
-  
-    <div class="item">
-      <h3>Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience</h3>
-
-      
-        <p><strong>Funding Agency:</strong> GIZ</p>
-      
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Decision Support System for Water Resource Management, SLCR</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Namami Gange</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 4.35 Crores</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Namami Gange</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 15.4 Crores</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Regionalization of Hydrological model parameters for Indian rivers by AICTE CRS Project</h3>
-
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 9 Lacs/-</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Use of Artificial Neural Network in regionalization of SWAT parameters</h3>
-
-      
-        <p><strong>Funding Agency:</strong> TEQIP</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 1.5 Lacs/-</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Mapping ground water quality Depleted area, Potential Groundwater Recharge Zones and Exploring the Farmer’s need based Groundwater Recharge structures in District Mahoba of Bundelkhand region of UP</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Department of Science and Technology</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 15 Lacs</p>
-      
-    </div>
-  
-</section>
-
-<section class="card">
-  <h2>Consultancy Projects</h2>
-
-  
-    <div class="item">
-      <h3>Leaching Testing Report (3 sites), Subsidence Report, Ground Water Aquifer Study, Traffic Study from borrow area to filling area (3 sites), Ambient Air Quality Study (3 sites)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Techno-economics Feasibility Study for filling of Ash (13 sites) - Obra Section 2 &amp; 3, Stone Quarry (1 site), Near Circuit House (1 site)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Annual Inspection of GPI operating in Ganga Basins States</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Third-Party Inspection of 37 Nos. under construction piped water supplies of various villages of Rampur District under MSDP/PM Jan Vikas Program</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Feasibility Study for Installation of Rain Water Harvesting Scheme at IFFCO Phulpur Township</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Design of Inverted Siphon (Saryu Pariyojna Gonda)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Scientific study for Investigation of Mine-wise Water Availability and Potential for community Use in ECL</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Feasibility Study for Pond Restoration at Azad Park Allahabad</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Wetting of Detailed Project Reports under Jal Jeevan Mission</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Various channelization projects for flood and erosion protection at:</h3>
-
-      
-        <ul>
-          
-            <li>Village Gangepur Mathia embankment (Ghaghra River, Azamgarh)</li>
-          
-            <li>Village Chakpurwa Mathia embankment (Sharda River, Lakhimpur)</li>
-          
-            <li>Embankment on right bank of Ghaghra River (Sant Kabir, B.D. Embankment K.B.)</li>
-          
-            <li>Village Achhedih (left bank of Rapti River, Gorakhpur)</li>
-          
-            <li>Village Chandpur Katauli (left bank of Saryu River, Gonda)</li>
-          
-            <li>Village Koirin Purva (right bank of Saryu River, Barabanki)</li>
-          
-            <li>Village Leelapurwa (right bank of Sharda River, Sitapur)</li>
-          
-            <li>Village Jagdishpur (right bank of Rapti River, Gorakhpur)</li>
-          
-            <li>Village Telwari (right bank of Saryu River, Barabanki)</li>
-          
-        </ul>
-      
-    </div>
-  
-</section>
-
+  <!-- Dynamic Content -->
+  <div id="projectsContainer"></div>
 
 </main>
+
+
+<!-- ================= FOOTER ================= -->
 
 <footer class="wrap footer">
   <small>© Dr. Pramod Soni • Academic Website</small>
 </footer>
+
+
+<!-- ================= CONFIG ================= -->
+
+<script src="config.js"></script>
+
+
+<!-- ================= SCRIPT ================= -->
+
+<script>
+function fetchJSONP(url, callbackName = "jsonpCallback") {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+
+    window[callbackName] = function (data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+
+    script.onerror = function () {
+      reject(new Error("JSONP request failed"));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+
+function groupByCategory(data) {
+  return data.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+}
+
+
+function getSectionTitle(category) {
+  const titles = {
+    "Research": "Research Projects",
+    "Consultancy": "Consultancy Projects"
+  };
+
+  return titles[category] || category;
+}
+
+
+function renderProject(item) {
+  return `
+    <div class="item" style="margin-bottom: 25px;">
+      <h3>${item.title}</h3>
+
+      ${
+        item.funding
+          ? `<p><strong>Funding Agency:</strong> ${item.funding}</p>`
+          : ""
+      }
+
+      ${
+        item.value
+          ? `<p><strong>Project Value:</strong> ${item.value}</p>`
+          : ""
+      }
+
+      ${
+        item.description
+          ? `<p>${item.description}</p>`
+          : ""
+      }
+    </div>
+  `;
+}
+
+
+async function loadProjects() {
+  const container = document.getElementById("projectsContainer");
+
+  try {
+    const url =
+      CONFIG.SCRIPT_URL + "?action=getProjects";
+
+    const response = await fetchJSONP(url);
+
+    if (response.status !== "success") {
+      container.innerHTML =
+        "<p>Failed to load projects.</p>";
+      return;
+    }
+
+    const grouped = groupByCategory(response.data);
+
+    const displayOrder = [
+      "Research",
+      "Consultancy"
+    ];
+
+    let html = "";
+
+    displayOrder.forEach(category => {
+      if (!grouped[category] || grouped[category].length === 0) return;
+
+      html += `
+        <section class="card">
+          <h2>${getSectionTitle(category)}</h2>
+      `;
+
+      grouped[category].forEach(item => {
+        html += renderProject(item);
+      });
+
+      html += `
+        </section>
+      `;
+    });
+
+    container.innerHTML = html;
+
+  } catch (error) {
+    console.error(error);
+    container.innerHTML =
+      "<p>Error loading content.</p>";
+  }
+}
+
+
+document.addEventListener(
+  "DOMContentLoaded",
+  loadProjects
+);
+</script>
 
 </body>
 </html>
