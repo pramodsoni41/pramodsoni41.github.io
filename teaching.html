@@ -1,35 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teaching | Dr. Pramod Soni</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const links = document.querySelectorAll(".nav-links a");
-    const current = window.location.pathname.split("/").pop();
 
-    links.forEach(link => {
-      const href = link.getAttribute("href");
-      if (href === current || (current === "" && href === "index.html")) {
-        link.classList.add("active");
-      }
-    });
-  });
-</script>
 <body>
 
 <nav class="navbar">
   <div class="wrap nav-inner">
     <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+
     <div class="nav-links">
-      <a href="index.html" class="home-btn">Home</a>
+      <a href="index.html">Home</a>
       <a href="Other_Activities.html">Other Activities</a>
       <a href="publications.html">Publications</a>
       <a href="projects.html">Projects</a>
-      <a href="teaching.html">Teaching</a>
+      <a href="teaching.html" class="active">Teaching</a>
       <a href="students.html">Students</a>
       <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
@@ -40,72 +29,118 @@
 <main class="wrap">
 
   <section class="card">
-    <h2>Teaching</h2>
-
-    
-      <div class="item">
-        <h3>Courses Taught</h3>
-        <ul>
-          
-            <li>
-              <strong>Climate Change and Water Resources Modeling</strong>
-              
-            </li>
-          
-            <li>
-              <strong>Ground Water Hydrology</strong>
-               – CE-21352
-            </li>
-          
-            <li>
-              <strong>Environment and Climate Change</strong>
-               – CE-12101
-            </li>
-          
-            <li>
-              <strong>Computer Based Numerical Techniques</strong>
-               – CE-13102
-            </li>
-          
-            <li>
-              <strong>Computer Based Numerical Techniques Lab</strong>
-               – CE-13202
-            </li>
-          
-            <li>
-              <strong>Engineering Hydrology</strong>
-               – CE-17310
-            </li>
-          
-            <li>
-              <strong>Open Channel Hydraulics</strong>
-               – CE-18309
-            </li>
-          
-            <li>
-              <strong>Surveying Lab</strong>
-               – CE-14201
-            </li>
-          
-            <li>
-              <strong>Water Resource Engineering-I</strong>
-               – CE-1851
-            </li>
-          
-            <li>
-              <strong>Fluid Mechanics-II</strong>
-               – CE-4105
-            </li>
-          
-        </ul>
-      </div>
-    
+    <h1>Teaching</h1>
+    <p>Courses taught and academic teaching responsibilities.</p>
   </section>
+
+  <div id="teachingContainer"></div>
 
 </main>
 
 <footer class="wrap footer">
   <small>© Dr. Pramod Soni</small>
 </footer>
+
+<script src="config.js"></script>
+
+<script>
+function fetchJSONP(url, callbackName = "jsonpCallback") {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+
+    window[callbackName] = function (data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+
+    script.onerror = function () {
+      reject(new Error("JSONP request failed"));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function groupByCategory(data) {
+  return data.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+}
+
+function getSectionTitle(category) {
+  const titles = {
+    "Courses": "Courses Taught"
+  };
+
+  return titles[category] || category;
+}
+
+function renderTeachingItem(item) {
+  return `
+    <li style="margin-bottom: 15px;">
+      <strong>${item.title}</strong>
+      ${item.code ? ` – ${item.code}` : ""}
+      ${item.description ? `<br><small>${item.description}</small>` : ""}
+      ${item.notes ? `<br><small><strong>Notes:</strong> ${item.notes}</small>` : ""}
+      ${item.year ? `<br><small><strong>Year:</strong> ${item.year}</small>` : ""}
+      ${item.institute ? `<br><small><strong>Institute:</strong> ${item.institute}</small>` : ""}
+    </li>
+  `;
+}
+
+async function loadTeaching() {
+  const container = document.getElementById("teachingContainer");
+
+  try {
+    const url = CONFIG.SCRIPT_URL + "?action=getTeaching";
+    const response = await fetchJSONP(url);
+
+    if (response.status !== "success") {
+      container.innerHTML = "<p>Failed to load teaching content.</p>";
+      return;
+    }
+
+    const grouped = groupByCategory(response.data);
+    const displayOrder = ["Courses"];
+
+    let html = "";
+
+    displayOrder.forEach(category => {
+      if (!grouped[category] || grouped[category].length === 0) return;
+
+      html += `
+        <section class="card">
+          <h2>${getSectionTitle(category)}</h2>
+          <ul>
+      `;
+
+      grouped[category].forEach(item => {
+        html += renderTeachingItem(item);
+      });
+
+      html += `
+          </ul>
+        </section>
+      `;
+    });
+
+    container.innerHTML = html;
+
+  } catch (error) {
+    console.error(error);
+    container.innerHTML = "<p>Error loading teaching content.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadTeaching);
+</script>
+
 </body>
 </html>
