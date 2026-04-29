@@ -7,39 +7,18 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const links = document.querySelectorAll(".nav-links a");
-
-  // Get current file name
-  let path = window.location.pathname;
-  let current = path.substring(path.lastIndexOf("/") + 1);
-
-  // If empty (root), treat as index.html
-  if (current === "") {
-      current = "index.html";
-  }
-
-  links.forEach(link => {
-      const href = link.getAttribute("href");
-
-      if (href === current) {
-          link.classList.add("active");
-      }
-  });
-
-});
-</script>
-
-  
 <body>
+
+<!-- =========================
+NAVBAR
+========================= -->
+
 <nav class="navbar">
-    <div class="wrap nav-inner">
-      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
-      <div class="nav-links">
-      <a href="index.html" class="home-btn">Home</a>
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
       <a href="Other_Activities.html">Other Activities</a>
       <a href="publications.html">Publications</a>
       <a href="projects.html">Projects</a>
@@ -48,324 +27,457 @@ document.addEventListener("DOMContentLoaded", function () {
       <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
-    </div>
+  </div>
 </nav>
-  <header class="wrap header">
-    <div class="hero hero-flex">
 
-  <div class="hero-text">
-    <h1>Dr. Pramod Soni</h1>
-    <p class="subtitle">Assistant Professor (Grade-I), Civil Engineering, IIT (BHU) Varanasi</p>
-    <p class="meta">Varanasi, India</p>
 
-    <div class="links">
-      
-        <a href="https://www.iitbhu.ac.in/dept/civ/people/pramodciv" target="_blank" rel="noreferrer">IIT BHU Civil Faculty Profile</a>
-      
-        <a href="https://www.linkedin.com/in/dr-pramod-soni-13a7701a/" target="_blank" rel="noreferrer">LinkedIn</a>
-      
-        <a href="https://scholar.google.co.in/citations?user=Ov7VtAYAAAAJ&amp;hl=en" target="_blank" rel="noreferrer">Google Scholar</a>
-      
-        <a href="https://orcid.org/" target="_blank" rel="noreferrer">ORCID</a>
-      
-        <a href="https://slcrdss.in/" target="_blank" rel="noreferrer">DSS</a>
-      
-        <a href="https://www.slcrvaranasi.com/" target="_blank" rel="noreferrer">SLCR</a>
-      
-	  <a href="cv.pdf" class="link-btn" target="_blank" rel="noreferrer">Download CV</a>
+<!-- =========================
+HERO SECTION
+========================= -->
+
+<header class="wrap header">
+  <div class="hero hero-flex">
+
+    <div class="hero-text">
+      <h1>Dr. Pramod Soni</h1>
+
+      <p class="subtitle">
+        Assistant Professor (Grade-I), Civil Engineering,
+        IIT (BHU) Varanasi
+      </p>
+
+      <p class="meta">Varanasi, India</p>
+
+      <div class="links">
+        <a href="https://www.iitbhu.ac.in/dept/civ/people/pramodciv" target="_blank">
+          IIT BHU Civil Faculty Profile
+        </a>
+
+        <a href="https://www.linkedin.com/in/dr-pramod-soni-13a7701a/" target="_blank">
+          LinkedIn
+        </a>
+
+        <a href="https://scholar.google.co.in/citations?user=Ov7VtAYAAAAJ" target="_blank">
+          Google Scholar
+        </a>
+
+        <a href="https://orcid.org/" target="_blank">
+          ORCID
+        </a>
+
+        <a href="https://slcrdss.in/" target="_blank">
+          DSS
+        </a>
+
+        <a href="https://www.slcrvaranasi.com/" target="_blank">
+          SLCR
+        </a>
+
+        <a href="cv.pdf" class="link-btn" target="_blank">
+          Download CV
+        </a>
+      </div>
+
+      <div class="contact">
+        <span>📧 pramod.civ@iitbhu.ac.in</span>
+        <span>📞 +91-9532810930</span>
+      </div>
     </div>
 
-    <div class="contact">
-      <span>📧 pramod.civ@iitbhu.ac.in</span>
-      <span>📞 +91-9532810930</span>
+    <div class="hero-photo">
+      <img src="assets/profile/Pramod_Photo.jpg" alt="Dr. Pramod Soni">
     </div>
+
   </div>
-
-  <div class="hero-photo">
-    <img src="assets/profile/Pramod_Photo.jpg" alt="Dr. Pramod Soni">
-  </div>
-
-</div>
-
-  </header>
-
-  <main class="wrap">
-  
-<section class="card">
-  <h2>Highlights</h2>
-
-  <div class="slider" data-autoplay="true" data-interval="3500">
-    <div class="slides">
-      
-      <div class="slide active">
-        <img src="assets/slideshow/2026-04-13_091853.png" alt="Slide 1">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/2026-03-09_183514.png" alt="Slide 2">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide11.PNG" alt="Slide 3">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide10.PNG" alt="Slide 4">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide8.PNG" alt="Slide 5">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide7.PNG" alt="Slide 6">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide6.PNG" alt="Slide 7">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide5.PNG" alt="Slide 8">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide4.PNG" alt="Slide 9">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide3.PNG" alt="Slide 10">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide2.PNG" alt="Slide 11">
-      </div>
-      
-      <div class="slide ">
-        <img src="assets/slideshow/Slide1.PNG" alt="Slide 12">
-      </div>
-      
-    </div>
-
-    <button class="nav prev" aria-label="Previous slide">‹</button>
-    <button class="nav next" aria-label="Next slide">›</button>
-
-    <div class="dots">
-      
-      <button class="dot active" aria-label="Go to slide 1"></button>
-      
-      <button class="dot " aria-label="Go to slide 2"></button>
-      
-      <button class="dot " aria-label="Go to slide 3"></button>
-      
-      <button class="dot " aria-label="Go to slide 4"></button>
-      
-      <button class="dot " aria-label="Go to slide 5"></button>
-      
-      <button class="dot " aria-label="Go to slide 6"></button>
-      
-      <button class="dot " aria-label="Go to slide 7"></button>
-      
-      <button class="dot " aria-label="Go to slide 8"></button>
-      
-      <button class="dot " aria-label="Go to slide 9"></button>
-      
-      <button class="dot " aria-label="Go to slide 10"></button>
-      
-      <button class="dot " aria-label="Go to slide 11"></button>
-      
-      <button class="dot " aria-label="Go to slide 12"></button>
-      
-    </div>
-  </div>
-</section>
+</header>
 
 
-  
+<!-- =========================
+MAIN CONTENT
+========================= -->
+
+<main class="wrap">
+
+  <!-- =========================
+  DYNAMIC IMAGE SLIDESHOW
+  ========================= -->
+
+  <section class="card">
+    <h2>Highlights</h2>
+    <div id="slideshowContainer"></div>
+  </section>
+
+
+  <!-- =========================
+  DYNAMIC HOME CONTENT
+  (About + Research + Text Highlights)
+  ========================= -->
+
+  <div id="homeDynamicContainer"></div>
+
+
+  <!-- =========================
+  STATIC EMPLOYMENT + EDUCATION
+  ========================= -->
+
+  <section class="grid">
+
+    <!-- Employment -->
+
     <section class="card">
-      <h2>About</h2>
-      <p>I work in Hydraulics &amp; Water Resources Engineering (HWRE) with interests in hydrological/hydraulic modelling,
-water quality assessment, river systems, and decision support tools.
-</p>
-    </section>
+      <h2>Employment History</h2>
 
-    <section class="grid">
-      <section class="card">
-        <h2>Highlights</h2>
-        <ul>
-          
-            <li>GIZ-funded Barak River Basin Management Plan (KWMI, DPSIR)</li>
-          
-            <li>Smart Laboratory on Clean Rivers (SLCR) – Secretariat &amp; DSS initiatives</li>
-          
-            <li>Hydraulic design vetting and consultancy (CPHEEO/IS codes)</li>
-          
-        </ul>
-      </section>
+      <div class="item">
+        <h3>Assistant Professor</h3>
+        <p><strong>April 2023 – Present</strong></p>
+        <p>IIT (BHU) Varanasi, Department of Civil Engineering</p>
+      </div>
 
-      <section class="card">
-        <h2>Research Interests</h2>
-        <ul>
-          
-            <li>Hydrological modelling (SWAT, HEC-RAS)</li>
-          
-            <li>River basin planning and DSS</li>
-          
-            <li>Water quality and treatment systems</li>
-          
-            <li>Hydraulics and open channel flow</li>
-          
-        </ul>
-      </section>
+      <div class="item">
+        <h3>Assistant Professor</h3>
+        <p><strong>Sep 2022 – April 2023</strong></p>
+        <p>NIT Jamshedpur, Department of Civil Engineering</p>
+      </div>
+
+      <div class="item">
+        <h3>Assistant Professor</h3>
+        <p><strong>June 2019 – Sep 2022</strong></p>
+        <p>MNNIT Allahabad, Department of Civil Engineering</p>
+      </div>
+
+      <div class="item">
+        <h3>Assistant Professor</h3>
+        <p><strong>Jan 2018 – June 2019</strong></p>
+        <p>M.B.M. Engineering College, Jodhpur</p>
+      </div>
+
+      <div class="item">
+        <h3>DAAD Fellow</h3>
+        <p><strong>Sep 2011 – May 2012</strong></p>
+        <p>KIT-IMK-IFU, Germany</p>
+      </div>
     </section>
 
 
-    <section class="grid">
-      <section class="card">
-  <h2>Employment History</h2>
+    <!-- Education -->
 
-  
-    <div class="item">
-      <h3>Assistant Professor,</h3>
-      <p><strong>April 2023 – Present</strong></p>
-      <p>IIT (BHU) Varanasi, India. Department of Civil Engineering.</p>
-    </div>
-  
-    <div class="item">
-      <h3>Assistant Professor,</h3>
-      <p><strong>Sep 2022 – April 2023</strong></p>
-      <p>NIT Jamshedpur, India. Department of Civil Engineering.</p>
-    </div>
-  
-    <div class="item">
-      <h3>Assistant Professor,</h3>
-      <p><strong>June 2019 – Sep 2022</strong></p>
-      <p>MNNIT Allahabad, Prayagraj, India. Department of Civil Engineering.</p>
-    </div>
-  
-    <div class="item">
-      <h3>Assistant Professor,</h3>
-      <p><strong>January 2018 – June 2019</strong></p>
-      <p>M.B.M. Engineering College, Jodhpur, India. TEQIP-III project funded by the World Bank.</p>
-    </div>
-  
-    <div class="item">
-      <h3>DAAD Fellow</h3>
-      <p><strong>September 2011 – May 2012</strong></p>
-      <p>KIT-IMK-IFU, Garmisch, Germany. DAAD Exchange student during M.Tech.</p>
-    </div>
-  
-</section>
+    <section class="card">
+      <h2>Education</h2>
 
-<section class="card">
-  <h2>Education</h2>
+      <div class="item">
+        <h3>Ph.D.</h3>
+        <p><strong>2012 – 2018</strong></p>
+        <p>IIT Kanpur</p>
+        <p>Hydraulics and Water Resources Engineering</p>
+      </div>
 
-  
-    <div class="item">
-      <h3>Ph.D.,</h3>
-      <p><strong>June 2012 – August 2018</strong></p>
-      <p>Indian Institute of Technology, Kanpur, India.</p>
-      <p>Hydraulics and Water Resources Engineering, Civil Engineering.</p>
-      <p><a href="https://drive.google.com/open?id=1lbPIoMuBWmVgrNGMrYiQELlZKM0YnA9X&usp=drive_fs" target="_blank">Thesis</a></p>
-    </div>
-  
-    <div class="item">
-      <h3>M.Tech.,</h3>
-      <p><strong>June 2010 – June 2012</strong></p>
-      <p>Indian Institute of Technology, Kanpur, India.</p>
-      <p>Hydraulics and Water Resources Engineering, Civil Engineering.</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>B.E.,</h3>
-      <p><strong>June 2006 – June 2010</strong></p>
-      <p>M.B.M. Engineering College, JNVU, Jodhpur, India.</p>
-      <p>Civil Engineering.</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Sr. Secondary</h3>
-      <p><strong>June 2003 – June 2005</strong></p>
-      <p>Mahatma Gandhi Sr. Secondary School, Jodhpur RBSE, Ajmer.</p>
-      
-      
-    </div>
-  
-    <div class="item">
-      <h3>Secondary</h3>
-      <p><strong>June 2001 – June 2003</strong></p>
-      <p>Bal Niketan, Jodhpur, RBSE, Ajmer.</p>
-      
-      
-    </div>
-  
-</section>
+      <div class="item">
+        <h3>M.Tech.</h3>
+        <p><strong>2010 – 2012</strong></p>
+        <p>IIT Kanpur</p>
+      </div>
+
+      <div class="item">
+        <h3>B.E.</h3>
+        <p><strong>2006 – 2010</strong></p>
+        <p>M.B.M. Engineering College, Jodhpur</p>
+      </div>
+
+      <div class="item">
+        <h3>Sr. Secondary</h3>
+        <p><strong>2003 – 2005</strong></p>
+        <p>Jodhpur</p>
+      </div>
+
+      <div class="item">
+        <h3>Secondary</h3>
+        <p><strong>2001 – 2003</strong></p>
+        <p>Jodhpur</p>
+      </div>
     </section>
 
-	
+  </section>
 
 
+  <!-- =========================
+  DYNAMIC RECENT PROJECTS
+  ========================= -->
 
-<section class="card">
-  <h2>Recent Projects</h2>
-  
-    <div class="item">
-      <h3>Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience</h3>
-      <p><strong>Funding Agency:</strong> GIZ</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Decision Support System for Water Resource Management, SLCR</h3>
-      <p><strong>Funding Agency:</strong> Namami Gange</p>
-      <p><strong>Project Value:</strong> Rs. 4.35 Crores</p>
-    </div>
-  
-    <div class="item">
-      <h3>Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi</h3>
-      <p><strong>Funding Agency:</strong> Namami Gange</p>
-      <p><strong>Project Value:</strong> Rs. 15.4 Crores</p>
-    </div>
-  
-    <div class="item">
-      <h3>Regionalization of Hydrological model parameters for Indian rivers by AICTE CRS Project</h3>
-      
-      <p><strong>Project Value:</strong> Rs. 9 Lacs/-</p>
-    </div>
-  
-    <div class="item">
-      <h3>Use of Artificial Neural Network in regionalization of SWAT parameters</h3>
-      <p><strong>Funding Agency:</strong> TEQIP</p>
-      <p><strong>Project Value:</strong> Rs. 1.5 Lacs/-</p>
-    </div>
-  
-</section>
+  <div id="homeProjectsContainer"></div>
 
 
+  <!-- =========================
+  DYNAMIC RECENT PUBLICATIONS
+  ========================= -->
 
-<section class="card">
-  <h2>Recent Publications</h2>
-  <ol>
-    
-      <li>Krishna Kumar Tiwari, R. D. Gputa, Pramod Soni (2026). Seasonal Dynamics and Transition Patterns of Land Use Land Cover in Sher River Basin, Madhya Pradesh (India). <em>Environmental Monitoring and Assessment</em>.</li>
-    
-      <li>Saurabh Maurya; Pramod Soni; Ashwin Chitravanshi; Prabhankur Prabhankar; Asif Ansari; Abdul Rahman Quaff (2026). Comparative analysis of meteorological and air quality variables in urban and semi-urban environments: a case study of Varanasi and Azamgarh. <em>Air Quality, Atmosphere \&amp; Health</em>.</li>
-    
-      <li>Ashwin, Chitravanshi; Soni, Pramod; Tiwari,Nimish (2026). Remote Sensing Based pH Estimation in Eastern Uttar Pradesh Using Sentinel-2 and Machine Learning. <em>Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)</em>.</li>
-    
-      <li>Maurya, Saurabh; Soni, Pramod (2026). AI-Engineering Integration of Rainfall Microphysics and Vegetation Indicators for Agricultural Intelligence over Varanasi, India. <em>Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)</em>.</li>
-    
-      <li>Maurya, S.; Soni, Pramod (2026). Comparative assessment of WRF-simulated raindrop size distribution using disdrometer observations in Varanasi. <em>Theoretical and Applied Climatology</em>, 157, 179.</li>
-    
-  </ol>
-</section>
+  <div id="homePublicationsContainer"></div>
 
-   
+</main>
 
 
+<!-- =========================
+FOOTER
+========================= -->
+
+<footer class="wrap footer">
+  <small>© Dr. Pramod Soni • Academic Website</small>
+</footer>
+
+
+<!-- =========================
+SCRIPTS
+========================= -->
+
+<script src="config.js"></script>
 <script src="slider.js"></script>
+
+<script>
+
+function fetchJSONP(url, callbackName = "jsonpCallback") {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+
+    window[callbackName] = function(data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+    script.onerror = reject;
+
+    document.body.appendChild(script);
+  });
+}
+
+
+/* =========================
+SLIDESHOW FROM GOOGLE SHEET
+========================= */
+
+async function loadSlideshow() {
+  const container = document.getElementById("slideshowContainer");
+
+  try {
+    const response = await fetchJSONP(
+      CONFIG.SCRIPT_URL + "?action=getSlideshow"
+    );
+
+    if (response.status !== "success") {
+      container.innerHTML = "<p>Failed to load slideshow.</p>";
+      return;
+    }
+
+    let html = `
+      <div class="slider" data-autoplay="true" data-interval="3500">
+        <div class="slides">
+    `;
+
+    response.data.forEach((item, index) => {
+      html += `
+        <div class="slide ${index === 0 ? "active" : ""}">
+          <img src="${item.image}" alt="${item.title}">
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+
+        <button class="nav prev">‹</button>
+        <button class="nav next">›</button>
+
+        <div class="dots"></div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    if (typeof initSlider === "function") {
+      initSlider();
+    }
+
+  } catch (error) {
+    container.innerHTML = "<p>Error loading slideshow.</p>";
+  }
+}
+
+
+/* =========================
+HOME CONTENT
+========================= */
+
+function groupHomeData(data) {
+  return data.reduce((acc, item) => {
+    if (!acc[item.section]) {
+      acc[item.section] = [];
+    }
+    acc[item.section].push(item);
+    return acc;
+  }, {});
+}
+
+async function loadHomeData() {
+  const container = document.getElementById("homeDynamicContainer");
+
+  try {
+    const response = await fetchJSONP(
+      CONFIG.SCRIPT_URL + "?action=getHome"
+    );
+
+    if (response.status !== "success") {
+      container.innerHTML = "<p>Failed to load home content.</p>";
+      return;
+    }
+
+    const grouped = groupHomeData(response.data);
+
+    let html = "";
+
+    if (grouped["About"]) {
+      html += `
+        <section class="card">
+          <h2>About</h2>
+          <p>${grouped["About"][0].value}</p>
+        </section>
+      `;
+    }
+
+    html += `<section class="grid">`;
+
+    if (grouped["Highlights"]) {
+      html += `
+        <section class="card">
+          <h2>Highlights</h2>
+          <ul>
+      `;
+
+      grouped["Highlights"].forEach(item => {
+        html += `<li>${item.value}</li>`;
+      });
+
+      html += `
+          </ul>
+        </section>
+      `;
+    }
+
+    if (grouped["Research Interests"]) {
+      html += `
+        <section class="card">
+          <h2>Research Interests</h2>
+          <ul>
+      `;
+
+      grouped["Research Interests"].forEach(item => {
+        html += `<li>${item.value}</li>`;
+      });
+
+      html += `
+          </ul>
+        </section>
+      `;
+    }
+
+    html += `</section>`;
+
+    container.innerHTML = html;
+
+  } catch (error) {
+    container.innerHTML = "<p>Error loading home content.</p>";
+  }
+}
+
+
+/* =========================
+RECENT PROJECTS
+========================= */
+
+async function loadHomeProjects() {
+  const container = document.getElementById("homeProjectsContainer");
+
+  try {
+    const response = await fetchJSONP(
+      CONFIG.SCRIPT_URL + "?action=getProjects"
+    );
+
+    let html = `
+      <section class="card">
+        <h2>Recent Projects</h2>
+    `;
+
+    response.data.slice(0, 5).forEach(item => {
+      html += `
+        <div class="item">
+          <h3>${item.title}</h3>
+          ${item.funding ? `<p><strong>Funding Agency:</strong> ${item.funding}</p>` : ""}
+          ${item.value ? `<p><strong>Project Value:</strong> ${item.value}</p>` : ""}
+        </div>
+      `;
+    });
+
+    html += `</section>`;
+    container.innerHTML = html;
+
+  } catch (error) {
+    container.innerHTML = "<p>Error loading projects.</p>";
+  }
+}
+
+
+/* =========================
+RECENT PUBLICATIONS
+========================= */
+
+async function loadHomePublications() {
+  const container = document.getElementById("homePublicationsContainer");
+
+  try {
+    const response = await fetchJSONP(
+      CONFIG.SCRIPT_URL + "?action=getPublications"
+    );
+
+    let html = `
+      <section class="card">
+        <h2>Recent Publications</h2>
+        <ol>
+    `;
+
+    response.data.slice(0, 5).forEach(item => {
+      html += `
+        <li>
+          ${item.authors} (${item.year}).
+          ${item.title}.
+          <em>${item.source}</em>
+        </li>
+      `;
+    });
+
+    html += `
+        </ol>
+      </section>
+    `;
+
+    container.innerHTML = html;
+
+  } catch (error) {
+    container.innerHTML = "<p>Error loading publications.</p>";
+  }
+}
+
+
+/* =========================
+LOAD EVERYTHING
+========================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadSlideshow();
+  loadHomeData();
+  loadHomeProjects();
+  loadHomePublications();
+});
+
+</script>
 
 </body>
 </html>
