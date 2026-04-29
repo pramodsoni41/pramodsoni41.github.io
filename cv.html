@@ -106,11 +106,46 @@
     }
 
     .entry {
-      margin-bottom: 14px;
-      padding: 14px 16px;
-      background: #f8fafc;
-      border-left: 4px solid #2563eb;
-      border-radius: 8px;
+      margin-bottom: 18px;
+      padding: 0;
+      background: transparent;
+      border-left: none;
+      border-radius: 0;
+    }
+
+    .employment-item {
+      display: grid;
+      grid-template-columns: 240px 24px 1fr;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 18px;
+      padding-bottom: 8px;
+    }
+
+    .employment-date {
+      font-size: 18px;
+      color: #111827;
+      text-align: right;
+      font-weight: 500;
+      padding-top: 2px;
+    }
+
+    .employment-marker {
+      color: #8b004b;
+      font-size: 20px;
+      line-height: 1;
+      padding-top: 2px;
+    }
+
+    .employment-content {
+      font-size: 17px;
+      line-height: 1.5;
+      color: #111827;
+    }
+
+    .employment-content strong {
+      font-weight: 700;
+    }
     }
 
     .entry strong {
@@ -179,7 +214,7 @@
     </div>
 
     <div class="header-right">
-      <img src="assets\profile\Pramod_Photo.jpg" alt="Dr. Pramod Soni">
+      <img src="profile.jpg" alt="Dr. Pramod Soni">
     </div>
 
   </div>
@@ -248,7 +283,7 @@
 
 <script src="config.js"></script>
 <script>
-const GOOGLE_SCRIPT_URL = CONFIG.SCRIPT_URL;
+const GOOGLE_SCRIPT_URL = window.GOOGLE_SCRIPT_URL || "";
 
 function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
@@ -328,10 +363,12 @@ async function loadEmployment() {
   if (!res || res.status !== "success") return;
 
   renderEntries("cvEmployment", res.data, item => `
-    <div class="entry">
-      <strong>${item.duration}</strong><br>
-      ${item.role}<br>
-      ${item.institute}
+    <div class="employment-item">
+      <div class="employment-date">${item.duration}</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>${item.role}</strong>, ${item.institute}
+      </div>
     </div>
   `);
 }
