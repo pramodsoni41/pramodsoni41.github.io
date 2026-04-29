@@ -450,8 +450,8 @@ async function loadAdministration() {
 async function initCV() {
   try {
     await loadHome();
+    await loadEmployment();    
     await loadEducation();
-    await loadEmployment();
     await loadMemberships();
     await loadProjects();
     await loadTeaching();
