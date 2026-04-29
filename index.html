@@ -279,7 +279,11 @@ async function loadSlideshow() {
   try {
     const response = await fetch("slides.json");
     const slides = await response.json();
+  console.log("slides.json:", text);
 
+  const slides = text.trim()
+    ? JSON.parse(text)
+    : [];
     if (!slides || slides.length === 0) {
       container.innerHTML = "<p>No slideshow images found.</p>";
       return;
