@@ -163,21 +163,14 @@
   <div class="header">
 
     <div class="header-left">
-      <h1>Dr. Pramod Soni</h1>
+      <h1 id="profileName">Loading...</h1>
 
-      <div class="designation">
-        Assistant Professor (Grade-I)
-      </div>
+      <div class="designation" id="profileDesignation">Loading...</div>
 
-      <div class="institute">
-        Department of Civil Engineering<br>
-        Indian Institute of Technology (BHU), Varanasi
-      </div>
+      <div class="institute" id="profileInstitute">Loading...</div>
 
-      <div class="contact">
-        <div><strong>Email:</strong> pramod.civ@iitbhu.ac.in</div>
-        <div><strong>Website:</strong> pramodsoni.in</div>
-        <div><strong>Specialization:</strong> Hydraulics, Water Resources, Hydrology, Climate Change</div>
+      <div class="contact" id="profileContact">
+        <div>Loading profile details...</div>
       </div>
 
       <button class="print-btn" onclick="window.print()">
@@ -194,42 +187,17 @@
 
   <div class="section">
     <h2>Education</h2>
-
-    <div class="entry">
-      <strong>Ph.D.</strong> — IIT Kanpur<br>
-      Hydraulics and Water Resources Engineering
-    </div>
-
-    <div class="entry">
-      <strong>M.Tech.</strong> — IIT Kanpur<br>
-      Hydraulics and Water Resources Engineering
-    </div>
-
-    <div class="entry">
-      <strong>B.E.</strong> — M.B.M. Engineering College, Jodhpur
+    <div id="cvEducation">
+      <div class="entry">Loading education details...</div>
     </div>
   </div>
-
 
   <div class="section">
     <h2>Employment History</h2>
-
-    <div class="entry">
-      <strong>2023 – Present</strong><br>
-      Assistant Professor, IIT (BHU) Varanasi
-    </div>
-
-    <div class="entry">
-      <strong>2022 – 2023</strong><br>
-      Assistant Professor, NIT Jamshedpur
-    </div>
-
-    <div class="entry">
-      <strong>2019 – 2022</strong><br>
-      Assistant Professor, MNNIT Allahabad
+    <div id="cvEmployment">
+      <div class="entry">Loading employment history...</div>
     </div>
   </div>
-
 
   <div class="section">
     <h2>Research Projects</h2>
@@ -265,11 +233,10 @@
 
   <div class="section">
     <h2>Professional Memberships</h2>
-    <div class="entry">
-      Life Member — Indian Water Works Association<br>
-      Life Member — Indian Concrete Institute<br>
-      Life Member — Indian Desalination Association
+    <div id="cvMemberships">
+      <div class="entry">Loading memberships...</div>
     </div>
+  </div>
   </div>
 
 
@@ -281,7 +248,7 @@
 
 <script src="config.js"></script>
 <script>
-const GOOGLE_SCRIPT_URL = window.GOOGLE_SCRIPT_URL || "";
+const GOOGLE_SCRIPT_URL = CONFIG.SCRIPT_URL;
 
 function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
@@ -328,24 +295,54 @@ async function loadHome() {
     return item ? item.value : "";
   };
 
-  document.querySelector("h1").innerText = getValue("Profile", "Name") || "Dr. Pramod Soni";
+  document.getElementById("profileName").innerText = getValue("Profile", "Name");
+  document.getElementById("profileDesignation").innerText = getValue("Profile", "Designation");
 
-  const designation = document.querySelector(".designation");
-  if (designation) designation.innerText = getValue("Profile", "Designation");
+  document.getElementById("profileInstitute").innerHTML = `
+    ${getValue("Profile", "Institute")}<br>
+    ${getValue("Profile", "City")}
+  `;
 
-  const institute = document.querySelector(".institute");
-  if (institute) {
-    institute.innerHTML = `${getValue("Profile", "Institute")}<br>${getValue("Profile", "City")}`;
-  }
+  document.getElementById("profileContact").innerHTML = `
+    <div><strong>Email:</strong> ${getValue("Profile", "Email")}</div>
+    <div><strong>Phone:</strong> ${getValue("Profile", "Phone")}</div>
+    <div><strong>Website:</strong> ${getValue("Links", "CV") || "pramodsoni.in"}</div>
+  `;
+}
 
-  const contact = document.querySelector(".contact");
-  if (contact) {
-    contact.innerHTML = `
-      <div><strong>Email:</strong> ${getValue("Profile", "Email")}</div>
-      <div><strong>Phone:</strong> ${getValue("Profile", "Phone")}</div>
-      <div><strong>Website:</strong> ${getValue("Links", "CV") || "pramodsoni.in"}</div>
-    `;
-  }
+async function loadEducation() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEducation`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvEducation", res.data, item => `
+    <div class="entry">
+      <strong>${item.degree}</strong><br>
+      ${item.institute}<br>
+      ${item.specialization || ""}
+    </div>
+  `);
+}
+
+async function loadEmployment() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEmployment`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvEmployment", res.data, item => `
+    <div class="entry">
+      <strong>${item.duration}</strong><br>
+      ${item.role}<br>
+      ${item.institute}
+    </div>
+  `);
+}
+
+async function loadMemberships() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getMemberships`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvMemberships", res.data, item => `
+    <div class="entry">${item.title}</div>
+  `);
 }
 
 async function loadProjects() {
@@ -403,6 +400,9 @@ async function loadAdministration() {
 async function initCV() {
   try {
     await loadHome();
+    await loadEducation();
+    await loadEmployment();
+    await loadMemberships();
     await loadProjects();
     await loadTeaching();
     await loadStudents();
@@ -413,70 +413,6 @@ async function initCV() {
 }
 
 document.addEventListener("DOMContentLoaded", initCV);
-
-function fetchJSONP(url) {
-  return new Promise((resolve, reject) => {
-    const callbackName = "jsonp_callback_" + Math.round(Math.random() * 1000000);
-    const script = document.createElement("script");
-
-    window[callbackName] = function(data) {
-      resolve(data);
-      document.body.removeChild(script);
-      delete window[callbackName];
-    };
-
-    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callbackName}`;
-    script.onerror = function() {
-      reject(new Error("JSONP request failed"));
-      delete window[callbackName];
-    };
-
-    document.body.appendChild(script);
-  });
-}
-
-function renderList(containerId, items, fieldName = "title") {
-  const container = document.getElementById(containerId);
-
-  if (!container) return;
-
-  if (!items || !items.length) {
-    container.innerHTML = `<div class="entry">No data available</div>`;
-    return;
-  }
-
-  container.innerHTML = items.map(item => `
-    <div class="entry">
-      ${item[fieldName] || item.title || item.name || ""}
-    </div>
-  `).join("");
-}
-
-async function loadCVData() {
-  if (!GOOGLE_SCRIPT_URL) {
-    console.warn("GOOGLE_SCRIPT_URL not found in config.js");
-    return;
-  }
-
-  try {
-    const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getCVData`);
-
-    if (!res || res.status !== "success") {
-      console.error("Invalid response from backend", res);
-      return;
-    }
-
-    renderList("cvProjects", res.projects);
-    renderList("cvTeaching", res.teaching);
-    renderList("cvStudents", res.students);
-    renderList("cvAdministration", res.administration);
-
-  } catch (err) {
-    console.error("Failed loading CV data:", err);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadCVData);
 </script>
 
 </body>
