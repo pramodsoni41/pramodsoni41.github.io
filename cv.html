@@ -281,7 +281,202 @@
 
 <script src="config.js"></script>
 <script>
-  // Dynamic loading code can be connected here
+const GOOGLE_SCRIPT_URL = window.GOOGLE_SCRIPT_URL || "";
+
+function fetchJSONP(url) {
+  return new Promise((resolve, reject) => {
+    const callbackName = "jsonp_callback_" + Math.round(Math.random() * 1000000);
+    const script = document.createElement("script");
+
+    window[callbackName] = function(data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callbackName}`;
+
+    script.onerror = function() {
+      reject(new Error("JSONP request failed"));
+      delete window[callbackName];
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function renderEntries(containerId, items, formatter) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (!items || !items.length) {
+    container.innerHTML = `<div class="entry">No data available</div>`;
+    return;
+  }
+
+  container.innerHTML = items.map(formatter).join("");
+}
+
+async function loadHome() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getHome`);
+  if (!res || res.status !== "success") return;
+
+  const data = res.data || [];
+
+  const getValue = (section, key) => {
+    const item = data.find(x => x.section === section && x.key === key);
+    return item ? item.value : "";
+  };
+
+  document.querySelector("h1").innerText = getValue("Profile", "Name") || "Dr. Pramod Soni";
+
+  const designation = document.querySelector(".designation");
+  if (designation) designation.innerText = getValue("Profile", "Designation");
+
+  const institute = document.querySelector(".institute");
+  if (institute) {
+    institute.innerHTML = `${getValue("Profile", "Institute")}<br>${getValue("Profile", "City")}`;
+  }
+
+  const contact = document.querySelector(".contact");
+  if (contact) {
+    contact.innerHTML = `
+      <div><strong>Email:</strong> ${getValue("Profile", "Email")}</div>
+      <div><strong>Phone:</strong> ${getValue("Profile", "Phone")}</div>
+      <div><strong>Website:</strong> ${getValue("Links", "CV") || "pramodsoni.in"}</div>
+    `;
+  }
+}
+
+async function loadProjects() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getProjects`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvProjects", res.data, item => `
+    <div class="entry">
+      <strong>${item.title}</strong><br>
+      ${item.funding}<br>
+      ${item.value}
+    </div>
+  `);
+}
+
+async function loadTeaching() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getTeaching`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvTeaching", res.data, item => `
+    <div class="entry">
+      <strong>${item.title}</strong><br>
+      ${item.code}<br>
+      ${item.institute}
+    </div>
+  `);
+}
+
+async function loadStudents() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getStudents`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvStudents", res.data, item => `
+    <div class="entry">
+      <strong>${item.name}</strong><br>
+      ${item.topic}<br>
+      ${item.duration}
+    </div>
+  `);
+}
+
+async function loadAdministration() {
+  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getAdministration`);
+  if (!res || res.status !== "success") return;
+
+  renderEntries("cvAdministration", res.data, item => `
+    <div class="entry">
+      <strong>${item.role}</strong><br>
+      ${item.institute}<br>
+      ${item.duration}
+    </div>
+  `);
+}
+
+async function initCV() {
+  try {
+    await loadHome();
+    await loadProjects();
+    await loadTeaching();
+    await loadStudents();
+    await loadAdministration();
+  } catch (err) {
+    console.error("CV Load Error:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initCV);
+
+function fetchJSONP(url) {
+  return new Promise((resolve, reject) => {
+    const callbackName = "jsonp_callback_" + Math.round(Math.random() * 1000000);
+    const script = document.createElement("script");
+
+    window[callbackName] = function(data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callbackName}`;
+    script.onerror = function() {
+      reject(new Error("JSONP request failed"));
+      delete window[callbackName];
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function renderList(containerId, items, fieldName = "title") {
+  const container = document.getElementById(containerId);
+
+  if (!container) return;
+
+  if (!items || !items.length) {
+    container.innerHTML = `<div class="entry">No data available</div>`;
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="entry">
+      ${item[fieldName] || item.title || item.name || ""}
+    </div>
+  `).join("");
+}
+
+async function loadCVData() {
+  if (!GOOGLE_SCRIPT_URL) {
+    console.warn("GOOGLE_SCRIPT_URL not found in config.js");
+    return;
+  }
+
+  try {
+    const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getCVData`);
+
+    if (!res || res.status !== "success") {
+      console.error("Invalid response from backend", res);
+      return;
+    }
+
+    renderList("cvProjects", res.projects);
+    renderList("cvTeaching", res.teaching);
+    renderList("cvStudents", res.students);
+    renderList("cvAdministration", res.administration);
+
+  } catch (err) {
+    console.error("Failed loading CV data:", err);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadCVData);
 </script>
 
 </body>
