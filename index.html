@@ -437,6 +437,13 @@ async function loadHomePublications() {
       CONFIG.SCRIPT_URL + "?action=getPublications"
     );
 
+    console.log("PUBLICATIONS:", response);
+
+    if (response.status !== "success") {
+      container.innerHTML = "<p>Failed to load publications.</p>";
+      return;
+    }
+
     let html = `
       <section class="card">
         <h2>Recent Publications</h2>
@@ -446,9 +453,10 @@ async function loadHomePublications() {
     response.data.slice(0, 5).forEach(item => {
       html += `
         <li>
-          ${item.authors} (${item.year}).
-          ${item.title}.
-          <em>${item.source}</em>
+          ${item.authors || ""}
+          (${item.year || ""}).
+          ${item.title || ""}
+          <em>${item.source || ""}</em>
         </li>
       `;
     });
@@ -461,6 +469,7 @@ async function loadHomePublications() {
     container.innerHTML = html;
 
   } catch (error) {
+    console.error(error);
     container.innerHTML = "<p>Error loading publications.</p>";
   }
 }
