@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -7,12 +8,25 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const links = document.querySelectorAll(".nav-links a");
+  const current = window.location.pathname.split("/").pop();
+
+  links.forEach(link => {
+    const href = link.getAttribute("href");
+    if (href === current || (current === "" && href === "index.html")) {
+      link.classList.add("active");
+    }
+  });
+});
+</script>
+
 <body>
 
 <nav class="navbar">
   <div class="wrap nav-inner">
     <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
-
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="Other_Activities.html">Other Activities</a>
@@ -20,7 +34,7 @@
       <a href="projects.html">Projects</a>
       <a href="teaching.html">Teaching</a>
       <a href="students.html">Students</a>
-      <a href="administration.html" class="active">Administration</a>
+      <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
   </div>
@@ -28,114 +42,117 @@
 
 <main class="wrap">
 
-  <section class="card">
-    <h1>Administration</h1>
-    <p>Administrative responsibilities, academic services, and institutional roles.</p>
-  </section>
 
-  <div id="administrationContainer"></div>
+
+ <section class="card"> <h2>IIT (BHU) Varanasi (2023–Present)</h2>
+
+
+  <ul>
+    
+      <li>Member, Faculty Forum 2026-2027</li>
+    
+      <li>Deupty Chief Election Officer, Student Parilament Elections, 2024-25, 2025-2026</li>
+    
+      <li>Chairman, Technex-26, IIT (BHU) Varanasi</li>
+    
+      <li>Member, Time Table Committee, Department of Civil Engineering (2023–25)</li>
+    
+      <li>Member, Departmental Website Committee, Department of Civil Engineering (2023–)</li>
+    
+      <li>Member, UG Core Courses Committee, IIT (BHU) (2023–24)</li>
+    
+      <li>Proctor, IIT (BHU) (2024–)</li>
+    
+      <li>Warden, A. S. N. Bose Hostel (2024–)</li>
+    
+      <li>PI, Time Table, Department of Civil Engineering (2023–25)</li>
+    
+      <li>Examination In-Charge, Department of Civil Engineering (2023–25)</li>
+    
+      <li>PI, Ganga Laboratory, Department of Civil Engineering (2023–)</li>
+    
+      <li>Counselor, SNTC, IIT (BHU) Varanasi (2025–)</li>
+    
+      <li>Member, IALS, IIT (BHU) Varanasi (2025–)</li>
+    
+      <li>Member, Festival Committee, IIT (BHU) (2025–)</li>
+    
+  </ul>
+
+</section>
+
+
+ <section class="card"> <h2>NIT Jamshedpur (2022-2023)</h2>
+
+
+  <ul>
+    
+      <li>Co-FI, Examination</li>
+    
+      <li>FI, Lawn Tennis</li>
+    
+      <li>Coordinator, AISHE</li>
+    
+      <li>P.I. CAD Lab, Civil Engineering</li>
+    
+      <li>Faculty Advisor, Final Year, DCE</li>
+    
+  </ul>
+
+</section>
+
+
+ <section class="card"> <h2>MNNIT Allahabad (2019-2022)</h2>
+
+
+  <ul>
+    
+      <li>O.C. CAD Lab, WRE Lab, SURVEY Lab, Civil Engineering</li>
+    
+      <li>Faculty Coordinator, Tennis</li>
+    
+      <li>Member, Time Table Committee,</li>
+    
+      <li>B.Tech Project Evaluation Committee,</li>
+    
+      <li>Member, DUGC</li>
+    
+      <li>Member, NIRF</li>
+    
+      <li>Member, TEQIP Committee</li>
+    
+      <li>Member,NBA Committee</li>
+    
+      <li>Startup Activity Coordinator, Institution Innovation Council</li>
+    
+  </ul>
+
+</section>
+
+
+ <section class="card"> <h2>IIT Kanpur</h2>
+
+
+  <ul>
+    
+      <li>Convener, SBRA (2015-2016)</li>
+    
+      <li>In Charge, Billiard Club, Hall-4 (2012-2013)</li>
+    
+  </ul>
+
+</section>
+
+
+
+
+
 
 </main>
 
 <footer class="wrap footer">
   <small>© Dr. Pramod Soni • Academic Website</small>
 </footer>
-
-<script src="config.js"></script>
-
-<script>
-function fetchJSONP(url, callbackName = "jsonpCallback") {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-
-    window[callbackName] = function (data) {
-      resolve(data);
-      document.body.removeChild(script);
-      delete window[callbackName];
-    };
-
-    script.src = `${url}&callback=${callbackName}`;
-
-    script.onerror = function () {
-      reject(new Error("JSONP request failed"));
-    };
-
-    document.body.appendChild(script);
-  });
-}
-
-function groupByInstitute(data) {
-  return data.reduce((acc, item) => {
-    if (!acc[item.institute]) {
-      acc[item.institute] = [];
-    }
-    acc[item.institute].push(item);
-    return acc;
-  }, {});
-}
-
-function renderAdministrationItem(item) {
-  return `
-    <li style="margin-bottom: 14px;">
-      <strong>${item.role}</strong>
-      ${item.duration ? ` (${item.duration})` : ""}
-      ${item.description ? `<br><small>${item.description}</small>` : ""}
-    </li>
-  `;
-}
-
-async function loadAdministration() {
-  const container = document.getElementById("administrationContainer");
-
-  try {
-    const url = CONFIG.SCRIPT_URL + "?action=getAdministration";
-    const response = await fetchJSONP(url);
-
-    if (response.status !== "success") {
-      container.innerHTML = "<p>Failed to load administration content.</p>";
-      return;
-    }
-
-    const grouped = groupByInstitute(response.data);
-
-    const displayOrder = [
-      "IIT (BHU) Varanasi",
-      "NIT Jamshedpur",
-      "MNNIT Allahabad",
-      "IIT Kanpur"
-    ];
-
-    let html = "";
-
-    displayOrder.forEach(institute => {
-      if (!grouped[institute] || grouped[institute].length === 0) return;
-
-      html += `
-        <section class="card">
-          <h2>${institute}</h2>
-          <ul>
-      `;
-
-      grouped[institute].forEach(item => {
-        html += renderAdministrationItem(item);
-      });
-
-      html += `
-          </ul>
-        </section>
-      `;
-    });
-
-    container.innerHTML = html;
-
-  } catch (error) {
-    console.error(error);
-    container.innerHTML = "<p>Error loading administration content.</p>";
-  }
-}
-
-document.addEventListener("DOMContentLoaded", loadAdministration);
-</script>
 
 </body>
 </html>
