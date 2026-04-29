@@ -347,14 +347,26 @@ async function loadHome() {
 
 async function loadEducation() {
   const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEducation`);
+
   if (!res || res.status !== "success") return;
 
   renderEntries("cvEducation", res.data, item => `
-    <div class="entry">
-      <strong>${item.degree}</strong><br>
-      ${item.institute}<br>
-    ${item.year}<br>
-      ${item.specialization || ""}
+    <div class="employment-item">
+
+      <div class="employment-date">
+        ${item.year || ""}
+      </div>
+
+      <div class="employment-marker">
+        &#128278;
+      </div>
+
+      <div class="employment-content">
+        <strong>${item.degree}</strong>,
+        ${item.institute}.<br>
+        ${item.specialization || ""}
+      </div>
+
     </div>
   `);
 }
