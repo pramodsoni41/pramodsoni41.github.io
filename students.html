@@ -1,366 +1,180 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Dr. Pramod Soni | Assistant Professor (Grade-I), Civil Engineering, IIT (BHU) Varanasi</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students | Dr. Pramod Soni</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const links = document.querySelectorAll(".nav-links a");
-    const current = window.location.pathname.split("/").pop();
 
-    links.forEach(link => {
-      const href = link.getAttribute("href");
-      if (href === current || 
-         (current === "" && href === "index.html")) {
-        link.classList.add("active");
-      }
-    });
-  });
-</script>
+<body>
 
 <nav class="navbar">
-    <div class="wrap nav-inner">
-      <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
-      <div class="nav-links">
-      <a href="index.html" class="home-btn">Home</a>
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+
+    <div class="nav-links">
+      <a href="index.html">Home</a>
       <a href="Other_Activities.html">Other Activities</a>
       <a href="publications.html">Publications</a>
       <a href="projects.html">Projects</a>
       <a href="teaching.html">Teaching</a>
-      <a href="students.html">Students</a>
+      <a href="students.html" class="active">Students</a>
       <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
-    </div>
+  </div>
 </nav>
 
-<section class="card">
-  <h2>Thesis Supervised</h2>
+<main class="wrap">
 
-  
-    <div class="item">
-      <h3>Ph.D. Ongoing</h3>
+  <section class="card">
+    <h1>Thesis Supervised</h1>
+    <p>Research scholars, thesis supervision and student guidance.</p>
+  </section>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Saurabh Maurya</strong>
-               <span style="color: var(--muted);">(2025–Ongoing)</span>
-              <br><small>Air Pollution and Crop Yield.</small>
-            </li>
-          
-            <li>
-              <strong>Vineet Jain</strong>
-               <span style="color: var(--muted);">(2025–Ongoing)</span>
-              <br><small>Pollution Dispersion in ground Water.</small>
-            </li>
-          
-            <li>
-              <strong>Maniranjan</strong>
-               <span style="color: var(--muted);">(2022–Ongoing)</span>
-              <br><small>Comprehensive Assessment of Groundwater in Tropical River Basins using Machine Learning and SWAT Model.</small>
-            </li>
-          
-            <li>
-              <strong>Megavath Narahari</strong>
-               <span style="color: var(--muted);">(2021–Ongoing)</span>
-              <br><small>Effects of Climate Change on Water Quality.</small>
-            </li>
-          
-            <li>
-              <strong>Krishna Kumar</strong>
-               <span style="color: var(--muted);">(2022–Ongoing)</span>
-              <br><small>Crop Yield Estimation and Forecasting using Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Hari Prakash</strong>
-               <span style="color: var(--muted);">(2023–Ongoing)</span>
-              <br><small>Peak Discharge Estimation for Ungauged Basins.</small>
-            </li>
-          
-            <li>
-              <strong>Ashwin Chitravanshi</strong>
-               <span style="color: var(--muted);">(2023–Ongoing)</span>
-              <br><small>Water Quality Modeling for Varuna River Basin.</small>
-            </li>
-          
-        </ul>
-      
-    </div>
-  
-    <div class="item">
-      <h3>M.Tech Students</h3>
+  <div id="studentsContainer"></div>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Ritika Upadhyay</strong>
-               <span style="color: var(--muted);">(2024-Ongoing)</span>
-              <br><small>Impact of Pollution on Rainfall Characteristics. Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Makardhwaj Awasthi</strong>
-               <span style="color: var(--muted);">(2024-Ongoing)</span>
-              <br><small>Atmospheric–Rainfall Interaction Analysis. Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Buddepu Harsha Vardhan</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>A Comparative Evaluation of WRF and ANN for Weather Prediction: Performance and Accuracy.</small>
-            </li>
-          
-            <li>
-              <strong>Saurabh Maurya</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Investigation of Microphysical Characteristics of Raindrop Size Distribution using WRF Model.</small>
-            </li>
-          
-            <li>
-              <strong>Raju Singh</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Estimation of Surface Velocity in Open Channel Flows using Image Processing.</small>
-            </li>
-          
-            <li>
-              <strong>Shailesh Kushwaha</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Seasonal Forecasting of Crop Yield over Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Tripti Yadav</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Estimation of E-Flow for Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Ritika Upadhyay</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Impact of Pollution on Rainfall Characteristics (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Makardhwaj Awasthi</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Atmospheric–Rainfall Interaction Analysis (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Suryansh Srivastava</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Geomorphological Change Analysis using Arc-GIS (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Shadab Ansari</strong>
-               <span style="color: var(--muted);">(2020)</span>
-              <br><small>Single and Dual Frequency Atmospheric Free Precise Point Positioning using Combined GPS and GLONASS Observations.</small>
-            </li>
-          
-            <li>
-              <strong>Prity Dhanai</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Rainfall Triggered Slope Instability Analysis with Changing Climate.</small>
-            </li>
-          
-            <li>
-              <strong>Pankaj Singh</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Spatiotemporal Prediction of Criteria Air Pollutants using Air Pollution Monitoring Station Data.</small>
-            </li>
-          
-            <li>
-              <strong>Shubham Khare</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Effects of COVID-19 Lockdown on Meteorological Variables over India.</small>
-            </li>
-          
-            <li>
-              <strong>Anandita Raj</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Impacts of Climate Change on Water Quality for Krishna River Basin.</small>
-            </li>
-          
-        </ul>
-      
-    </div>
-  
-    <div class="item">
-      <h3>B.Tech Students</h3>
+</main>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Arushi Aggarwal</strong>
-               <span style="color: var(--muted);">(23064002) (2025)</span>
-              <br><small>Geomorphological Analysis.</small>
-            </li>
-          
-            <li>
-              <strong>Abhishek Sharma</strong>
-               <span style="color: var(--muted);">(23065006) (2025)</span>
-              <br><small>Forecasting of River Sinuosity using Remote Sensing and Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Bishal Das</strong>
-               <span style="color: var(--muted);">(23065032) (2025)</span>
-              <br><small>DSSAT Crop Simulation.</small>
-            </li>
-          
-            <li>
-              <strong>Chandraveer Singh</strong>
-               <span style="color: var(--muted);">(23065035) (2025)</span>
-              <br><small>Forecasting of River Sinuosity using Remote Sensing and Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Vaibhav Rajvardhan</strong>
-               <span style="color: var(--muted);">(23065110) (2025)</span>
-              <br><small>2D Hydraulic Simulation and Inundation Mapping of the Hirakud Dam Breach.</small>
-            </li>
-          
-            <li>
-              <strong>Mayank Singh</strong>
-               <span style="color: var(--muted);">(23065124) (2025)</span>
-              <br><small>Sub-daily Rainfall Analysis over Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Nitish Kumar Maurya</strong>
-               <span style="color: var(--muted);">(20065067), Umesh Harsana (20065109) (2024)</span>
-              <br><small>River Meandering Analysis Project.</small>
-            </li>
-          
-            <li>
-              <strong>Dinesh Singh</strong>
-               <span style="color: var(--muted);">(20065035), Harshit Bangari (20065041), Bhuvnesh Gaur (20065030) (2024)</span>
-              <br><small>Flood Risk Zone Mapping using ArcGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Mayank Mani Nath Gupta</strong>
-               <span style="color: var(--muted);">(21065127) (2024)</span>
-              <br><small>River Extraction using Image Processing and QGIS using Python.</small>
-            </li>
-          
-            <li>
-              <strong>Saatwiik Srivastava</strong>
-               <span style="color: var(--muted);">(21065091) (2024)</span>
-              <br><small>Rainfall–Runoff Modeling using ANN.</small>
-            </li>
-          
-            <li>
-              <strong>Vishal Yadav</strong>
-               <span style="color: var(--muted);">(21065113) (2024)</span>
-              <br><small>River Boundary Extraction using Image Processing and QGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Aditi Gupta</strong>
-               <span style="color: var(--muted);">(21065006) (2024)</span>
-              <br><small>Monthly Discharge Estimation using Image Processing.</small>
-            </li>
-          
-            <li>
-              <strong>Shridhar Kumar</strong>
-               <span style="color: var(--muted);">(21065100) (2024)</span>
-              <br><small>Application of ANN in Rainfall–Runoff Modeling.</small>
-            </li>
-          
-            <li>
-              <strong>Aman Mani Shandilya</strong>
-               <span style="color: var(--muted);">(22065012) (2025)</span>
-              <br><small>River Extraction and Analysis using Image Processing and QGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Sanyam Jain</strong>
-               <span style="color: var(--muted);">(22065118) (2025)</span>
-              <br><small>Application of ANN in Rainfall–Runoff Modeling.</small>
-            </li>
-          
-            <li>
-              <strong>Harsh Pant</strong>
-               <span style="color: var(--muted);">(22065128), Aditya Maurya (22065122) (2025)</span>
-              <br><small>Analysis of NCEP Global Forecast Data.</small>
-            </li>
-          
-            <li>
-              <strong>Chandraveer Singh</strong>
-               <span style="color: var(--muted);">(23065035) (2025)</span>
-              <br><small>Topic under progress.</small>
-            </li>
-          
-            <li>
-              <strong>Danish Dubey</strong>
-               <span style="color: var(--muted);">(23065038) (2025)</span>
-              <br><small>CFD Modeling of Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Harsh Suryawanshi</strong>
-               <span style="color: var(--muted);">(23065051) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Sachin</strong>
-               <span style="color: var(--muted);">(23065092) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Vaibhav Rajvardhan</strong>
-               <span style="color: var(--muted);">(23065110) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Mahesh Chandra Verma, Nishant Rai, Balram Yogi, Kuldeep Bhamu</strong>
-               <span style="color: var(--muted);">(2020)</span>
-              <br><small>Impact of Climate Change on Water Resources using Artificial Neural Network (ANN).</small>
-            </li>
-          
-            <li>
-              <strong>Anitya Sagar, Pulkit Garg, Abhay Singh, Umesh Karna</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Design of Rainwater Harvesting Structure for MNNIT Allahabad Campus.</small>
-            </li>
-          
-            <li>
-              <strong>Shiv Virendra Chaubey, Ajit Kumar, Aditya Kumar, Shubham Kumar Singh</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-        </ul>
-      
-    </div>
-  
-    <div class="item">
-      <h3>External Thesis (BITS Pilani)</h3>
+<footer class="wrap footer">
+  <small>© Dr. Pramod Soni</small>
+</footer>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Nimish Tiwari</strong>
-               <span style="color: var(--muted);">(2022A2PS1449H) (2026)</span>
-              <br><small>Prediction of Water Quality Parameters of the Varuna River Basin using Remote Sensing and Machine Learning. Co-supervisor with Prof. Abhradeep Majumder (BITS Pilani).</small>
-            </li>
-          
-        </ul>
-      
-    </div>
-  
-</section>
+<script src="config.js"></script>
+
+<script>
+function fetchJSONP(url, callbackName = "jsonpCallback") {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+
+    window[callbackName] = function (data) {
+      resolve(data);
+      document.body.removeChild(script);
+      delete window[callbackName];
+    };
+
+    script.src = `${url}&callback=${callbackName}`;
+
+    script.onerror = function () {
+      reject(new Error("JSONP request failed"));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function groupByCategory(data) {
+  return data.reduce((acc, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+}
+
+function getSectionTitle(category) {
+  const titles = {
+    "PhD": "Ph.D. Ongoing",
+    "MTech": "M.Tech Students",
+    "BTech": "B.Tech Students",
+    "External": "External Thesis"
+  };
+
+  return titles[category] || category;
+}
+
+function renderStudentItem(item) {
+  return `
+    <li style="margin-bottom: 18px;">
+      <strong>${item.name}</strong>
+      ${
+        item.roll || item.duration
+          ? `<span style="color: var(--muted);">
+              ${
+                item.roll ? `(${item.roll})` : ""
+              }
+              ${
+                item.duration ? ` (${item.duration})` : ""
+              }
+            </span>`
+          : ""
+      }
+
+      ${
+        item.topic
+          ? `<br><small>${item.topic}</small>`
+          : ""
+      }
+
+      ${
+        item.notes
+          ? `<br><small><strong>Notes:</strong> ${item.notes}</small>`
+          : ""
+      }
+
+      ${
+        item.institute
+          ? `<br><small><strong>Institute:</strong> ${item.institute}</small>`
+          : ""
+      }
+    </li>
+  `;
+}
+
+async function loadStudents() {
+  const container = document.getElementById("studentsContainer");
+
+  try {
+    const url = CONFIG.SCRIPT_URL + "?action=getStudents";
+    const response = await fetchJSONP(url);
+
+    if (response.status !== "success") {
+      container.innerHTML = "<p>Failed to load student data.</p>";
+      return;
+    }
+
+    const grouped = groupByCategory(response.data);
+
+    const displayOrder = [
+      "PhD",
+      "MTech",
+      "BTech",
+      "External"
+    ];
+
+    let html = "";
+
+    displayOrder.forEach(category => {
+      if (!grouped[category] || grouped[category].length === 0) return;
+
+      html += `
+        <section class="card">
+          <h2>${getSectionTitle(category)}</h2>
+          <ul>
+      `;
+
+      grouped[category].forEach(item => {
+        html += renderStudentItem(item);
+      });
+
+      html += `
+          </ul>
+        </section>
+      `;
+    });
+
+    container.innerHTML = html;
+
+  } catch (error) {
+    console.error(error);
+    container.innerHTML = "<p>Error loading students content.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadStudents);
+</script>
+
+</body>
+</html>
