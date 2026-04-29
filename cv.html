@@ -352,9 +352,8 @@ async function loadEducation() {
 
   renderEntries("cvEducation", res.data, item => `
     <div class="employment-item">
-
       <div class="employment-date">
-        ${item.year || ""}
+        ${item.duration || item.year || ""}
       </div>
 
       <div class="employment-marker">
@@ -362,25 +361,31 @@ async function loadEducation() {
       </div>
 
       <div class="employment-content">
-        <strong>${item.degree}</strong>,
-        ${item.institute}.<br>
+        <strong>${item.degree}</strong>, ${item.institute}<br>
         ${item.specialization || ""}
       </div>
-
     </div>
   `);
 }
 
 async function loadEmployment() {
   const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEmployment`);
+
   if (!res || res.status !== "success") return;
 
   renderEntries("cvEmployment", res.data, item => `
     <div class="employment-item">
-      <div class="employment-date">${item.duration}</div>
-      <div class="employment-marker">&#128278;</div>
+      <div class="employment-date">
+        ${item.duration}
+      </div>
+
+      <div class="employment-marker">
+        &#128278;
+      </div>
+
       <div class="employment-content">
-        <strong>${item.role}</strong>, ${item.institute}
+        <strong>${item.role}</strong>, ${item.institute}<br>
+        ${item.description || ""}
       </div>
     </div>
   `);
