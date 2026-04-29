@@ -1,0 +1,43 @@
+name: Auto Update Slides JSON
+
+on:
+  push:
+    paths:
+      - 'assets/slideshow/**'
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate slides.json
+        run: |
+          echo "[" > slides.json
+          first=true
+
+          for file in assets/slideshow/*; do
+            if [ -f "$file" ]; then
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> slides.json
+              fi
+
+              echo -n "  \"$file\"" >> slides.json
+            fi
+          done
+
+          echo "" >> slides.json
+          echo "]" >> slides.json
+
+      - name: Commit Updated slides.json
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add slides.json
+          git commit -m "Auto update slides.json" || echo "No changes to commit"
+          git push

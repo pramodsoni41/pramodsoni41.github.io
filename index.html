@@ -269,16 +269,16 @@ function fetchJSONP(url) {
 SLIDESHOW FROM GOOGLE SHEET
 ========================= */
 
+<script>
 async function loadSlideshow() {
   const container = document.getElementById("slideshowContainer");
 
   try {
-    const response = await fetchJSONP(
-      CONFIG.SCRIPT_URL + "?action=getSlideshow"
-    );
+    const response = await fetch("slides.json");
+    const slides = await response.json();
 
-    if (response.status !== "success") {
-      container.innerHTML = "<p>Failed to load slideshow.</p>";
+    if (!slides || slides.length === 0) {
+      container.innerHTML = "<p>No slideshow images found.</p>";
       return;
     }
 
@@ -287,10 +287,10 @@ async function loadSlideshow() {
         <div class="slides">
     `;
 
-    response.data.forEach((item, index) => {
+    slides.forEach((img, index) => {
       html += `
         <div class="slide ${index === 0 ? "active" : ""}">
-          <img src="${item.image}" alt="${item.title}">
+          <img src="${img}" alt="Slide ${index + 1}">
         </div>
       `;
     });
@@ -312,9 +312,11 @@ async function loadSlideshow() {
     }
 
   } catch (error) {
-    container.innerHTML = "<p>Error loading slideshow.</p>";
+    console.error(error);
+    container.innerHTML = "<p>Failed to load slideshow.</p>";
   }
 }
+</script>
 
 
 /* =========================
