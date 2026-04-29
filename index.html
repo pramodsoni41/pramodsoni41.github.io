@@ -233,18 +233,32 @@ SCRIPTS
 
 <script>
 
-function fetchJSONP(url, callbackName = "jsonpCallback") {
+function fetchJSONP(url) {
   return new Promise((resolve, reject) => {
+    const callbackName =
+      "jsonpCallback_" +
+      Date.now() +
+      "_" +
+      Math.floor(Math.random() * 10000);
+
     const script = document.createElement("script");
 
     window[callbackName] = function(data) {
       resolve(data);
-      document.body.removeChild(script);
+
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+
       delete window[callbackName];
     };
 
     script.src = `${url}&callback=${callbackName}`;
-    script.onerror = reject;
+
+    script.onerror = function() {
+      reject(new Error("JSONP request failed"));
+      delete window[callbackName];
+    };
 
     document.body.appendChild(script);
   });
