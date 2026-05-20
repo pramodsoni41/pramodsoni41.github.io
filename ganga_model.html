@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Ganga Basin Model | Dr. Pramod Soni</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .model-hero {
+      background: linear-gradient(135deg, #1f3c88 0%, #2563eb 100%);
+      border-radius: 18px;
+      padding: 28px;
+      margin-top: 16px;
+      color: white;
+      border: none;
+    }
+    .model-hero h1 { margin: 0 0 8px; font-size: 1.9rem; color: white; }
+    .model-hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      padding: 3px 14px;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+    .model-hero p { color: rgba(255,255,255,0.82); margin: 4px 0 0; }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .team-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .team-card h3 { margin: 0 0 6px; font-size: 0.95rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .team-card p { margin: 0; font-size: 1rem; }
+    .team-card .role { font-size: 0.88rem; color: var(--muted); margin-top: 4px; }
+
+    .facts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    @media (max-width: 640px) { .facts-grid { grid-template-columns: 1fr; } }
+
+    .gallery-placeholder {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .gallery-slot {
+      background: #f1f5f9;
+      border: 2px dashed var(--line);
+      border-radius: 12px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .spec-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .spec-table td { padding: 9px 10px; border-bottom: 1px solid #e5e7eb; }
+    .spec-table tr:last-child td { border-bottom: none; }
+    .spec-table td:first-child { color: var(--muted); font-size: 0.9rem; white-space: nowrap; width: 140px; }
+    .spec-table td:last-child { font-weight: 500; }
+  </style>
+</head>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const links = document.querySelectorAll(".nav-links a");
+    const current = window.location.pathname.split("/").pop();
+    links.forEach(link => {
+      const href = link.getAttribute("href");
+      if (href === current || (current === "" && href === "index.html")) {
+        link.classList.add("active");
+      }
+    });
+  });
+</script>
+<body>
+
+<nav class="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+    <div class="nav-links">
+      <a href="index.html" class="home-btn">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <p style="margin-bottom:0; font-size:0.9rem;">
+    <a href="projects.html">&#8592; Back to Projects</a>
+  </p>
+
+  <!-- Hero -->
+  <div class="model-hero">
+    <span class="badge">Physical Model &nbsp;·&nbsp; Logarithmic Scale</span>
+    <h1>Ganga Basin Model</h1>
+    <p>Live basin model &nbsp;·&nbsp; Ganga Research Laboratory, IIT (BHU) Varanasi</p>
+  </div>
+
+  <!-- About the Ganga Basin -->
+  <section class="card">
+    <h2>About the Ganga Basin</h2>
+    <p>
+      The Ganga (Ganges) is one of the most significant river systems in the world, holding immense cultural,
+      spiritual, and ecological importance for India. Originating from the Gangotri Glacier in the Garhwal
+      Himalayas, the river flows approximately 2,525 km before draining into the Bay of Bengal through the
+      Sundarbans delta — one of the world's largest mangrove forests.
+    </p>
+    <p>
+      The basin drains an area of roughly 860,000 km² spanning multiple states and supports nearly 500 million
+      people. It is the backbone of Indian agriculture on the Indo-Gangetic Plain and is central to India's
+      flagship river-rejuvenation initiative, <em>Namami Gange</em>.
+    </p>
+    <div class="facts-grid">
+      <div>
+        <h3 style="margin:0 0 8px; font-size:1rem; color:#1f3c88;">Basin Facts</h3>
+        <table class="spec-table">
+          <tr><td>Origin</td><td>Gangotri Glacier, Uttarakhand</td></tr>
+          <tr><td>Length</td><td>~2,525 km</td></tr>
+          <tr><td>Basin Area</td><td>~860,000 km²</td></tr>
+          <tr><td>Outfall</td><td>Bay of Bengal (Sundarbans)</td></tr>
+          <tr><td>Population</td><td>~500 million</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3 style="margin:0 0 8px; font-size:1rem; color:#1f3c88;">Major Tributaries</h3>
+        <table class="spec-table">
+          <tr><td>Right bank</td><td>Yamuna, Chambal, Betwa, Son</td></tr>
+          <tr><td>Left bank</td><td>Ghaghra, Gandak, Kosi, Mahananda</td></tr>
+          <tr><td>States</td><td>Uttarakhand, UP, Bihar, Jharkhand, West Bengal</td></tr>
+          <tr><td>Countries</td><td>India, Nepal (upper tributaries)</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- About the Model -->
+  <section class="card">
+    <h2>About the Model</h2>
+    <p>
+      This <strong>live physical model of the Ganga Basin</strong> is constructed on a <strong>logarithmic scale</strong>,
+      providing a three-dimensional representation of the river network, sub-basins, major tributaries, and terrain
+      of the entire Ganga basin. The logarithmic scale allows large topographic variations — from the high
+      Himalayan headwaters to the flat Indo-Gangetic Plain — to be rendered in a single coherent model, making
+      features visible across the full extent of the basin.
+    </p>
+    <p>
+      The model serves as a powerful educational and research tool, enabling students, researchers, and
+      stakeholders to intuitively understand the spatial organisation of the basin, tributary junctions,
+      flood plains, and the broader hydrological landscape.
+    </p>
+    <table class="spec-table" style="margin-top:14px;">
+      <tr><td>Scale type</td><td>Logarithmic Scale</td></tr>
+      <tr><td>Model type</td><td>Live Ganga Basin Model</td></tr>
+      <tr><td>River system</td><td>Full Ganga Basin (including major tributaries)</td></tr>
+      <tr><td>Location</td><td>Ganga Research Laboratory, IIT (BHU) Varanasi</td></tr>
+    </table>
+  </section>
+
+  <!-- Team -->
+  <section class="card">
+    <h2>Team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <h3>Designer</h3>
+        <p><strong>Dr. Pramod Soni</strong></p>
+        <p class="role">Assistant Professor (Grade-I), Department of Civil Engineering, IIT (BHU) Varanasi</p>
+      </div>
+      <div class="team-card">
+        <h3>Printer / Fabricator</h3>
+        
+          <p style="color:var(--muted); font-style:italic;">To be updated</p>
+        
+      </div>
+      <div class="team-card">
+        <h3>Painter</h3>
+        
+          <p style="color:var(--muted); font-style:italic;">To be updated</p>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Photo Gallery -->
+  <section class="card">
+    <h2>Photo Gallery</h2>
+    
+      <div class="gallery-placeholder">
+        <div class="gallery-slot">Photo coming soon</div>
+        <div class="gallery-slot">Photo coming soon</div>
+        <div class="gallery-slot">Photo coming soon</div>
+      </div>
+      <p style="color:var(--muted); font-size:0.88rem; margin-top:10px;">
+        Photos will be added soon. Add images under <code>ganga_model.photos</code> in <code>content.yaml</code>.
+      </p>
+    
+  </section>
+
+</main>
+
+<footer class="wrap footer">
+  <small>© Dr. Pramod Soni</small>
+</footer>
+
+</body>
+</html>
