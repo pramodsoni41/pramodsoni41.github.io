@@ -1,0 +1,1733 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{ydnt/global//global/global/global}
+    \entry{Ashwin2026ph}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=37ce2ffa69e8fa001e00ac1ab7a69627}{%
+           family={Ashwin},
+           familyi={A\bibinitperiod},
+           given={Chitravanshi},
+           giveni={C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a242ba5c05b2c094dd1c063eefb82a11}{%
+           family={Tiwari},
+           familyi={T\bibinitperiod},
+           given={Nimish},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {NIT Jamshedpur, India}%
+      }
+      \strng{namehash}{9043a90e819ab2d3f3ca6659e6973075}
+      \strng{fullhash}{41a1deeb4338544738e36beafa0a73b3}
+      \strng{fullhashraw}{41a1deeb4338544738e36beafa0a73b3}
+      \strng{bibnamehash}{41a1deeb4338544738e36beafa0a73b3}
+      \strng{authorbibnamehash}{41a1deeb4338544738e36beafa0a73b3}
+      \strng{authornamehash}{9043a90e819ab2d3f3ca6659e6973075}
+      \strng{authorfullhash}{41a1deeb4338544738e36beafa0a73b3}
+      \strng{authorfullhashraw}{41a1deeb4338544738e36beafa0a73b3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)}
+      \field{month}{3}
+      \field{note}{Accepted for presentation and possible inclusion in IEEE Xplore}
+      \field{title}{Remote Sensing Based pH Estimation in Eastern Uttar Pradesh Using Sentinel-2 and Machine Learning}
+      \field{year}{2026}
+      \true{nocite}
+    \endentry
+    \entry{maurya2026wrf}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=f7803ef7624fd45d9925e10152c2d20e}{%
+           family={Maurya},
+           familyi={M\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{81af706fb314065543b4f69115b5474a}
+      \strng{fullhash}{81af706fb314065543b4f69115b5474a}
+      \strng{fullhashraw}{81af706fb314065543b4f69115b5474a}
+      \strng{bibnamehash}{81af706fb314065543b4f69115b5474a}
+      \strng{authorbibnamehash}{81af706fb314065543b4f69115b5474a}
+      \strng{authornamehash}{81af706fb314065543b4f69115b5474a}
+      \strng{authorfullhash}{81af706fb314065543b4f69115b5474a}
+      \strng{authorfullhashraw}{81af706fb314065543b4f69115b5474a}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Theoretical and Applied Climatology}
+      \field{title}{Comparative assessment of WRF-simulated raindrop size distribution using disdrometer observations in Varanasi}
+      \field{volume}{157}
+      \field{year}{2026}
+      \true{nocite}
+      \field{pages}{179}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1007/s00704-026-06134-w
+      \endverb
+    \endentry
+    \entry{maurya2026aiintegration}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=19da32d9377b8b5127794544b39ca6c7}{%
+           family={Maurya},
+           familyi={M\bibinitperiod},
+           given={Saurabh},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{location}{1}{%
+        {NIT Jamshedpur, India}%
+      }
+      \strng{namehash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{fullhash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{fullhashraw}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{bibnamehash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{authorbibnamehash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{authornamehash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{authorfullhash}{b122b54ea9dbfb1ebf193572b976b13d}
+      \strng{authorfullhashraw}{b122b54ea9dbfb1ebf193572b976b13d}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)}
+      \field{month}{3}
+      \field{note}{Provisionally accepted for presentation and possible inclusion in IEEE Xplore}
+      \field{title}{AI-Engineering Integration of Rainfall Microphysics and Vegetation Indicators for Agricultural Intelligence over Varanasi, India}
+      \field{year}{2026}
+      \true{nocite}
+    \endentry
+    \entry{chitravanshi2025machine}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=3a32abd2ef693c4e573ae48cbb50541b}{%
+           family={Chitravanshi},
+           familyi={C\bibinitperiod},
+           given={Ashwin},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{fullhash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{fullhashraw}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{bibnamehash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{authorbibnamehash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{authornamehash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{authorfullhash}{bcb4fa1743d283db6b86fb23c22770c3}
+      \strng{authorfullhashraw}{bcb4fa1743d283db6b86fb23c22770c3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{AIMS 2025 -- International Conference on AI and Materials for Sustainability}
+      \field{title}{Machine Learning Approaches for Prediction of the Coefficient of Discharge of Broad Crested Weirs}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{kumar2025monitoring}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=1,uniquepart=given,hash=04177382b6466c1ebba54e217b4af4dc}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Maniranjan},
+           giveni={M\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=75bbc3204e46d3cc4fb7daee98c8aced}{%
+           family={Swargiary},
+           familyi={S\bibinitperiod},
+           given={Debshri},
+           giveni={D\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{8ca5896f3202d5e1efca79ee25ad578e}
+      \strng{fullhash}{48ce408de5c1a06038ba450827bf21f6}
+      \strng{fullhashraw}{48ce408de5c1a06038ba450827bf21f6}
+      \strng{bibnamehash}{48ce408de5c1a06038ba450827bf21f6}
+      \strng{authorbibnamehash}{48ce408de5c1a06038ba450827bf21f6}
+      \strng{authornamehash}{8ca5896f3202d5e1efca79ee25ad578e}
+      \strng{authorfullhash}{48ce408de5c1a06038ba450827bf21f6}
+      \strng{authorfullhashraw}{48ce408de5c1a06038ba450827bf21f6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Iranian Journal of Science and Technology, Transactions of Civil Engineering}
+      \field{number}{3}
+      \field{title}{Monitoring Terrestrial Water Storage Using GRACE/GRACE-FO Data over India: A Review}
+      \field{volume}{49}
+      \field{year}{2025}
+      \true{nocite}
+      \field{pages}{2225\bibrangedash 2239}
+      \range{pages}{15}
+    \endentry
+    \entry{praveen2025sustainable}{incollection}{}{}
+      \name{author}{3}{}{%
+        {{un=1,uniquepart=given,hash=ac5ce9110ee23fd70d895dc0641d6d97}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Praveen},
+           giveni={P\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5b9e65b97bb58cd1c67c3743b70deee2}
+      \strng{fullhash}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \strng{fullhashraw}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \strng{bibnamehash}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \strng{authorbibnamehash}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \strng{authornamehash}{5b9e65b97bb58cd1c67c3743b70deee2}
+      \strng{authorfullhash}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \strng{authorfullhashraw}{6b9bed97e77aeae77a5ac1f7a1b17d98}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Innovative Technologies for Waste Management}
+      \field{title}{Sustainable Environmental Waste Management Strategies: The Study of Urban Solid Waste Management's Development}
+      \field{year}{2025}
+      \true{nocite}
+      \field{pages}{978\bibrangedash 3}
+      \range{pages}{-4}
+    \endentry
+    \entry{meena2025intensification}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=687420d6b28a552e22e03e9400881e78}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={R.\bibnamedelimi R.},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7fc9a22b1d17175e6ab252f84e86f46b}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={R.\bibnamedelimi M.},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{d125474067666175d6c75a78654d7af9}
+      \strng{fullhash}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \strng{fullhashraw}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \strng{bibnamehash}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \strng{authorbibnamehash}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \strng{authornamehash}{d125474067666175d6c75a78654d7af9}
+      \strng{authorfullhash}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \strng{authorfullhashraw}{9fc83e1d79bf39ca3c9b95bf5372d51f}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Chemical Engineering and Processing - Process Intensification}
+      \field{title}{Intensification of Fluoride Removal using Electrocoagulation Reactor with Rotating Fins and Rings Electrodes (Aluminium and Iron) in Different Configurations}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{meena2025electrochemical}{incollection}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c719f09b458bdb9e6bdd3a170eebee7e}{%
+           family={Rathva},
+           familyi={R\bibinitperiod},
+           given={Hemangini},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{fullhash}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \strng{fullhashraw}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \strng{bibnamehash}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \strng{authorbibnamehash}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \strng{authornamehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{authorfullhash}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \strng{authorfullhashraw}{abdf8ab0daaed1ac63d4d0bc9b8b95fe}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Emerging and Innovative Arsenic Removal Technologies for a Sustainable Future}
+      \field{title}{Electrochemical Processes for Arsenic Mitigation}
+      \field{year}{2025}
+      \true{nocite}
+      \field{pages}{107\bibrangedash 128}
+      \range{pages}{22}
+    \endentry
+    \entry{narahari2025steady}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=87475644788028cebbc0ae9d482d1f5e}{%
+           family={Narahari},
+           familyi={N\bibinitperiod},
+           given={Megavath},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0064a0463c68c3a1417aefde11d7e1af}{%
+           family={Rawal},
+           familyi={R\bibinitperiod},
+           given={N.\bibnamedelimi R.},
+           giveni={N\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature}%
+      }
+      \strng{namehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{fullhash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{fullhashraw}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{bibnamehash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authorbibnamehash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authornamehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{authorfullhash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authorfullhashraw}{97f5b2b2daf9c971235caf2f64eb5388}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Flood Forecasting and Hydraulic Structures: Select Proceedings of HYDRO 2023}
+      \field{title}{Steady Flow Analysis Performed for Flood Inundation Mapping Using}
+      \field{volume}{546}
+      \field{year}{2025}
+      \true{nocite}
+      \field{pages}{95}
+      \range{pages}{1}
+    \endentry
+    \entry{prakash2025peak}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=da41d23e4f1813f1308b89e220272d8b}{%
+           family={Prakash},
+           familyi={P\bibinitperiod},
+           given={Hari},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=65f96b759b5fe814b1cb2a3774e9cea5}{%
+           family={Pandey},
+           familyi={P\bibinitperiod},
+           given={Kamlesh\bibnamedelima Kumar},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {IWA Publishing}%
+      }
+      \strng{namehash}{5d19997a8f5eff917f95c1a7f3d7feb7}
+      \strng{fullhash}{056ad1387cab55cb7c100cc3a6d261ff}
+      \strng{fullhashraw}{056ad1387cab55cb7c100cc3a6d261ff}
+      \strng{bibnamehash}{056ad1387cab55cb7c100cc3a6d261ff}
+      \strng{authorbibnamehash}{056ad1387cab55cb7c100cc3a6d261ff}
+      \strng{authornamehash}{5d19997a8f5eff917f95c1a7f3d7feb7}
+      \strng{authorfullhash}{056ad1387cab55cb7c100cc3a6d261ff}
+      \strng{authorfullhashraw}{056ad1387cab55cb7c100cc3a6d261ff}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Water and Climate Change}
+      \field{number}{11}
+      \field{title}{Peak discharge estimation for ungauged basins: a review}
+      \field{volume}{16}
+      \field{year}{2025}
+      \true{nocite}
+      \field{pages}{3483\bibrangedash 3507}
+      \range{pages}{25}
+    \endentry
+    \entry{hari2025assessing}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=da41d23e4f1813f1308b89e220272d8b}{%
+           family={Prakash},
+           familyi={P\bibinitperiod},
+           given={Hari},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=65f96b759b5fe814b1cb2a3774e9cea5}{%
+           family={Pandey},
+           familyi={P\bibinitperiod},
+           given={Kamlesh\bibnamedelima Kumar},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5d19997a8f5eff917f95c1a7f3d7feb7}
+      \strng{fullhash}{c1e56713dc3cb9cae48cfea50a80802c}
+      \strng{fullhashraw}{c1e56713dc3cb9cae48cfea50a80802c}
+      \strng{bibnamehash}{c1e56713dc3cb9cae48cfea50a80802c}
+      \strng{authorbibnamehash}{c1e56713dc3cb9cae48cfea50a80802c}
+      \strng{authornamehash}{5d19997a8f5eff917f95c1a7f3d7feb7}
+      \strng{authorfullhash}{c1e56713dc3cb9cae48cfea50a80802c}
+      \strng{authorfullhashraw}{c1e56713dc3cb9cae48cfea50a80802c}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{MAUSAM}
+      \field{title}{Assessing Drought Trends and Prediction Using GCMs: A Case Study of South Bihar}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{kumar2024hru}{article}{}{}
+      \name{author}{5}{}{%
+        {{un=1,uniquepart=given,hash=672d8cfa553eefe0b36cf98167f6e0ba}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Ranveer},
+           giveni={R\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=a3f7e9371360a00b8c31dc32a85b21a1}{%
+           family={Gaur},
+           familyi={G\bibinitperiod},
+           given={Shishir},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=2798c73710965b703e39055a246ba471}{%
+           family={Maurya},
+           familyi={M\bibinitperiod},
+           given={Puneet},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a2c4500e2a0b44670cdb9bec24205626}{%
+           family={Ohri},
+           familyi={O\bibinitperiod},
+           given={Anurag},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{5301dbc9996107decf7036240fc94ef3}
+      \strng{fullhash}{83f9cac80d14bf534fd2435f645456e0}
+      \strng{fullhashraw}{83f9cac80d14bf534fd2435f645456e0}
+      \strng{bibnamehash}{83f9cac80d14bf534fd2435f645456e0}
+      \strng{authorbibnamehash}{83f9cac80d14bf534fd2435f645456e0}
+      \strng{authornamehash}{5301dbc9996107decf7036240fc94ef3}
+      \strng{authorfullhash}{83f9cac80d14bf534fd2435f645456e0}
+      \strng{authorfullhashraw}{83f9cac80d14bf534fd2435f645456e0}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Hydrology}
+      \field{title}{HRU-based Downscaling of GRACE-TWS to Quantify the Hydrogeological Fluxes and Specific Yield in the Lower Middle Ganga Basin}
+      \field{volume}{639}
+      \field{year}{2024}
+      \true{nocite}
+      \field{pages}{131591}
+      \range{pages}{1}
+    \endentry
+    \entry{meena2024electrocoagulation}{incollection}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e3576ffe8b83100181050ed0a37722e}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Sushil},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{fullhash}{8e78d536037467cc87215618f4072545}
+      \strng{fullhashraw}{8e78d536037467cc87215618f4072545}
+      \strng{bibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authorbibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authornamehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{authorfullhash}{8e78d536037467cc87215618f4072545}
+      \strng{authorfullhashraw}{8e78d536037467cc87215618f4072545}
+      \field{extraname}{3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advanced Treatment Technologies for Fluoride Removal in Water: Water Purification}
+      \field{title}{Electrocoagulation of Fluoride from Water with Fe-Based Ion Electrode}
+      \field{year}{2024}
+      \true{nocite}
+      \field{pages}{159\bibrangedash 180}
+      \range{pages}{22}
+    \endentry
+    \entry{meena2024fluoride}{article}{}{}
+      \name{author}{5}{}{%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=564923995dedd308ec7db61a5c655636}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Raj\bibnamedelima Mohan},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=34898202f9134ea8dea50e98cd40d872}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Rishi},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e3576ffe8b83100181050ed0a37722e}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Sushil},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{fullhash}{5e008e9e28ba2f84f798d062477727d9}
+      \strng{fullhashraw}{5e008e9e28ba2f84f798d062477727d9}
+      \strng{bibnamehash}{5e008e9e28ba2f84f798d062477727d9}
+      \strng{authorbibnamehash}{5e008e9e28ba2f84f798d062477727d9}
+      \strng{authornamehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{authorfullhash}{5e008e9e28ba2f84f798d062477727d9}
+      \strng{authorfullhashraw}{5e008e9e28ba2f84f798d062477727d9}
+      \field{extraname}{4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Environmental Management}
+      \field{title}{Fluoride removal using a rotating anode electro-coagulation reactor: parametric optimization using response surface methodology, isotherms and kinetic studies, economic analysis and sludge characterization}
+      \field{volume}{370}
+      \field{year}{2024}
+      \true{nocite}
+      \field{pages}{122600}
+      \range{pages}{1}
+    \endentry
+    \entry{soni2024impact}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{fullhash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{fullhashraw}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{bibnamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorbibnamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authornamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorfullhash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorfullhashraw}{fcaefa50aa022195b23476aea8a775cd}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{MAUSAM}
+      \field{number}{3}
+      \field{title}{The Impact of Data Uncertainty on Identifying Precipitation Trends in India}
+      \field{volume}{75}
+      \field{year}{2024}
+      \true{nocite}
+      \field{pages}{895\bibrangedash 904}
+      \range{pages}{10}
+    \endentry
+    \entry{krishna2023ann}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=1,uniquepart=given,hash=1edc21650cfaf4cddc2c5e229e97adef}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Krishna},
+           giveni={K\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=680778282e2d42cc09939bda534f1066}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={R.\bibnamedelimi D.},
+           giveni={R\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{743ac735d8a41eaf0a60ac20d49be1cb}
+      \strng{fullhash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{fullhashraw}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{bibnamehash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authorbibnamehash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authornamehash}{743ac735d8a41eaf0a60ac20d49be1cb}
+      \strng{authorfullhash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authorfullhashraw}{ef1cca75edb5023055a0654acd02b3d3}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Hydro 2023}
+      \field{title}{ANN for Urban Flood Flow Modelling Using Real Time Data}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{krishna2023study}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=1,uniquepart=given,hash=1edc21650cfaf4cddc2c5e229e97adef}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Krishna},
+           giveni={K\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=680778282e2d42cc09939bda534f1066}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={R.\bibnamedelimi D.},
+           giveni={R\bibinitperiod\bibinitdelim D\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{743ac735d8a41eaf0a60ac20d49be1cb}
+      \strng{fullhash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{fullhashraw}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{bibnamehash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authorbibnamehash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authornamehash}{743ac735d8a41eaf0a60ac20d49be1cb}
+      \strng{authorfullhash}{ef1cca75edb5023055a0654acd02b3d3}
+      \strng{authorfullhashraw}{ef1cca75edb5023055a0654acd02b3d3}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{RHHAR-2023}
+      \field{title}{Study the Effect of Urbanization on Groundwater Balance in Agroclimatic Zone Using ANN}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{meena2023electrocoagulation}{incollection}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=687420d6b28a552e22e03e9400881e78}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={R.\bibnamedelimi R.},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a545bd13ef1e9c1672bfb284155fc1ad}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Nature}%
+      }
+      \strng{namehash}{d125474067666175d6c75a78654d7af9}
+      \strng{fullhash}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \strng{fullhashraw}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \strng{bibnamehash}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \strng{authorbibnamehash}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \strng{authornamehash}{d125474067666175d6c75a78654d7af9}
+      \strng{authorfullhash}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \strng{authorfullhashraw}{bf16c53a92233dc7a0efb8afea8ec0d2}
+      \field{extraname}{5}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Advanced Treatment Technologies for Fluoride Removal in Water}
+      \field{title}{Electrocoagulation of fluoride from water with Fe-based ion electrode}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{meena2023hydrodynamic}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e3576ffe8b83100181050ed0a37722e}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Sushil},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley Online Library}%
+      }
+      \strng{namehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{fullhash}{8e78d536037467cc87215618f4072545}
+      \strng{fullhashraw}{8e78d536037467cc87215618f4072545}
+      \strng{bibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authorbibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authornamehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{authorfullhash}{8e78d536037467cc87215618f4072545}
+      \strng{authorfullhashraw}{8e78d536037467cc87215618f4072545}
+      \field{extraname}{6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ChemBioEng Reviews}
+      \field{number}{5}
+      \field{title}{Hydrodynamic Simulation and Analysis Using Computational Fluid Dynamics: Electrochemical Reactors and Redox Flow Batteries}
+      \field{volume}{10}
+      \field{year}{2023}
+      \true{nocite}
+      \field{pages}{670\bibrangedash 683}
+      \range{pages}{14}
+    \endentry
+    \entry{meena2023review}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a0b6092aa5961d267237e4186741b4d2}{%
+           family={Meena},
+           familyi={M\bibinitperiod},
+           given={Ram\bibnamedelima Raj},
+           giveni={R\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=7e3576ffe8b83100181050ed0a37722e}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Sushil},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{fullhash}{8e78d536037467cc87215618f4072545}
+      \strng{fullhashraw}{8e78d536037467cc87215618f4072545}
+      \strng{bibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authorbibnamehash}{8e78d536037467cc87215618f4072545}
+      \strng{authornamehash}{eeb2342b75120d5ae8702ecc99c122cc}
+      \strng{authorfullhash}{8e78d536037467cc87215618f4072545}
+      \strng{authorfullhashraw}{8e78d536037467cc87215618f4072545}
+      \field{extraname}{7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ChemBioEng Reviews}
+      \field{title}{Review on Hydrodynamic Simulation and Analysis Using CFD: Electrochemical Reactors and Redox Flow Batteries}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{narahari2023steady}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=87475644788028cebbc0ae9d482d1f5e}{%
+           family={Narahari},
+           familyi={N\bibinitperiod},
+           given={Megavath},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0064a0463c68c3a1417aefde11d7e1af}{%
+           family={Rawal},
+           familyi={R\bibinitperiod},
+           given={N.\bibnamedelimi R.},
+           giveni={N\bibinitperiod\bibinitdelim R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{organization}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{fullhash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{fullhashraw}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{bibnamehash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authorbibnamehash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authornamehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{authorfullhash}{97f5b2b2daf9c971235caf2f64eb5388}
+      \strng{authorfullhashraw}{97f5b2b2daf9c971235caf2f64eb5388}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{International Conference on Hydraulics, Water Resources and Coastal Engineering}
+      \field{title}{Steady Flow Analysis Performed for Flood Inundation Mapping Using HEC-RAS}
+      \field{year}{2023}
+      \true{nocite}
+      \field{pages}{95\bibrangedash 109}
+      \range{pages}{15}
+    \endentry
+    \entry{megavath2023assessment}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=87475644788028cebbc0ae9d482d1f5e}{%
+           family={Narahari},
+           familyi={N\bibinitperiod},
+           given={Megavath},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d98f5425e4e72b73d2f431776c809162}{%
+           family={Rawal},
+           familyi={R\bibinitperiod},
+           given={Nekram},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{fullhash}{03d5262495af2b90701d15fd82c6e93f}
+      \strng{fullhashraw}{03d5262495af2b90701d15fd82c6e93f}
+      \strng{bibnamehash}{03d5262495af2b90701d15fd82c6e93f}
+      \strng{authorbibnamehash}{03d5262495af2b90701d15fd82c6e93f}
+      \strng{authornamehash}{b3218a158fd7466151aea3979ce136a6}
+      \strng{authorfullhash}{03d5262495af2b90701d15fd82c6e93f}
+      \strng{authorfullhashraw}{03d5262495af2b90701d15fd82c6e93f}
+      \field{extraname}{3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{RHHAR-2023}
+      \field{title}{Assessment of surface run-off for Brahmani-Baitarani river basin}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{megawath2023steady}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=6bf4f7e3db135aec76cb2694d222a437}{%
+           family={Narahari},
+           familyi={N\bibinitperiod},
+           given={Megawath},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d98f5425e4e72b73d2f431776c809162}{%
+           family={Rawal},
+           familyi={R\bibinitperiod},
+           given={Nekram},
+           giveni={N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{5eb1109824544e93cdde4831e076714b}
+      \strng{fullhash}{c91b9f5440560736391346a0ddd4e9a3}
+      \strng{fullhashraw}{c91b9f5440560736391346a0ddd4e9a3}
+      \strng{bibnamehash}{c91b9f5440560736391346a0ddd4e9a3}
+      \strng{authorbibnamehash}{c91b9f5440560736391346a0ddd4e9a3}
+      \strng{authornamehash}{5eb1109824544e93cdde4831e076714b}
+      \strng{authorfullhash}{c91b9f5440560736391346a0ddd4e9a3}
+      \strng{authorfullhashraw}{c91b9f5440560736391346a0ddd4e9a3}
+      \field{extraname}{4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Hydro 2023}
+      \field{title}{Steady Flow Analysis Performed for Flood Inundation Mapping Using HEC-RAS}
+      \field{year}{2023}
+      \true{nocite}
+    \endentry
+    \entry{singh2023groundwater}{article}{}{}
+      \name{author}{4}{}{%
+        {{un=1,uniquepart=given,hash=daac5f1c78e204517845fcc600a96266}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Vishal\bibnamedelima Kumar},
+           giveni={V\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=71569c070fad7f1fd0eb7e73fe0b97f0}{%
+           family={Pandey},
+           familyi={P\bibinitperiod},
+           given={H.\bibnamedelimi K.},
+           giveni={H\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1e78fdb8b2bf72ba5f5caa463f401106}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Sudhir\bibnamedelima Kumar},
+           giveni={S\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Pergamon}%
+      }
+      \strng{namehash}{06ca02a46813b621bc1d218238b3f6bd}
+      \strng{fullhash}{e0d2c73252edb4514ab2722442ce4c4b}
+      \strng{fullhashraw}{e0d2c73252edb4514ab2722442ce4c4b}
+      \strng{bibnamehash}{e0d2c73252edb4514ab2722442ce4c4b}
+      \strng{authorbibnamehash}{e0d2c73252edb4514ab2722442ce4c4b}
+      \strng{authornamehash}{06ca02a46813b621bc1d218238b3f6bd}
+      \strng{authorfullhash}{e0d2c73252edb4514ab2722442ce4c4b}
+      \strng{authorfullhashraw}{e0d2c73252edb4514ab2722442ce4c4b}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Physics and Chemistry of the Earth, Parts A/B/C}
+      \field{title}{Groundwater analysis using Gravity Recovery, Climate Experiment and Google Earth Engine: Bundelkhand region, India}
+      \field{volume}{130}
+      \field{year}{2023}
+      \true{nocite}
+      \field{pages}{103401}
+      \range{pages}{1}
+    \endentry
+    \entry{dhanai2022rainfall1}{misc}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=14836ed4e0152d47d95d3cee3e4508c7}{%
+           family={Dhanai},
+           familyi={D\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=aff3bca1068e01db73151c8afeb00108}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={V.\bibnamedelimi P.},
+           giveni={V\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{47e9f0903e09d73ea4b434eadc37049e}
+      \strng{fullhash}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \strng{fullhashraw}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \strng{bibnamehash}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \strng{authorbibnamehash}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \strng{authornamehash}{47e9f0903e09d73ea4b434eadc37049e}
+      \strng{authorfullhash}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \strng{authorfullhashraw}{33480d0c2e73898a6eb4cc07f0e6fd6e}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Rainfall triggered slope instability analysis with changing climate. Indian Geotech J 52: 477--492}
+      \field{year}{2022}
+      \true{nocite}
+    \endentry
+    \entry{dhanai2022rainfall}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=2a125379fd01eb75f97da26cdf4f5283}{%
+           family={Dhanai},
+           familyi={D\bibinitperiod},
+           given={Prity},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=aff3bca1068e01db73151c8afeb00108}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={V.\bibnamedelimi P.},
+           giveni={V\bibinitperiod\bibinitdelim P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer India New Delhi}%
+      }
+      \strng{namehash}{f14acf13a8e53ad5d7c0873146c0d5ef}
+      \strng{fullhash}{41065b92a08f5cb177185a59a40d73a2}
+      \strng{fullhashraw}{41065b92a08f5cb177185a59a40d73a2}
+      \strng{bibnamehash}{41065b92a08f5cb177185a59a40d73a2}
+      \strng{authorbibnamehash}{41065b92a08f5cb177185a59a40d73a2}
+      \strng{authornamehash}{f14acf13a8e53ad5d7c0873146c0d5ef}
+      \strng{authorfullhash}{41065b92a08f5cb177185a59a40d73a2}
+      \strng{authorfullhashraw}{41065b92a08f5cb177185a59a40d73a2}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Indian Geotechnical Journal}
+      \field{number}{2}
+      \field{title}{Rainfall triggered slope instability analysis with changing climate}
+      \field{volume}{52}
+      \field{year}{2022}
+      \true{nocite}
+      \field{pages}{477\bibrangedash 492}
+      \range{pages}{16}
+    \endentry
+    \entry{kumar2022methodological}{article}{}{}
+      \name{author}{4}{}{%
+        {{un=1,uniquepart=given,hash=f9d69a7973a61534ce15ae8898a61d5c}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={Pankaj},
+           giveni={P\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=5f80d6fa5c3babfe44173f6bc11afa57}{%
+           family={Vaishya},
+           familyi={V\bibinitperiod},
+           given={Rakesh\bibnamedelima Chandra},
+           giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c250a1020d1a23a12a680cff2f519c11}{%
+           family={Medhi},
+           familyi={M\bibinitperiod},
+           given={Hemanta},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{77e4f96a33032d2690bc38c27d943ef1}
+      \strng{fullhash}{4520910dd80191e8b5de754ae8bf92da}
+      \strng{fullhashraw}{4520910dd80191e8b5de754ae8bf92da}
+      \strng{bibnamehash}{4520910dd80191e8b5de754ae8bf92da}
+      \strng{authorbibnamehash}{4520910dd80191e8b5de754ae8bf92da}
+      \strng{authornamehash}{77e4f96a33032d2690bc38c27d943ef1}
+      \strng{authorfullhash}{4520910dd80191e8b5de754ae8bf92da}
+      \strng{authorfullhashraw}{4520910dd80191e8b5de754ae8bf92da}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Asian Journal of Atmospheric Environment}
+      \field{title}{A methodological comparison on spatiotemporal prediction of criteria air pollutant}
+      \field{year}{2022}
+      \true{nocite}
+    \endentry
+    \entry{medhi2022understanding}{incollection}{}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=c250a1020d1a23a12a680cff2f519c11}{%
+           family={Medhi},
+           familyi={M\bibinitperiod},
+           given={Hemanta},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Taylor \& Francis Group, USA}%
+      }
+      \strng{namehash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{fullhash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{fullhashraw}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{bibnamehash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{authorbibnamehash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{authornamehash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{authorfullhash}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \strng{authorfullhashraw}{0f2c712f325ad85e8d4c9a2a40aff06d}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Smart Sensors, Actuators and Decision Support Systems for Precision Agriculture}
+      \field{title}{Understanding the relationship between normalized difference vegetation index and meteorological attribute using clustering algorithm}
+      \field{year}{2022}
+      \true{nocite}
+    \endentry
+    \entry{singh2022methodological}{article}{}{}
+      \name{author}{4}{}{%
+        {{un=1,uniquepart=given,hash=6cd011867cdaf8fe788c35b02e025e84}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Pankaj},
+           giveni={P\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=5f80d6fa5c3babfe44173f6bc11afa57}{%
+           family={Vaishya},
+           familyi={V\bibinitperiod},
+           given={Rakesh\bibnamedelima Chandra},
+           giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c250a1020d1a23a12a680cff2f519c11}{%
+           family={Medhi},
+           familyi={M\bibinitperiod},
+           given={Hemanta},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{ff82283522332a493a5bbcbfea237987}
+      \strng{fullhash}{7a568c6db1b882e57ea79fb3d3376d71}
+      \strng{fullhashraw}{7a568c6db1b882e57ea79fb3d3376d71}
+      \strng{bibnamehash}{7a568c6db1b882e57ea79fb3d3376d71}
+      \strng{authorbibnamehash}{7a568c6db1b882e57ea79fb3d3376d71}
+      \strng{authornamehash}{ff82283522332a493a5bbcbfea237987}
+      \strng{authorfullhash}{7a568c6db1b882e57ea79fb3d3376d71}
+      \strng{authorfullhashraw}{7a568c6db1b882e57ea79fb3d3376d71}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Asian Journal of Atmospheric Environment}
+      \field{number}{1}
+      \field{title}{A methodological comparison on Spatiotemporal Prediction of Criteria Air Pollutants}
+      \field{volume}{16}
+      \field{year}{2022}
+      \true{nocite}
+      \field{pages}{2021087}
+      \range{pages}{1}
+    \endentry
+    \entry{soni2022impact}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0cb1813dcda3023b8b7adf17623bf30e}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=673acb3f774a9dcdd6864f87738eba08}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{fullhash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{fullhashraw}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{bibnamehash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authorbibnamehash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authornamehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{authorfullhash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authorfullhashraw}{7fc382d8441ba50d1119862a9039a5b6}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Hydro-environment Research}
+      \field{title}{Impact of renewed solar dimming on streamflow generation in monsoon dominated tropical river basins}
+      \field{year}{2022}
+      \true{nocite}
+    \endentry
+    \entry{soni2022runoff}{article}{}{}
+      \name{author}{6}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=c250a1020d1a23a12a680cff2f519c11}{%
+           family={Medhi},
+           familyi={M\bibinitperiod},
+           given={Hemanta},
+           giveni={H\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=6653d4229b78cd0e5480b263841e0d7c}{%
+           family={Sagar},
+           familyi={S\bibinitperiod},
+           given={Anitya},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=39c465577afd252552dfeef172a02f76}{%
+           family={Garg},
+           familyi={G\bibinitperiod},
+           given={Pulkit},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=04da6848c2d7db2b20c1e328654f4acd}{%
+           family={Singh},
+           familyi={S\bibinitperiod},
+           given={Abhay},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=be2a95b2a85b64b224f116323499aaae}{%
+           family={Karna},
+           familyi={K\bibinitperiod},
+           given={Umesh},
+           giveni={U\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {IWA Publishing}%
+      }
+      \strng{namehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{fullhash}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \strng{fullhashraw}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \strng{bibnamehash}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \strng{authorbibnamehash}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \strng{authornamehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{authorfullhash}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \strng{authorfullhashraw}{59aa0612c1e261e187177c4bd6e2c9fd}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{AQUA---Water Infrastructure, Ecosystems and Society}
+      \field{number}{8}
+      \field{title}{Runoff estimation using digital image processing for residential areas}
+      \field{volume}{71}
+      \field{year}{2022}
+      \true{nocite}
+      \field{pages}{938\bibrangedash 948}
+      \range{pages}{11}
+    \endentry
+    \entry{gupta2021wheat}{article}{}{}
+      \name{author}{2}{}{%
+        {{un=1,uniquepart=given,hash=8cd629e0fef0e0fbf37779f3bb0da736}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={Ankush\bibnamedelima Kumar},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{fullhash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{fullhashraw}{03e2c3630677eb15dba1850b0739f815}
+      \strng{bibnamehash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{authorbibnamehash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{authornamehash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{authorfullhash}{03e2c3630677eb15dba1850b0739f815}
+      \strng{authorfullhashraw}{03e2c3630677eb15dba1850b0739f815}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Indian Journal of Agricultural Research}
+      \field{title}{Wheat Crop Yield Estimation using Geomatics Tools in Saharanpur District}
+      \field{volume}{1}
+      \field{year}{2021}
+      \true{nocite}
+      \field{pages}{8}
+      \range{pages}{1}
+    \endentry
+    \entry{gupta2021optimization}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=1,uniquepart=given,hash=4769bc896627bfe4cc1b0bc2e1867a15}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={Shubham},
+           giveni={S\bibinitperiod},
+           givenun=1}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=8cd629e0fef0e0fbf37779f3bb0da736}{%
+           family={Gupta},
+           familyi={G\bibinitperiod},
+           given={Ankush\bibnamedelima Kumar},
+           giveni={A\bibinitperiod\bibinitdelim K\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{c0a31928265c743f1e57f62d771b5e69}
+      \strng{fullhash}{edf82aa35c01dbafd04d63da668cfe4c}
+      \strng{fullhashraw}{edf82aa35c01dbafd04d63da668cfe4c}
+      \strng{bibnamehash}{edf82aa35c01dbafd04d63da668cfe4c}
+      \strng{authorbibnamehash}{edf82aa35c01dbafd04d63da668cfe4c}
+      \strng{authornamehash}{c0a31928265c743f1e57f62d771b5e69}
+      \strng{authorfullhash}{edf82aa35c01dbafd04d63da668cfe4c}
+      \strng{authorfullhashraw}{edf82aa35c01dbafd04d63da668cfe4c}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Atmospheric Pollution Research}
+      \field{number}{3}
+      \field{title}{Optimization of WD-XRF analytical technique to measure elemental abundance in PM2.5 dust collected on quartz-fibre filter}
+      \field{volume}{12}
+      \field{year}{2021}
+      \true{nocite}
+      \field{pages}{345\bibrangedash 351}
+      \range{pages}{7}
+    \endentry
+    \entry{soni2021effects}{article}{}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Netherlands Dordrecht}%
+      }
+      \strng{namehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{fullhash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{fullhashraw}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{bibnamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorbibnamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authornamehash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorfullhash}{fcaefa50aa022195b23476aea8a775cd}
+      \strng{authorfullhashraw}{fcaefa50aa022195b23476aea8a775cd}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Environment, Development and Sustainability}
+      \field{number}{8}
+      \field{title}{Effects of COVID-19 lockdown phases in India: an atmospheric perspective}
+      \field{volume}{23}
+      \field{year}{2021}
+      \true{nocite}
+      \field{pages}{12044\bibrangedash 12055}
+      \range{pages}{12}
+    \endentry
+    \entry{soni2021comparison}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1d1d8abd54ca4993b62a00094639220a}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={Shivam},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a905c4737127b2c9efa1967b21c29c62}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={Rajesh},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {IWA Publishing}%
+      }
+      \strng{namehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{fullhash}{897d8d73ed1fdf72fbde865d27f1886a}
+      \strng{fullhashraw}{897d8d73ed1fdf72fbde865d27f1886a}
+      \strng{bibnamehash}{897d8d73ed1fdf72fbde865d27f1886a}
+      \strng{authorbibnamehash}{897d8d73ed1fdf72fbde865d27f1886a}
+      \strng{authornamehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{authorfullhash}{897d8d73ed1fdf72fbde865d27f1886a}
+      \strng{authorfullhashraw}{897d8d73ed1fdf72fbde865d27f1886a}
+      \field{extraname}{3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Water and Climate Change}
+      \field{number}{5}
+      \field{title}{A comparison of regionalization methods in monsoon dominated tropical river basins}
+      \field{volume}{12}
+      \field{year}{2021}
+      \true{nocite}
+      \field{pages}{1975\bibrangedash 1996}
+      \range{pages}{22}
+    \endentry
+    \entry{soni2019implication}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a905c4737127b2c9efa1967b21c29c62}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={Rajesh},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1d1d8abd54ca4993b62a00094639220a}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={Shivam},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Vienna Vienna}%
+      }
+      \strng{namehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{fullhash}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \strng{fullhashraw}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \strng{bibnamehash}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \strng{authorbibnamehash}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \strng{authornamehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{authorfullhash}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \strng{authorfullhashraw}{8cd920a0cc7feceec7fce3f5a9beefea}
+      \field{extraname}{4}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Theoretical and Applied Climatology}
+      \field{number}{3}
+      \field{title}{Implication of data uncertainty in the detection of surface radiation trends and observational evidence of renewed solar dimming over India}
+      \field{volume}{137}
+      \field{year}{2019}
+      \true{nocite}
+      \field{pages}{2663\bibrangedash 2680}
+      \range{pages}{18}
+    \endentry
+    \entry{soni2018radiative}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1f3059c3bfaf5d79ff68c66465ae1f4b}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={Sachchida\bibnamedelima Nand},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=a905c4737127b2c9efa1967b21c29c62}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={Rajesh},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Springer Vienna Vienna}%
+      }
+      \strng{namehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{fullhash}{992b60837f16fa7e0666aa56aeba5222}
+      \strng{fullhashraw}{992b60837f16fa7e0666aa56aeba5222}
+      \strng{bibnamehash}{992b60837f16fa7e0666aa56aeba5222}
+      \strng{authorbibnamehash}{992b60837f16fa7e0666aa56aeba5222}
+      \strng{authornamehash}{630fbf4a8afc96b08de1d8076de3156a}
+      \strng{authorfullhash}{992b60837f16fa7e0666aa56aeba5222}
+      \strng{authorfullhashraw}{992b60837f16fa7e0666aa56aeba5222}
+      \field{extraname}{5}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Theoretical and Applied Climatology}
+      \field{number}{1}
+      \field{title}{Radiative effects of black carbon aerosols on Indian monsoon: a study using WRF-Chem model}
+      \field{volume}{132}
+      \field{year}{2018}
+      \true{nocite}
+      \field{pages}{115\bibrangedash 134}
+      \range{pages}{20}
+    \endentry
+    \entry{soni2017observational}{article}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0cb1813dcda3023b8b7adf17623bf30e}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=673acb3f774a9dcdd6864f87738eba08}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{fullhash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{fullhashraw}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{bibnamehash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authorbibnamehash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authornamehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{authorfullhash}{7fc382d8441ba50d1119862a9039a5b6}
+      \strng{authorfullhashraw}{7fc382d8441ba50d1119862a9039a5b6}
+      \field{extraname}{6}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Modelling of Environmental and Water Resources Systems}
+      \field{title}{Observational Evidence of Streamflow Trends in India}
+      \field{year}{2017}
+      \true{nocite}
+    \endentry
+    \entry{srivastava2017impact}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=a905c4737127b2c9efa1967b21c29c62}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={Rajesh},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=fcaefa50aa022195b23476aea8a775cd}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={Pramod},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1d1d8abd54ca4993b62a00094639220a}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={Shivam},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{8cceb530c5cea63b702a4f70cd4e2f83}
+      \strng{fullhash}{8b8ed93664a18f3ee566e422f3257042}
+      \strng{fullhashraw}{8b8ed93664a18f3ee566e422f3257042}
+      \strng{bibnamehash}{8b8ed93664a18f3ee566e422f3257042}
+      \strng{authorbibnamehash}{8b8ed93664a18f3ee566e422f3257042}
+      \strng{authornamehash}{8cceb530c5cea63b702a4f70cd4e2f83}
+      \strng{authorfullhash}{8b8ed93664a18f3ee566e422f3257042}
+      \strng{authorfullhashraw}{8b8ed93664a18f3ee566e422f3257042}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{AGU Fall Meeting Abstracts}
+      \field{title}{Impact of Renewed Solar Dimming on Hydrology of River Basins in Peninsular India}
+      \field{volume}{2017}
+      \field{year}{2017}
+      \true{nocite}
+      \field{pages}{GC23A\bibrangedash 1041}
+      \range{pages}{-1}
+    \endentry
+    \entry{soni2015performance}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=b7546716ed7142722b4c4b277f9c07d0}{%
+           family={Soni},
+           familyi={S\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=d4d9c8d9d7690e1310887d7fcbbde510}{%
+           family={Tripathi},
+           familyi={T\bibinitperiod},
+           given={S.\bibnamedelimi N.},
+           giveni={S\bibinitperiod\bibinitdelim N\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=0cb1813dcda3023b8b7adf17623bf30e}{%
+           family={Srivastava},
+           familyi={S\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{fullhash}{37abd00cd4280801fed13797af8a9564}
+      \strng{fullhashraw}{37abd00cd4280801fed13797af8a9564}
+      \strng{bibnamehash}{37abd00cd4280801fed13797af8a9564}
+      \strng{authorbibnamehash}{37abd00cd4280801fed13797af8a9564}
+      \strng{authornamehash}{8c448db4f5a75fd5cf0c4855e09b7a20}
+      \strng{authorfullhash}{37abd00cd4280801fed13797af8a9564}
+      \strng{authorfullhashraw}{37abd00cd4280801fed13797af8a9564}
+      \field{extraname}{7}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Annual Monsoon Workshop Pune}
+      \field{title}{Performance of WRF-Chem model during monsoon season over India}
+      \field{year}{2015}
+      \true{nocite}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

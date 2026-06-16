@@ -1,0 +1,82 @@
+%%%%%%%%%%%%%%%
+% This CV example/template is based on my own
+% CV which I (lamely attempted) to clean up, so that
+% it's less of an eyesore and easier for others to use.
+%
+% LianTze Lim (liantze@gmail.com)
+% 23 Oct, 2022
+% 24 Aug, 2024 -- Updated X (Twitter) icon
+\documentclass[a4paper,skipsamekey,11pt,english]{curve}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% Uncomment to enable Chinese; needs XeLaTeX
+% \usepackage{ctex}
+
+\PassOptionsToPackage{style=ieee,sorting=ydnt,uniquename=init,defernumbers=true}{biblatex}
+
+% Most commands and style definitions are in settings.sty.
+\usepackage{settings}
+
+\DefineBibliographyStrings{english}{url={\textsc{url}}}
+
+\addbibresource{publications.bib}
+
+% Replace this with your own name list later if needed
+\mynames{Soni/Pramod}
+
+% Safe font setup for Windows + XeLaTeX
+\ifxetexorluatex
+  \usepackage{fontspec}
+  \setmainfont{Times New Roman}
+  \setsansfont{Arial}
+  \setmonofont{Consolas}
+\else
+  \usepackage[T1]{fontenc}
+  \usepackage{lmodern}
+\fi
+
+%% Photo is only shown if "fullonly" is included
+\includecomment{fullonly}
+% \excludecomment{fullonly}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\leftheader{%
+  {\LARGE\bfseries\sffamily Dr. Pramod Soni, Ph.D.}
+
+  \makefield{\faEnvelope[regular]}{\href{mailto:pramod.cive@iitbhu.ac.in}{\texttt{pramod.cive@iitbhu.ac.in}}}
+  % Commented out for now to avoid SimpleIcons font issues
+  % \makefield{\simpleicon{x}}{\href{https://x.com/pramodsoni41}{\texttt{@pramodsoni41}}}
+  \makefield{\faGlobe}{\href{http://pramodsoni.in/}{\texttt{Personal Website}}}
+  \makefield{\faLinkedin}{\href{https://www.linkedin.com/in/dr-pramod-soni-13a7701a/}{\texttt{pramod-soni}}}
+  \makefield{\faGlobe}{\href{https://www.iitbhu.ac.in/dept/civ/people/pramodciv}{\texttt{IIT BHU Homepage}}}
+  
+}
+
+\rightheader{~}
+\begin{fullonly}
+\photo[r]{Pramod Photo.jpg}
+\photoscale{0.13}
+\end{fullonly}
+
+\title{Curriculum Vitae}
+
+\begin{document}
+\makeheaders[c]
+
+\makerubric{employment}
+\makerubric{education}
+\makerubric{Research_Projects}
+\input{publications}
+\makerubric{Consultancy_Projects}
+\makerubric{Thesis}
+\makerubric{Teaching}
+\makerubric{Membership}
+\makerubric{skills}
+\makerubric{misc}
+\makerubric{expert_lec}
+\makerubric{STP}
+\makerubric{responsibilities}
+
+\end{document}

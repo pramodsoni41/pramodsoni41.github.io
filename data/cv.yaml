@@ -1,0 +1,289 @@
+profile:
+  name: Dr. Pramod Soni, Ph.D.
+  designation: Assistant Professor
+  institute: Department of Civil Engineering, IIT (BHU) Varanasi, India
+  city: Varanasi, Uttar Pradesh, India
+  email: pramod.cive@iitbhu.ac.in
+  phone: ""
+  website: pramodsoni.in
+  iitbhu_page: https://www.iitbhu.ac.in/dept/civ/people/pramodciv
+  linkedin: https://www.linkedin.com/in/dr-pramod-soni-13a7701a/
+  photo: assets/profile/Pramod_Photo.jpg
+
+employment:
+  - period: "April 2023 – Present"
+    role: Assistant Professor
+    institute: IIT (BHU) Varanasi, India
+    description: Department of Civil Engineering
+  - period: "Sep 2022 – April 2023"
+    role: Assistant Professor
+    institute: NIT Jamshedpur, India
+    description: Department of Civil Engineering
+  - period: "June 2019 – Sep 2022"
+    role: Assistant Professor
+    institute: MNNIT Allahabad, Prayagraj, India
+    description: Department of Civil Engineering
+  - period: "January 2018 – June 2019"
+    role: Assistant Professor
+    institute: M.B.M. Engineering College, Jodhpur, India
+    description: TEQIP-III project funded by the World Bank
+  - period: "September 2011 – May 2012"
+    role: DAAD Fellow
+    institute: KIT-IMK-IFU, Garmisch, Germany
+    description: DAAD Exchange student during M.Tech.
+
+education:
+  - period: "June 2012 – August 2018"
+    degree: Ph.D.
+    institute: Indian Institute of Technology, Kanpur, India
+    specialization: "Hydraulics and Water Resources Engineering, Civil Engineering"
+  - period: "June 2010 – June 2012"
+    degree: M.Tech.
+    institute: Indian Institute of Technology, Kanpur, India
+    specialization: "Hydraulics and Water Resources Engineering, Civil Engineering"
+  - period: "June 2006 – June 2010"
+    degree: B.E.
+    institute: M.B.M. Engineering College, JNVU, Jodhpur, India
+    specialization: Civil Engineering
+  - period: "June 2003 – June 2005"
+    degree: Sr. Secondary
+    institute: Mahatma Gandhi Sr. Secondary School, Jodhpur
+    specialization: RBSE, Ajmer
+  - period: "June 2001 – June 2003"
+    degree: Secondary
+    institute: Bal Niketan, Jodhpur
+    specialization: RBSE, Ajmer
+
+research_projects:
+  - title: Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience
+    agency: GIZ
+    amount: ""
+  - title: Decision Support System for Water Resource Management
+    agency: SLCR, Namami Gange
+    amount: "Rs. 4.35 Crores"
+  - title: Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi
+    agency: Namami Gange
+    amount: "Rs. 15.4 Crores"
+  - title: Regionalization of Hydrological model parameters for Indian rivers
+    agency: AICTE CRS Project
+    amount: "Rs. 9 Lacs"
+  - title: Use of Artificial Neural Network in regionalization of SWAT parameters
+    agency: TEQIP
+    amount: "Rs. 1.5 Lacs"
+  - title: Mapping ground water quality depleted area, Potential Groundwater Recharge Zones and Exploring the Farmer's need based Groundwater Recharge structures in District Mahoba of Bundelkhand region of UP
+    agency: Department of Science and Technology
+    amount: "Rs. 15 Lacs"
+
+consultancy_projects:
+  - "Leaching Testing Report (3 sites), Subsidence Report, Ground Water Aquifer Study, Traffic Study from borrow area to filling area (3 sites), Ambient Air Quality Study (3 sites)"
+  - "Techno-economics Feasibility Study for filling of Ash (13 sites) – Obra Section 2 & 3, Stone Quarry (1 site), Near Circuit House (1 site)"
+  - "Annual Inspection of GPI operating in Ganga Basins States"
+  - "Third-Party Inspection of 37 Nos. under construction piped water supplies of various villages of Rampur District under MSDP/PM Jan Vikas Program"
+  - "Feasibility Study for Installation of Rain Water Harvesting Scheme at IFFCO Phulpur Township"
+  - "Design of Inverted Siphon (Saryu Pariyojna Gonda)"
+  - "Scientific study for Investigation of Mine-wise Water Availability and Potential for community Use in ECL"
+  - "Feasibility Study for Pond Restoration at Azad Park Allahabad"
+  - "Wetting of Detailed Project Reports under Jal Jeevan Mission"
+  - "Various channelization projects for flood and erosion protection (Ghaghra, Sharda, Rapti, Saryu rivers – Azamgarh, Lakhimpur, Sant Kabir, Gorakhpur, Gonda, Barabanki, Sitapur)"
+
+teaching:
+  - category: Courses Taught
+    courses:
+      - name: Climate Change and Water Resources Modeling
+        code: ""
+      - name: Ground Water Hydrology
+        code: CE-21352
+      - name: Environment and Climate Change
+        code: CE-12101
+      - name: Computer Based Numerical Techniques
+        code: CE-13102
+      - name: Computer Based Numerical Techniques Lab
+        code: CE-13202
+      - name: Engineering Hydrology
+        code: CE-17310
+      - name: Open Channel Hydraulics
+        code: CE-18309
+      - name: Surveying Lab
+        code: CE-14201
+      - name: Water Resource Engineering-I
+        code: CE-1851
+      - name: Fluid Mechanics-II
+        code: CE-4105
+
+students:
+  - category: Ph.D. Ongoing
+    students:
+      - name: Saurabh Maurya
+        period: "2025 – Ongoing"
+        topic: Air Pollution and Crop Yield
+      - name: Vineet Jain
+        period: "2025 – Ongoing"
+        topic: Pollution Dispersion in Ground Water
+      - name: Maniranjan
+        period: "2022 – Ongoing"
+        topic: Comprehensive Assessment of Groundwater in Tropical River Basins using Machine Learning and SWAT Model
+      - name: Megavath Narahari
+        period: "2021 – Ongoing"
+        topic: Effects of Climate Change on Water Quality
+      - name: Krishna Kumar
+        period: "2022 – Ongoing"
+        topic: Crop Yield Estimation and Forecasting using Machine Learning
+      - name: Hari Prakash
+        period: "2023 – Ongoing"
+        topic: Peak Discharge Estimation for Ungauged Basins
+      - name: Ashwin Chitravanshi
+        period: "2023 – Ongoing"
+        topic: Water Quality Modeling for Varuna River Basin
+  - category: M.Tech. Students
+    students:
+      - name: Ritika Upadhyay
+        period: "2024 – Ongoing"
+        topic: "Impact of Pollution on Rainfall Characteristics. Co-supervisor (External with BHU)."
+      - name: Makardhwaj Awasthi
+        period: "2024 – Ongoing"
+        topic: "Atmospheric–Rainfall Interaction Analysis. Co-supervisor (External with BHU)."
+      - name: Buddepu Harsha Vardhan
+        period: "2023-2025"
+        topic: A Comparative Evaluation of WRF and ANN for Weather Prediction
+      - name: Saurabh Maurya
+        period: "2023-2025"
+        topic: Investigation of Microphysical Characteristics of Raindrop Size Distribution using WRF Model
+      - name: Raju Singh
+        period: "2023-2025"
+        topic: Estimation of Surface Velocity in Open Channel Flows using Image Processing
+      - name: Shailesh Kushwaha
+        period: "2023-2025"
+        topic: Seasonal Forecasting of Crop Yield over Varuna River Basin
+      - name: Tripti Yadav
+        period: "2023-2025"
+        topic: Estimation of E-Flow for Varuna River Basin
+      - name: Shadab Ansari
+        period: "2020"
+        topic: Single and Dual Frequency Atmospheric Free Precise Point Positioning using Combined GPS and GLONASS Observations
+      - name: Prity Dhanai
+        period: "2021"
+        topic: Rainfall Triggered Slope Instability Analysis with Changing Climate
+      - name: Pankaj Singh
+        period: "2021"
+        topic: Spatiotemporal Prediction of Criteria Air Pollutants using Air Pollution Monitoring Station Data
+      - name: Shubham Khare
+        period: "2022"
+        topic: Effects of COVID-19 Lockdown on Meteorological Variables over India
+      - name: Anandita Raj
+        period: "2022"
+        topic: Impacts of Climate Change on Water Quality for Krishna River Basin
+  - category: B.Tech. Students (Recent)
+    students:
+      - name: "Harshit Patel, Abhyudaya Singh, Ketan Kumar, Gautam Kumar, Aryan Gupta, Narendra Prasad, Arushi Aggarwal, Abhishek Sharma, Bishal Das, Chandraveer Singh, Vaibhav Rajvardhan, Mayank Singh"
+        period: "2025-26"
+        topic: Various projects in HEC-RAS, Water Quality, Sediment Transport, Geomorphology, Crop Simulation
+      - name: "Nitish Kumar Maurya, Umesh Harsana, Dinesh Singh, Harshit Bangari, Bhuvnesh Gaur, Mayank Mani Nath Gupta, Saatwiik Srivastava, Vishal Yadav, Aditi Gupta, Shridhar Kumar"
+        period: "2024-25"
+        topic: River Meandering, Flood Risk Mapping, Image Processing, ANN Rainfall-Runoff
+      - name: "Mahesh Chandra Verma, Nishant Rai, Balram Yogi, Kuldeep Bhamu"
+        period: "2020"
+        topic: Impact of Climate Change on Water Resources using ANN
+      - name: "Anitya Sagar, Pulkit Garg, Abhay Singh, Umesh Karna"
+        period: "2021"
+        topic: Design of Rainwater Harvesting Structure for MNNIT Allahabad Campus
+      - name: "Shiv Virendra Chaubey, Ajit Kumar, Aditya Kumar, Shubham Kumar Singh"
+        period: "2022"
+        topic: Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha
+  - category: External Thesis (BITS Pilani)
+    students:
+      - name: Nimish Tiwari (2022A2PS1449H)
+        period: "2026"
+        topic: "Prediction of Water Quality Parameters of the Varuna River Basin using Remote Sensing and Machine Learning. Co-supervisor with Prof. Abhradeep Majumder (BITS Pilani)."
+
+awards:
+  - year: "2016"
+    text: "Certificate of Appreciation from Director, IIT Kanpur for receiving excellent feedback from students during the summer course ESO208A (Introduction to Numerical Methods and Analysis)"
+  - year: "2015"
+    text: "Best Poster Award in category Monsoon Simulation and Prediction at Annual Monsoon Workshop Pune (IMSP), organized by IITM Pune"
+  - year: "2014, 2015, 2016"
+    text: "Winner, Institute Pool Championship, IIT Kanpur"
+  - year: "2012"
+    text: "Academic Excellence Achievement Award for highest CPI during M.Tech in Civil Engineering, IIT Kanpur"
+  - year: "2011"
+    text: "First Prize, Snooker Inter-Hall Tournament, IIT Kanpur"
+  - year: "2011"
+    text: "DAAD Masters Sandwich Program – Awarded DAAD Scholarship"
+  - year: "2010"
+    text: "Second Prize, Billiards Inter-Hall Tournament, IIT Kanpur"
+
+skills:
+  - label: Languages
+    value: "English (strong reading, writing and speaking competencies)"
+  - label: Coding
+    value: "Java, PHP, Python, R, LaTeX"
+  - label: Web Development
+    value: "HTML, CSS, JavaScript"
+  - label: Hydrological/CFD Models
+    value: "WRF, WRF-Chem, HEC-HMS, HEC-RAS, SWAT, GRACE"
+  - label: GIS & Remote Sensing
+    value: "ArcGIS, QGIS, Google Earth Engine, ENVI"
+  - label: Other
+    value: "Academic research, teaching, training, consultation, typesetting and publishing"
+
+memberships:
+  - "Life Member, Indian Desalination Association (LM-534)"
+  - "Life Member, Indian Concrete Institute (LM-13152)"
+  - "Life Member, Indian Water Works Association (LM-10249)"
+
+expert_lectures:
+  - "Expert Lecture on 'Estimation of Scour Depth for Large Bridges over Alluvial Rivers', INFRA-IMPACT training program, IIT Patna for engineers of Rural Works Department, Govt. of Bihar (10 January 2026)"
+  - "Expert Lecture on 'Forecasting Hydrological Events Using SWAT-GFS Models and Their Role in Decision Support Systems for Water Resource Management', Shelter Academy 2025 (International Program), organized by Arcadis–UN-Habitat–UNHCR Consortium"
+  - "Waste management program under the Green Skill Development Program, Ministry of Environment, Forest and Climate Change, AFRI, Jodhpur (2018–2019)"
+  - "Basics of Linux and MATLAB, InSAR: Theory, Processing and Application (2019)"
+  - "Numerical Modeling using Finite Difference Methods, Numerical and Optimization Techniques (NOT-2019)"
+  - "National Innovation and Start-up Policy (NISP): Guiding Framework for HEIs, Sadanlal Savaldas Khanna Girls Degree College"
+  - "Site Visit to Sewage Treatment Plant (STP), NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)"
+  - "World Water Day Webinar on Water Conservation and Rain Water Harvesting, Lakshya NGO Lucknow (2022)"
+  - "Chaired session in 54th Annual Convention and Exhibition at Lucknow hosted by IWWA Lucknow and Prayagraj Centres"
+
+short_term_courses:
+  - "Numerical and Optimization Techniques (NOT-2019)"
+  - "Online Numerical and Optimization Techniques (NOT-2020)"
+  - "NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)"
+  - "DROUGHT AND FLOOD MANAGEMENT (DAM-22)"
+  - "National Brainstorming Workshop: People's Varuna: Culturally Connecting with the River"
+
+administration:
+  - title: "IIT (BHU) Varanasi (2023–Present)"
+    items:
+      - "Member, Faculty Forum 2026-2027"
+      - "Deputy Chief Election Officer, Student Parliament Elections, 2024-25, 2025-2026"
+      - "Chairman, Technex-26, IIT (BHU) Varanasi"
+      - "Member, Time Table Committee, Department of Civil Engineering (2023–25)"
+      - "Member, Departmental Website Committee, Department of Civil Engineering (2023–)"
+      - "Member, UG Core Courses Committee, IIT (BHU) (2023–24)"
+      - "Proctor, IIT (BHU) (2024–)"
+      - "Warden, A. S. N. Bose Hostel (2024–)"
+      - "PI, Time Table, Department of Civil Engineering (2023–25)"
+      - "Examination In-Charge, Department of Civil Engineering (2023–25)"
+      - "PI, Ganga Laboratory, Department of Civil Engineering (2023–)"
+      - "Counselor, SNTC, IIT (BHU) Varanasi (2025–)"
+      - "Member, IALS, IIT (BHU) Varanasi (2025–)"
+      - "Member, Festival Committee, IIT (BHU) (2025–)"
+  - title: "NIT Jamshedpur (2022-2023)"
+    items:
+      - "Co-FI, Examination"
+      - "FI, Lawn Tennis"
+      - "Coordinator, AISHE"
+      - "P.I. CAD Lab, Civil Engineering"
+      - "Faculty Advisor, Final Year, DCE"
+  - title: "MNNIT Allahabad (2019-2022)"
+    items:
+      - "O.C. CAD Lab, WRE Lab, SURVEY Lab, Civil Engineering"
+      - "Faculty Coordinator, Tennis"
+      - "Member, Time Table Committee"
+      - "B.Tech Project Evaluation Committee"
+      - "Member, DUGC"
+      - "Member, NIRF"
+      - "Member, TEQIP Committee"
+      - "Member, NBA Committee"
+      - "Startup Activity Coordinator, Institution Innovation Council"
+  - title: "IIT Kanpur"
+    items:
+      - "Convener, SBRA (2015-2016)"
+      - "In Charge, Billiard Club, Hall-4 (2012-2013)"

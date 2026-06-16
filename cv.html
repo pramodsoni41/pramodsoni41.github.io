@@ -3,472 +3,268 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Curriculum Vitae | Dr. Pramod Soni</title>
-
+  <title>Curriculum Vitae | Dr. Pramod Soni, Ph.D.</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", Arial, sans-serif;
-    }
-
-    body {
-      background: #eef2f7;
-      color: #1e293b;
-      padding: 30px;
-      line-height: 1.6;
-    }
-
-    .cv {
-      max-width: 950px;
-      margin: auto;
-      background: #ffffff;
-      padding: 50px;
-      border-radius: 16px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.08);
-    }
-
-    /* HEADER */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 30px;
-      padding-bottom: 30px;
-      border-bottom: 2px solid #dbe4ee;
-    }
-
-    .header-left {
-      flex: 1;
-    }
-
-    .header-left h1 {
-      font-size: 38px;
-      font-weight: 700;
-      color: #0f172a;
-      margin-bottom: 10px;
-    }
-
-    .designation {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      color: #1d4ed8;
-    }
-
-    .institute {
-      font-size: 15px;
-      color: #475569;
-      margin-bottom: 15px;
-    }
-
-    .contact {
-      font-size: 14px;
-      color: #334155;
-    }
-
-    .contact div {
-      margin-bottom: 6px;
-    }
-
-    .header-right img {
-      width: 170px;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 3px solid #dbeafe;
-    }
-
-    .print-btn {
-      margin-top: 18px;
-      padding: 12px 28px;
-      border: none;
-      border-radius: 10px;
-      background: #0f172a;
-      color: white;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    /* SECTION */
-    .section {
-      margin-top: 35px;
-    }
-
-    .section h2 {
-      font-size: 22px;
-      color: #0f172a;
-      margin-bottom: 15px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-
-    .entry {
-      margin-bottom: 18px;
-      padding: 0;
-      background: transparent;
-      border-left: none;
-      border-radius: 0;
-    }
-
-    .employment-item {
-      display: grid;
-      grid-template-columns: 240px 24px 1fr;
-      gap: 18px;
-      align-items: start;
-      margin-bottom: 18px;
-      padding-bottom: 8px;
-    }
-
-    .employment-date {
-      font-size: 18px;
-      color: #111827;
-      text-align: right;
-      font-weight: 500;
-      padding-top: 2px;
-    }
-
-    .employment-marker {
-      color: #8b004b;
-      font-size: 20px;
-      line-height: 1;
-      padding-top: 2px;
-    }
-
-    .employment-content {
-      font-size: 17px;
-      line-height: 1.5;
-      color: #111827;
-    }
-
-    .employment-content strong {
-      font-weight: 700;
-    }
-    }
-
-    .entry strong {
-      color: #111827;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-
-    li {
-      margin-bottom: 8px;
-    }
-
-    .footer {
-      margin-top: 40px;
-      text-align: center;
-      font-size: 13px;
-      color: #64748b;
-    }
-
-    @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-
-      .cv {
-        box-shadow: none;
-        border-radius: 0;
-        padding: 20px;
-        max-width: 100%;
-      }
-
-      .print-btn {
-        display: none;
-      }
-
-      @page {
-        size: A4;
-        margin: 12mm;
-      }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif}
+    body{background:#eef2f7;color:#1e293b;padding:30px;line-height:1.6}
+    .cv{max-width:950px;margin:auto;background:#fff;padding:50px;border-radius:16px;box-shadow:0 15px 40px rgba(0,0,0,.08)}
+    .header{display:flex;justify-content:space-between;align-items:center;gap:30px;padding-bottom:30px;border-bottom:2px solid #dbe4ee}
+    .header-left{flex:1}
+    .header-left h1{font-size:38px;font-weight:700;color:#0f172a;margin-bottom:10px}
+    .designation{font-size:18px;font-weight:600;margin-bottom:10px;color:#1d4ed8}
+    .institute{font-size:15px;color:#475569;margin-bottom:15px}
+    .contact{font-size:14px;color:#334155}
+    .contact div{margin-bottom:6px}
+    .header-right img{width:170px;height:200px;object-fit:cover;border-radius:12px;border:3px solid #dbeafe}
+    .print-btn{margin-top:18px;padding:12px 28px;border:none;border-radius:10px;background:#0f172a;color:#fff;cursor:pointer;font-size:15px;font-weight:600}
+    .section{margin-top:35px}
+    .section h2{font-size:22px;color:#0f172a;margin-bottom:15px;padding-bottom:8px;border-bottom:2px solid #e2e8f0}
+    .entry{margin-bottom:18px}
+    .employment-item{display:grid;grid-template-columns:200px 24px 1fr;gap:12px;align-items:start;margin-bottom:14px}
+    .employment-date{font-size:15px;color:#111827;text-align:right;font-weight:500;padding-top:2px}
+    .employment-marker{color:#8b004b;font-size:18px;line-height:1;padding-top:2px}
+    .employment-content{font-size:15px;line-height:1.5;color:#111827}
+    ol{padding-left:20px} ol li{margin-bottom:8px;font-size:14px;line-height:1.6}
+    ul{padding-left:20px} ul li{margin-bottom:6px;font-size:14px}
+    table td{padding:6px 10px;border-bottom:1px solid #e2e8f0;font-size:14px;vertical-align:top}
+    a{color:#1d4ed8;text-decoration:none}
+    .footer{margin-top:40px;text-align:center;font-size:13px;color:#64748b}
+    @media print{body{background:#fff;padding:0}.cv{box-shadow:none;border-radius:0;padding:20px;max-width:100%}.print-btn{display:none}@page{size:A4;margin:12mm}}
   </style>
 </head>
 <body>
-
 <div class="cv">
-
   <div class="header">
-
     <div class="header-left">
-      <h1 id="profileName">Loading...</h1>
-
-      <div class="designation" id="profileDesignation">Loading...</div>
-
-      <div class="institute" id="profileInstitute">Loading...</div>
-
-      <div class="contact" id="profileContact">
-        <div>Loading profile details...</div>
-      </div>
-
-      <button class="print-btn" onclick="window.print()">
-        Download PDF
-      </button>
+      <h1>Dr. Pramod Soni, Ph.D.</h1>
+      <div class="designation">Assistant Professor</div>
+      <div class="institute">Department of Civil Engineering, IIT (BHU) Varanasi, India<br>Varanasi, Uttar Pradesh, India</div>
+      <div class="contact"><div><strong>Email:</strong> <a href="mailto:pramod.cive@iitbhu.ac.in">pramod.cive@iitbhu.ac.in</a></div><div><strong>Website:</strong> <a href="https://pramodsoni.in" target="_blank">pramodsoni.in</a></div><div><strong>Institute Page:</strong> <a href="https://www.iitbhu.ac.in/dept/civ/people/pramodciv" target="_blank">IIT (BHU) Profile</a></div><div><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/dr-pramod-soni-13a7701a/" target="_blank">dr-pramod-soni</a></div></div>
+      <button class="print-btn" onclick="window.print()">Download PDF</button>
     </div>
-
-    <div class="header-right">
-      <img src="assets\profile\Pramod_Photo.jpg" alt="Dr. Pramod Soni">
-    </div>
-
+    <div class="header-right"><img src="assets/profile/Pramod_Photo.jpg" alt="Dr. Pramod Soni, Ph.D."></div>
   </div>
-
-
-
-
+  
   <div class="section">
     <h2>Employment History</h2>
-    <div id="cvEmployment">
-      <div class="entry">Loading employment history...</div>
+    
+    <div class="employment-item">
+      <div class="employment-date">April 2023 – Present</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Assistant Professor</strong>
+        , IIT (BHU) Varanasi, India
+        <br>Department of Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">Sep 2022 – April 2023</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Assistant Professor</strong>
+        , NIT Jamshedpur, India
+        <br>Department of Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">June 2019 – Sep 2022</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Assistant Professor</strong>
+        , MNNIT Allahabad, Prayagraj, India
+        <br>Department of Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">January 2018 – June 2019</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Assistant Professor</strong>
+        , M.B.M. Engineering College, Jodhpur, India
+        <br>TEQIP-III project funded by the World Bank
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">September 2011 – May 2012</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>DAAD Fellow</strong>
+        , KIT-IMK-IFU, Garmisch, Germany
+        <br>DAAD Exchange student during M.Tech.
+      </div>
     </div>
   </div>
   <div class="section">
     <h2>Education</h2>
-    <div id="cvEducation">
-      <div class="entry">Loading education details...</div>
+    
+    <div class="employment-item">
+      <div class="employment-date">June 2012 – August 2018</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Ph.D.</strong>
+        , Indian Institute of Technology, Kanpur, India
+        <br>Hydraulics and Water Resources Engineering, Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">June 2010 – June 2012</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>M.Tech.</strong>
+        , Indian Institute of Technology, Kanpur, India
+        <br>Hydraulics and Water Resources Engineering, Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">June 2006 – June 2010</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>B.E.</strong>
+        , M.B.M. Engineering College, JNVU, Jodhpur, India
+        <br>Civil Engineering
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">June 2003 – June 2005</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Sr. Secondary</strong>
+        , Mahatma Gandhi Sr. Secondary School, Jodhpur
+        <br>RBSE, Ajmer
+      </div>
+    </div>
+
+    <div class="employment-item">
+      <div class="employment-date">June 2001 – June 2003</div>
+      <div class="employment-marker">&#128278;</div>
+      <div class="employment-content">
+        <strong>Secondary</strong>
+        , Bal Niketan, Jodhpur
+        <br>RBSE, Ajmer
+      </div>
     </div>
   </div>
   <div class="section">
     <h2>Research Projects</h2>
-    <div id="cvProjects">
-      <div class="entry">Projects loaded dynamically from Google Sheets</div>
+    
+    <div class="entry">
+      <strong>Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience</strong>
+      <br><span style='font-size:13px;color:#475569'>GIZ</span>
+    </div>
+    <div class="entry">
+      <strong>Decision Support System for Water Resource Management</strong>
+      <br><span style='font-size:13px;color:#475569'>SLCR, Namami Gange &bull; Rs. 4.35 Crores</span>
+    </div>
+    <div class="entry">
+      <strong>Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi</strong>
+      <br><span style='font-size:13px;color:#475569'>Namami Gange &bull; Rs. 15.4 Crores</span>
+    </div>
+    <div class="entry">
+      <strong>Regionalization of Hydrological model parameters for Indian rivers</strong>
+      <br><span style='font-size:13px;color:#475569'>AICTE CRS Project &bull; Rs. 9 Lacs</span>
+    </div>
+    <div class="entry">
+      <strong>Use of Artificial Neural Network in regionalization of SWAT parameters</strong>
+      <br><span style='font-size:13px;color:#475569'>TEQIP &bull; Rs. 1.5 Lacs</span>
+    </div>
+    <div class="entry">
+      <strong>Mapping ground water quality depleted area, Potential Groundwater Recharge Zones and Exploring the Farmer&#x27;s need based Groundwater Recharge structures in District Mahoba of Bundelkhand region of UP</strong>
+      <br><span style='font-size:13px;color:#475569'>Department of Science and Technology &bull; Rs. 15 Lacs</span>
     </div>
   </div>
-
-
   <div class="section">
-    <h2>Courses Taught</h2>
-    <div id="cvTeaching">
-      <div class="entry">Teaching details loaded dynamically</div>
-    </div>
+    <h2>Consultancy Projects</h2>
+    <div class="entry">Leaching Testing Report (3 sites), Subsidence Report, Ground Water Aquifer Study, Traffic Study from borrow area to filling area (3 sites), Ambient Air Quality Study (3 sites)</div><div class="entry">Techno-economics Feasibility Study for filling of Ash (13 sites) – Obra Section 2 &amp; 3, Stone Quarry (1 site), Near Circuit House (1 site)</div><div class="entry">Annual Inspection of GPI operating in Ganga Basins States</div><div class="entry">Third-Party Inspection of 37 Nos. under construction piped water supplies of various villages of Rampur District under MSDP/PM Jan Vikas Program</div><div class="entry">Feasibility Study for Installation of Rain Water Harvesting Scheme at IFFCO Phulpur Township</div><div class="entry">Design of Inverted Siphon (Saryu Pariyojna Gonda)</div><div class="entry">Scientific study for Investigation of Mine-wise Water Availability and Potential for community Use in ECL</div><div class="entry">Feasibility Study for Pond Restoration at Azad Park Allahabad</div><div class="entry">Wetting of Detailed Project Reports under Jal Jeevan Mission</div><div class="entry">Various channelization projects for flood and erosion protection (Ghaghra, Sharda, Rapti, Saryu rivers – Azamgarh, Lakhimpur, Sant Kabir, Gorakhpur, Gonda, Barabanki, Sitapur)</div>
   </div>
-
-
   <div class="section">
-    <h2>Students Guided</h2>
-    <div id="cvStudents">
-      <div class="entry">Student supervision details loaded dynamically</div>
-    </div>
+    <h2>Journal Articles (25)</h2>
+    <ol><li>Tiwari, Krishna Kumar; Gupta, Rajan Dev; Soni, Pramod (2026). Seasonal dynamics and transition patterns of land use land cover in Sher River Basin, Madhya Pradesh (India). <em>Environmental Monitoring and Assessment</em>, 198(5), 537.</li>
+<li>Maurya, Saurabh; Soni, Pramod (2026). Comparative assessment of WRF-simulated raindrop size distribution using disdrometer observations in Varanasi. <em>Theoretical and Applied Climatology</em>, 157(3), 179.</li>
+<li>Maurya, Saurabh; Soni, Pramod; Chitravanshi, Ashwin; Prabhankur, Prabhankur; Ansari, Asif; Quaff, Abdur Rahman (2026). Comparative analysis of meteorological and air quality variables in urban and semi-urban environments: a case study of Varanasi and Azamgarh. <em>Air Quality, Atmosphere \&amp; Health</em>, 19(3), 57.</li>
+<li>Maurya, Saurabh; Soni, Pramod (2026). Modelling uncertainty in WRF-based extreme rainfall simulations over India: A review toward integrated atmosphere-chemistry-hydrology frameworks. <em>Atmospheric Research</em>, 109152.</li>
+<li>Meena, Ram Raj; Singh, Raj Mohan; Soni, Pramod; Kumar, Rishi; Kumar, Sushil (2025). Intensification of Fluoride Removal using Electrocoagulation Reactor with Rotating Fins and Rings Electrodes (Aluminium and Iron) in Different Configurations. <em>Chemical Engineering and Processing - Process Intensification</em>.</li>
+<li>Kumar, Maniranjan; Soni, Pramod; Swargiary, Debshri (2025). Monitoring Terrestrial Water Storage Using GRACE/GRACE-FO Data over India: A Review. <em>Iranian Journal of Science and Technology, Transactions of Civil Engineering</em>, 49(3), 2225--2239.</li>
+<li>Prakash, Hari; Pandey, Kamlesh Kumar; Soni, Pramod (2025). Peak discharge estimation for ungauged basins: a review. <em>Journal of Water and Climate Change</em>, 16(11), 3483--3507.</li>
+<li>Hari Prakash; Pramod Soni; Kamlesh Kumar Pandey (2025). Assessing Drought Trends and Prediction Using GCMs: A Case Study of South Bihar. <em>MAUSAM</em>.</li>
+<li>Narahari, Megavath; Rawal, NR; Soni, Pramod (2025). Steady Flow Analysis Performed for Flood Inundation Mapping Using HEC-RAS. <em>Flood Forecasting and Hydraulic Structures: Select Proceedings of HYDRO 2023</em>, 95.</li>
+<li>Soni, Pramod (2024). The Impact of Data Uncertainty on Identifying Precipitation Trends in India. <em>MAUSAM</em>, 75(3), 895--904.</li>
+<li>Kumar, Ranveer; Gaur, Shishir; Soni, Pramod; Maurya, Puneet; Ohri, Anurag (2024). HRU-based Downscaling of GRACE-TWS to Quantify the Hydrogeological Fluxes and Specific Yield in the Lower Middle Ganga Basin. <em>Journal of Hydrology</em>, 639, 131591.</li>
+<li>Meena, Ram Raj; Singh, Raj Mohan; Soni, Pramod; Kumar, Rishi; Kumar, Sushil (2024). Fluoride removal using a rotating anode electro-coagulation reactor: parametric optimization using response surface methodology, isotherms and kinetic studies, economic analysis and sludge characterization. <em>Journal of Environmental Management</em>, 370, 122600.</li>
+<li>Singh, Vishal Kumar; Pandey, HK; Singh, Sudhir Kumar; Soni, Pramod (2023). Groundwater analysis using Gravity Recovery, Climate Experiment and Google Earth Engine: Bundelkhand region, India. <em>Physics and Chemistry of the Earth, Parts A/B/C</em>, 130, 103401.</li>
+<li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2023). Hydrodynamic Simulation and Analysis Using Computational Fluid Dynamics: Electrochemical Reactors and Redox Flow Batteries. <em>ChemBioEng Reviews</em>, 10(5), 670--683.</li>
+<li>Dhanai, Prity; Singh, VP; Soni, Pramod (2022). Rainfall triggered slope instability analysis with changing climate. <em>Indian Geotechnical Journal</em>, 52(2), 477--492.</li>
+<li>Soni, P.; Srivastava, R.; Tripathi, S. (2022). Impact of renewed solar dimming on streamflow generation in monsoon dominated tropical river basins. <em>Journal of Hydro-environment Research</em>.</li>
+<li>Singh, Pankaj; Vaishya, Rakesh Chandra; Soni, Pramod; Medhi, Hemanta (2022). A methodological comparison on Spatiotemporal Prediction of Criteria Air Pollutants. <em>Asian Journal of Atmospheric Environment</em>, 16(1), 2021087.</li>
+<li>Soni, Pramod; Medhi, Hemanta; Sagar, Anitya; Garg, Pulkit; Singh, Abhay; Karna, Umesh (2022). Runoff estimation using digital image processing for residential areas. <em>AQUA---Water Infrastructure, Ecosystems and Society</em>, 71(8), 938--948.</li>
+<li>Soni, Pramod (2021). Effects of COVID-19 lockdown phases in India: an atmospheric perspective. <em>Environment, Development and Sustainability</em>, 23(8), 12044--12055.</li>
+<li>Soni, Pramod; Tripathi, Shivam; Srivastava, Rajesh (2021). A comparison of regionalization methods in monsoon dominated tropical river basins. <em>Journal of Water and Climate Change</em>, 12(5), 1975--1996.</li>
+<li>Gupta, Shubham; Soni, Pramod; Gupta, Ankush Kumar (2021). Optimization of WD-XRF analytical technique to measure elemental abundance in PM2.5 dust collected on quartz-fibre filter. <em>Atmospheric Pollution Research</em>, 12(3), 345--351.</li>
+<li>Gupta, Ankush Kumar; Soni, Pramod (2021). Wheat Crop Yield Estimation using Geomatics Tools in Saharanpur District. <em>Indian Journal of Agricultural Research</em>, 1, 8.</li>
+<li>Soni, Pramod; Srivastava, Rajesh; Tripathi, Shivam (2019). Implication of data uncertainty in the detection of surface radiation trends and observational evidence of renewed solar dimming over India. <em>Theoretical and Applied Climatology</em>, 137(3), 2663--2680.</li>
+<li>Soni, Pramod; Tripathi, Sachchida Nand; Srivastava, Rajesh (2018). Radiative effects of black carbon aerosols on Indian monsoon: a study using WRF-Chem model. <em>Theoretical and Applied Climatology</em>, 132(1), 115--134.</li>
+<li>Soni, P.; Srivastava, R.; Tripathi, S. (2017). Observational Evidence of Streamflow Trends in India. <em>Modelling of Environmental and Water Resources Systems</em>.</li></ol>
   </div>
-
-
+  <div class="section">
+    <h2>Conference Papers (10)</h2>
+    <ol><li>Chitravanshi, Ashwin; Soni, Pramod (2026). Remote Sensing Based pH Estimation in Eastern Uttar Pradesh, Using Sentinel-2 and Machine Learning. <em>2026 IEEE International Conference on AI Engineering and Innovations (AIEI)</em>, 1--4.</li>
+<li>Maurya, Saurabh; Soni, Pramod (2026). AI-Engineering Integration of Rainfall Microphysics and Vegetation Indicators for Agricultural Intelligence over Varanasi, India. <em>2026 IEEE International Conference on AI Engineering and Innovations (AIEI)</em>, 1--6.</li>
+<li>Chitravanshi, Ashwin; Soni, Pramod (2025). Machine Learning Approaches for Prediction of the Coefficient of Discharge of Broad Crested Weirs. <em>AIMS 2025 -- International Conference on AI and Materials for Sustainability</em>.</li>
+<li>Megawath Narahari; Nekram Rawal; Pramod Soni (2023). Steady Flow Analysis Performed for Flood Inundation Mapping Using HEC-RAS. <em>Hydro 2023</em>.</li>
+<li>Krishna Kumar; R. D. Gupta; Pramod Soni (2023). ANN for Urban Flood Flow Modelling Using Real Time Data. <em>Hydro 2023</em>.</li>
+<li>Megavath Narahari; Nekram Rawal; Pramod Soni (2023). Assessment of surface run-off for Brahmani-Baitarani river basin. <em>RHHAR-2023</em>.</li>
+<li>Krishna Kumar; R. D. Gupta; Pramod Soni (2023). Study the Effect of Urbanization on Groundwater Balance in Agroclimatic Zone Using ANN. <em>RHHAR-2023</em>.</li>
+<li>Narahari, Megavath; Rawal, NR; Soni, Pramod (2023). Steady Flow Analysis Performed for Flood Inundation Mapping Using HEC-RAS. <em>International Conference on Hydraulics, Water Resources and Coastal Engineering</em>, 95--109.</li>
+<li>Srivastava, Rajesh; Soni, Pramod; Tripathi, Shivam (2017). Impact of Renewed Solar Dimming on Hydrology of River Basins in Peninsular India. <em>AGU Fall Meeting Abstracts</em>, GC23A--1041.</li>
+<li>Soni, P.; Tripathi, S. N.; Srivastava, R. (2015). Performance of WRF-Chem model during monsoon season over India. <em>Annual Monsoon Workshop Pune</em>.</li></ol>
+  </div>
+  <div class="section">
+    <h2>Book Chapters (5)</h2>
+    <ol><li>Praveen Kumar; Ram Raj Meena; Pramod Soni (2025). Sustainable Environmental Waste Management Strategies: The Study of Urban Solid Waste Management&#x27;s Development. <em>Innovative Technologies for Waste Management</em>, 978--3.</li>
+<li>Meena, Ram Raj; Rathva, Hemangini; Soni, Pramod (2025). Electrochemical Processes for Arsenic Mitigation. <em>Emerging and Innovative Arsenic Removal Technologies for a Sustainable Future</em>, 107--128.</li>
+<li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2024). Electrocoagulation of Fluoride from Water with Fe-Based Ion Electrode. <em>Advanced Treatment Technologies for Fluoride Removal in Water: Water Purification</em>, 159--180.</li>
+<li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2023). Electrocoagulation of fluoride from water with Fe-based ion electrode. <em>Advanced Treatment Technologies for Fluoride Removal in Water</em>.</li>
+<li>Medhi, Hemanta; Soni, Pramod (2022). Understanding the relationship between normalized difference vegetation index and meteorological attribute using clustering algorithm. <em>Smart Sensors, Actuators and Decision Support Systems for Precision Agriculture</em>.</li></ol>
+  </div>
+  <div class="section">
+    <h2>Teaching</h2>
+    <h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>Courses Taught</h3><ul><li>Climate Change and Water Resources Modeling</li><li>Ground Water Hydrology (CE-21352)</li><li>Environment and Climate Change (CE-12101)</li><li>Computer Based Numerical Techniques (CE-13102)</li><li>Computer Based Numerical Techniques Lab (CE-13202)</li><li>Engineering Hydrology (CE-17310)</li><li>Open Channel Hydraulics (CE-18309)</li><li>Surveying Lab (CE-14201)</li><li>Water Resource Engineering-I (CE-1851)</li><li>Fluid Mechanics-II (CE-4105)</li></ul>
+  </div>
+  <div class="section">
+    <h2>Students Supervised</h2>
+    <h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>Ph.D. Ongoing</h3><ul><li><strong>Saurabh Maurya</strong> (2025 – Ongoing): Air Pollution and Crop Yield</li><li><strong>Vineet Jain</strong> (2025 – Ongoing): Pollution Dispersion in Ground Water</li><li><strong>Maniranjan</strong> (2022 – Ongoing): Comprehensive Assessment of Groundwater in Tropical River Basins using Machine Learning and SWAT Model</li><li><strong>Megavath Narahari</strong> (2021 – Ongoing): Effects of Climate Change on Water Quality</li><li><strong>Krishna Kumar</strong> (2022 – Ongoing): Crop Yield Estimation and Forecasting using Machine Learning</li><li><strong>Hari Prakash</strong> (2023 – Ongoing): Peak Discharge Estimation for Ungauged Basins</li><li><strong>Ashwin Chitravanshi</strong> (2023 – Ongoing): Water Quality Modeling for Varuna River Basin</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>M.Tech. Students</h3><ul><li><strong>Ritika Upadhyay</strong> (2024 – Ongoing): Impact of Pollution on Rainfall Characteristics. Co-supervisor (External with BHU).</li><li><strong>Makardhwaj Awasthi</strong> (2024 – Ongoing): Atmospheric–Rainfall Interaction Analysis. Co-supervisor (External with BHU).</li><li><strong>Buddepu Harsha Vardhan</strong> (2023-2025): A Comparative Evaluation of WRF and ANN for Weather Prediction</li><li><strong>Saurabh Maurya</strong> (2023-2025): Investigation of Microphysical Characteristics of Raindrop Size Distribution using WRF Model</li><li><strong>Raju Singh</strong> (2023-2025): Estimation of Surface Velocity in Open Channel Flows using Image Processing</li><li><strong>Shailesh Kushwaha</strong> (2023-2025): Seasonal Forecasting of Crop Yield over Varuna River Basin</li><li><strong>Tripti Yadav</strong> (2023-2025): Estimation of E-Flow for Varuna River Basin</li><li><strong>Shadab Ansari</strong> (2020): Single and Dual Frequency Atmospheric Free Precise Point Positioning using Combined GPS and GLONASS Observations</li><li><strong>Prity Dhanai</strong> (2021): Rainfall Triggered Slope Instability Analysis with Changing Climate</li><li><strong>Pankaj Singh</strong> (2021): Spatiotemporal Prediction of Criteria Air Pollutants using Air Pollution Monitoring Station Data</li><li><strong>Shubham Khare</strong> (2022): Effects of COVID-19 Lockdown on Meteorological Variables over India</li><li><strong>Anandita Raj</strong> (2022): Impacts of Climate Change on Water Quality for Krishna River Basin</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>B.Tech. Students (Recent)</h3><ul><li><strong>Harshit Patel, Abhyudaya Singh, Ketan Kumar, Gautam Kumar, Aryan Gupta, Narendra Prasad, Arushi Aggarwal, Abhishek Sharma, Bishal Das, Chandraveer Singh, Vaibhav Rajvardhan, Mayank Singh</strong> (2025-26): Various projects in HEC-RAS, Water Quality, Sediment Transport, Geomorphology, Crop Simulation</li><li><strong>Nitish Kumar Maurya, Umesh Harsana, Dinesh Singh, Harshit Bangari, Bhuvnesh Gaur, Mayank Mani Nath Gupta, Saatwiik Srivastava, Vishal Yadav, Aditi Gupta, Shridhar Kumar</strong> (2024-25): River Meandering, Flood Risk Mapping, Image Processing, ANN Rainfall-Runoff</li><li><strong>Mahesh Chandra Verma, Nishant Rai, Balram Yogi, Kuldeep Bhamu</strong> (2020): Impact of Climate Change on Water Resources using ANN</li><li><strong>Anitya Sagar, Pulkit Garg, Abhay Singh, Umesh Karna</strong> (2021): Design of Rainwater Harvesting Structure for MNNIT Allahabad Campus</li><li><strong>Shiv Virendra Chaubey, Ajit Kumar, Aditya Kumar, Shubham Kumar Singh</strong> (2022): Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>External Thesis (BITS Pilani)</h3><ul><li><strong>Nimish Tiwari (2022A2PS1449H)</strong> (2026): Prediction of Water Quality Parameters of the Varuna River Basin using Remote Sensing and Machine Learning. Co-supervisor with Prof. Abhradeep Majumder (BITS Pilani).</li></ul>
+  </div>
   <div class="section">
     <h2>Administrative Responsibilities</h2>
-    <div id="cvAdministration">
-      <div class="entry">Administrative roles loaded dynamically</div>
-    </div>
+    <h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>IIT (BHU) Varanasi (2023–Present)</h3><ul><li>Member, Faculty Forum 2026-2027</li><li>Deputy Chief Election Officer, Student Parliament Elections, 2024-25, 2025-2026</li><li>Chairman, Technex-26, IIT (BHU) Varanasi</li><li>Member, Time Table Committee, Department of Civil Engineering (2023–25)</li><li>Member, Departmental Website Committee, Department of Civil Engineering (2023–)</li><li>Member, UG Core Courses Committee, IIT (BHU) (2023–24)</li><li>Proctor, IIT (BHU) (2024–)</li><li>Warden, A. S. N. Bose Hostel (2024–)</li><li>PI, Time Table, Department of Civil Engineering (2023–25)</li><li>Examination In-Charge, Department of Civil Engineering (2023–25)</li><li>PI, Ganga Laboratory, Department of Civil Engineering (2023–)</li><li>Counselor, SNTC, IIT (BHU) Varanasi (2025–)</li><li>Member, IALS, IIT (BHU) Varanasi (2025–)</li><li>Member, Festival Committee, IIT (BHU) (2025–)</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>NIT Jamshedpur (2022-2023)</h3><ul><li>Co-FI, Examination</li><li>FI, Lawn Tennis</li><li>Coordinator, AISHE</li><li>P.I. CAD Lab, Civil Engineering</li><li>Faculty Advisor, Final Year, DCE</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>MNNIT Allahabad (2019-2022)</h3><ul><li>O.C. CAD Lab, WRE Lab, SURVEY Lab, Civil Engineering</li><li>Faculty Coordinator, Tennis</li><li>Member, Time Table Committee</li><li>B.Tech Project Evaluation Committee</li><li>Member, DUGC</li><li>Member, NIRF</li><li>Member, TEQIP Committee</li><li>Member, NBA Committee</li><li>Startup Activity Coordinator, Institution Innovation Council</li></ul><h3 style='margin:12px 0 6px;font-size:1rem;color:#374151'>IIT Kanpur</h3><ul><li>Convener, SBRA (2015-2016)</li><li>In Charge, Billiard Club, Hall-4 (2012-2013)</li></ul>
   </div>
-
-
+  <div class="section">
+    <h2>Awards &amp; Recognition</h2>
+    <div class="employment-item"><div class="employment-date">2016</div><div class="employment-marker">&#127942;</div><div class="employment-content">Certificate of Appreciation from Director, IIT Kanpur for receiving excellent feedback from students during the summer course ESO208A (Introduction to Numerical Methods and Analysis)</div></div><div class="employment-item"><div class="employment-date">2015</div><div class="employment-marker">&#127942;</div><div class="employment-content">Best Poster Award in category Monsoon Simulation and Prediction at Annual Monsoon Workshop Pune (IMSP), organized by IITM Pune</div></div><div class="employment-item"><div class="employment-date">2014, 2015, 2016</div><div class="employment-marker">&#127942;</div><div class="employment-content">Winner, Institute Pool Championship, IIT Kanpur</div></div><div class="employment-item"><div class="employment-date">2012</div><div class="employment-marker">&#127942;</div><div class="employment-content">Academic Excellence Achievement Award for highest CPI during M.Tech in Civil Engineering, IIT Kanpur</div></div><div class="employment-item"><div class="employment-date">2011</div><div class="employment-marker">&#127942;</div><div class="employment-content">First Prize, Snooker Inter-Hall Tournament, IIT Kanpur</div></div><div class="employment-item"><div class="employment-date">2011</div><div class="employment-marker">&#127942;</div><div class="employment-content">DAAD Masters Sandwich Program – Awarded DAAD Scholarship</div></div><div class="employment-item"><div class="employment-date">2010</div><div class="employment-marker">&#127942;</div><div class="employment-content">Second Prize, Billiards Inter-Hall Tournament, IIT Kanpur</div></div>
+  </div>
+  <div class="section">
+    <h2>Skills</h2>
+    <table style='width:100%;border-collapse:collapse'><tr><td><strong>Languages</strong></td><td>English (strong reading, writing and speaking competencies)</td></tr><tr><td><strong>Coding</strong></td><td>Java, PHP, Python, R, LaTeX</td></tr><tr><td><strong>Web Development</strong></td><td>HTML, CSS, JavaScript</td></tr><tr><td><strong>Hydrological/CFD Models</strong></td><td>WRF, WRF-Chem, HEC-HMS, HEC-RAS, SWAT, GRACE</td></tr><tr><td><strong>GIS &amp; Remote Sensing</strong></td><td>ArcGIS, QGIS, Google Earth Engine, ENVI</td></tr><tr><td><strong>Other</strong></td><td>Academic research, teaching, training, consultation, typesetting and publishing</td></tr></table>
+  </div>
   <div class="section">
     <h2>Professional Memberships</h2>
-    <div id="cvMemberships">
-      <div class="entry">Loading memberships...</div>
-    </div>
+    <ul><li>Life Member, Indian Desalination Association (LM-534)</li><li>Life Member, Indian Concrete Institute (LM-13152)</li><li>Life Member, Indian Water Works Association (LM-10249)</li></ul>
   </div>
+  <div class="section">
+    <h2>Expert Lectures Delivered</h2>
+    <ul><li>Expert Lecture on &#x27;Estimation of Scour Depth for Large Bridges over Alluvial Rivers&#x27;, INFRA-IMPACT training program, IIT Patna for engineers of Rural Works Department, Govt. of Bihar (10 January 2026)</li><li>Expert Lecture on &#x27;Forecasting Hydrological Events Using SWAT-GFS Models and Their Role in Decision Support Systems for Water Resource Management&#x27;, Shelter Academy 2025 (International Program), organized by Arcadis–UN-Habitat–UNHCR Consortium</li><li>Waste management program under the Green Skill Development Program, Ministry of Environment, Forest and Climate Change, AFRI, Jodhpur (2018–2019)</li><li>Basics of Linux and MATLAB, InSAR: Theory, Processing and Application (2019)</li><li>Numerical Modeling using Finite Difference Methods, Numerical and Optimization Techniques (NOT-2019)</li><li>National Innovation and Start-up Policy (NISP): Guiding Framework for HEIs, Sadanlal Savaldas Khanna Girls Degree College</li><li>Site Visit to Sewage Treatment Plant (STP), NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li><li>World Water Day Webinar on Water Conservation and Rain Water Harvesting, Lakshya NGO Lucknow (2022)</li><li>Chaired session in 54th Annual Convention and Exhibition at Lucknow hosted by IWWA Lucknow and Prayagraj Centres</li></ul>
   </div>
-
-
-  <div class="footer">
-    Updated Curriculum Vitae | Dr. Pramod Soni
+  <div class="section">
+    <h2>Short Term Courses Organized</h2>
+    <ul><li>Numerical and Optimization Techniques (NOT-2019)</li><li>Online Numerical and Optimization Techniques (NOT-2020)</li><li>NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li><li>DROUGHT AND FLOOD MANAGEMENT (DAM-22)</li><li>National Brainstorming Workshop: People&#x27;s Varuna: Culturally Connecting with the River</li></ul>
   </div>
-
+  <div class="footer">Curriculum Vitae &mdash; Dr. Pramod Soni, Ph.D.</div>
 </div>
-
-<script src="config.js"></script>
-<script>
-const GOOGLE_SCRIPT_URL = CONFIG.SCRIPT_URL;
-
-function fetchJSONP(url) {
-  return new Promise((resolve, reject) => {
-    const callbackName = "jsonp_callback_" + Math.round(Math.random() * 1000000);
-    const script = document.createElement("script");
-
-    window[callbackName] = function(data) {
-      resolve(data);
-      document.body.removeChild(script);
-      delete window[callbackName];
-    };
-
-    script.src = `${url}${url.includes("?") ? "&" : "?"}callback=${callbackName}`;
-
-    script.onerror = function() {
-      reject(new Error("JSONP request failed"));
-      delete window[callbackName];
-    };
-
-    document.body.appendChild(script);
-  });
-}
-
-function renderEntries(containerId, items, formatter) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  if (!items || !items.length) {
-    container.innerHTML = `<div class="entry">No data available</div>`;
-    return;
-  }
-
-  container.innerHTML = items.map(formatter).join("");
-}
-
-async function loadHome() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getHome`);
-  if (!res || res.status !== "success") return;
-
-  const data = res.data || [];
-
-  const getValue = (section, key) => {
-    const item = data.find(x => x.section === section && x.key === key);
-    return item ? item.value : "";
-  };
-
-  document.getElementById("profileName").innerText = getValue("Profile", "Name");
-  document.getElementById("profileDesignation").innerText = getValue("Profile", "Designation");
-
-  document.getElementById("profileInstitute").innerHTML = `
-    ${getValue("Profile", "Institute")}<br>
-    ${getValue("Profile", "City")}
-  `;
-
-  document.getElementById("profileContact").innerHTML = `
-    <div><strong>Email:</strong> ${getValue("Profile", "Email")}</div>
-    <div><strong>Phone:</strong> ${getValue("Profile", "Phone")}</div>
-    <div><strong>Website:</strong> ${getValue("Links", "CV") || "pramodsoni.in"}</div>
-  `;
-}
-
-async function loadEducation() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEducation`);
-
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvEducation", res.data, item => `
-    <div class="employment-item">
-      <div class="employment-date">
-        ${item.duration || item.year || ""}
-      </div>
-
-      <div class="employment-marker">
-        &#128278;
-      </div>
-
-      <div class="employment-content">
-        <strong>${item.degree}</strong>, ${item.institute}<br>
-        ${item.specialization || ""}
-      </div>
-    </div>
-  `);
-}
-
-async function loadEmployment() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getEmployment`);
-
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvEmployment", res.data, item => `
-    <div class="employment-item">
-      <div class="employment-date">
-        ${item.duration}
-      </div>
-
-      <div class="employment-marker">
-        &#128278;
-      </div>
-
-      <div class="employment-content">
-        <strong>${item.role}</strong>, ${item.institute}<br>
-        ${item.description || ""}
-      </div>
-    </div>
-  `);
-}
-
-async function loadMemberships() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getMemberships`);
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvMemberships", res.data, item => `
-    <div class="entry">${item.title}</div>
-  `);
-}
-
-async function loadProjects() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getProjects`);
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvProjects", res.data, item => `
-    <div class="entry">
-      <strong>${item.title}</strong><br>
-      ${item.funding}<br>
-      ${item.value}
-    </div>
-  `);
-}
-
-async function loadTeaching() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getTeaching`);
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvTeaching", res.data, item => `
-    <div class="entry">
-      <strong>${item.title}</strong><br>
-      ${item.code}<br>
-      ${item.institute}
-    </div>
-  `);
-}
-
-async function loadStudents() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getStudents`);
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvStudents", res.data, item => `
-    <div class="entry">
-      <strong>${item.name}</strong><br>
-      ${item.topic}<br>
-      ${item.duration}
-    </div>
-  `);
-}
-
-async function loadAdministration() {
-  const res = await fetchJSONP(`${GOOGLE_SCRIPT_URL}?action=getAdministration`);
-  if (!res || res.status !== "success") return;
-
-  renderEntries("cvAdministration", res.data, item => `
-    <div class="entry">
-      <strong>${item.role}</strong><br>
-      ${item.institute}<br>
-      ${item.duration}
-    </div>
-  `);
-}
-
-async function initCV() {
-  try {
-    await loadHome();
-    await loadEmployment();    
-    await loadEducation();
-    await loadMemberships();
-    await loadProjects();
-    await loadTeaching();
-    await loadStudents();
-    await loadAdministration();
-  } catch (err) {
-    console.error("CV Load Error:", err);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", initCV);
-</script>
-
 </body>
 </html>
