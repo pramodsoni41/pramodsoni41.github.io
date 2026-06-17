@@ -1,10 +1,62 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Projects | Dr. Pramod Soni</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .projects-hero {
+      background: linear-gradient(135deg, #065f46 0%, #10b981 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .projects-hero h1 { color: white; font-size: 1.7rem; margin-bottom: 6px; }
+    .projects-hero p  { color: rgba(255,255,255,.82); margin: 0; font-size: .95rem; }
+    .stat-row { display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap; }
+    .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
+    .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
+
+    .project-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 12px;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .project-card:hover { box-shadow: 0 6px 20px rgba(15,23,42,.10); transform: translateY(-2px); }
+    .project-card h3 { font-size: .97rem; font-weight: 700; color: var(--text); margin: 0 0 10px; line-height: 1.45; }
+
+    .project-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .badge-agency  { background: #dbeafe; color: #1d4ed8; }
+    .badge-value   { background: #dcfce7; color: #15803d; }
+    .badge-status  { background: #fef9c3; color: #92400e; }
+
+    .consultancy-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-left: 4px solid #8b5cf6;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+    }
+    .consultancy-card h3 { font-size: .92rem; font-weight: 600; color: var(--text); margin: 0; line-height: 1.45; }
+    .consultancy-card ul { margin: 8px 0 0 16px; padding: 0; font-size: .85rem; color: var(--muted); }
+    .consultancy-card ul li { margin-bottom: 3px; }
+  </style>
 </head>
 <script>
 (function () {
@@ -40,184 +92,135 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <main class="wrap">
 
-<section class="card">
-  <h2>Research Projects</h2>
-
-  
-    <div class="item">
-      <h3>Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience</h3>
-
-      
-        <p><strong>Funding Agency:</strong> GIZ</p>
-      
-
-      
+  <div class="projects-hero">
+    <h1>Projects</h1>
+    <p>Department of Civil Engineering &nbsp;&bull;&nbsp; IIT (BHU) Varanasi</p>
+    <div class="stat-row">
+      <div><div class="n">6</div><div class="l">Research Projects</div></div>
+      <div><div class="n">&#8377;20 Cr+</div><div class="l">Funding Secured</div></div>
+      <div><div class="n">10+</div><div class="l">Consultancy Projects</div></div>
     </div>
-  
-    <div class="item">
-      <h3>Decision Support System for Water Resource Management, SLCR</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Namami Gange</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 4.35 Crores</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Namami Gange</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 15.4 Crores</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Regionalization of Hydrological model parameters for Indian rivers by AICTE CRS Project</h3>
-
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 9 Lacs/-</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Use of Artificial Neural Network in regionalization of SWAT parameters</h3>
-
-      
-        <p><strong>Funding Agency:</strong> TEQIP</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 1.5 Lacs/-</p>
-      
-    </div>
-  
-    <div class="item">
-      <h3>Mapping ground water quality Depleted area, Potential Groundwater Recharge Zones and Exploring the Farmer’s need based Groundwater Recharge structures in District Mahoba of Bundelkhand region of UP</h3>
-
-      
-        <p><strong>Funding Agency:</strong> Department of Science and Technology</p>
-      
-
-      
-        <p><strong>Project Value:</strong> Rs. 15 Lacs</p>
-      
-    </div>
-  
-</section>
-
-<section class="card">
-  <h2>Consultancy Projects</h2>
-
-  
-    <div class="item">
-      <h3>Leaching Testing Report (3 sites), Subsidence Report, Ground Water Aquifer Study, Traffic Study from borrow area to filling area (3 sites), Ambient Air Quality Study (3 sites)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Techno-economics Feasibility Study for filling of Ash (13 sites) - Obra Section 2 &amp; 3, Stone Quarry (1 site), Near Circuit House (1 site)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Annual Inspection of GPI operating in Ganga Basins States</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Third-Party Inspection of 37 Nos. under construction piped water supplies of various villages of Rampur District under MSDP/PM Jan Vikas Program</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Feasibility Study for Installation of Rain Water Harvesting Scheme at IFFCO Phulpur Township</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Design of Inverted Siphon (Saryu Pariyojna Gonda)</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Scientific study for Investigation of Mine-wise Water Availability and Potential for community Use in ECL</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Feasibility Study for Pond Restoration at Azad Park Allahabad</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Wetting of Detailed Project Reports under Jal Jeevan Mission</h3>
-
-      
-    </div>
-  
-    <div class="item">
-      <h3>Various channelization projects for flood and erosion protection at:</h3>
-
-      
-        <ul>
-          
-            <li>Village Gangepur Mathia embankment (Ghaghra River, Azamgarh)</li>
-          
-            <li>Village Chakpurwa Mathia embankment (Sharda River, Lakhimpur)</li>
-          
-            <li>Embankment on right bank of Ghaghra River (Sant Kabir, B.D. Embankment K.B.)</li>
-          
-            <li>Village Achhedih (left bank of Rapti River, Gorakhpur)</li>
-          
-            <li>Village Chandpur Katauli (left bank of Saryu River, Gonda)</li>
-          
-            <li>Village Koirin Purva (right bank of Saryu River, Barabanki)</li>
-          
-            <li>Village Leelapurwa (right bank of Sharda River, Sitapur)</li>
-          
-            <li>Village Jagdishpur (right bank of Rapti River, Gorakhpur)</li>
-          
-            <li>Village Telwari (right bank of Saryu River, Barabanki)</li>
-          
-        </ul>
-      
-    </div>
-  
-</section>
-
-
-<section class="card">
-  <h2>Physical Models &amp; Exhibits</h2>
-  <div class="item">
-    <h3>Ganga Basin Model</h3>
-    <p>A live physical model of the Ganga Basin constructed on a logarithmic scale, housed in the Ganga Research Laboratory, IIT (BHU) Varanasi.</p>
-    <p><a href="ganga_model.html" class="link-btn" style="display:inline-block; margin-top:6px;">View Model Details &rarr;</a></p>
   </div>
-</section>
+
+  <!-- ── Research Projects ─────────────────── -->
+  <section class="card">
+    <h2>Research Projects</h2>
+
+    <div class="project-card">
+      <h3>Development of a Climate Resilient River Basin Management Plan for the Barak River Basin based on EU Framework and Indian Experience</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; GIZ</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <h3>Decision Support System for Water Resource Management, SLCR</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; Namami Gange</span>
+        <span class="meta-badge badge-value">&#8377; Rs. 4.35 Crores</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <h3>Establishment of Secretariat for Smart Laboratory on Clean Rivers (SLCR) in Varanasi</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; Namami Gange</span>
+        <span class="meta-badge badge-value">&#8377; Rs. 15.4 Crores</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <h3>Regionalization of Hydrological Model Parameters for Indian Rivers</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; AICTE CRS</span>
+        <span class="meta-badge badge-value">&#8377; Rs. 9 Lacs</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <h3>Use of Artificial Neural Network in Regionalization of SWAT Parameters</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; TEQIP</span>
+        <span class="meta-badge badge-value">&#8377; Rs. 1.5 Lacs</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <h3>Mapping Ground Water Quality, Potential Recharge Zones and Farmer-need based Groundwater Recharge Structures in District Mahoba, Bundelkhand, UP</h3>
+      <div class="project-meta">
+        <span class="meta-badge badge-agency">&#127970; Department of Science and Technology</span>
+        <span class="meta-badge badge-value">&#8377; Rs. 15 Lacs</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Consultancy Projects ─────────────────── -->
+  <section class="card">
+    <h2>Consultancy Projects</h2>
+
+    <div class="consultancy-card">
+      <h3>Leaching Testing Report, Subsidence Report, Ground Water Aquifer Study, Traffic Study and Ambient Air Quality Study (3 sites each)</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Techno-Economics Feasibility Study for Filling of Ash &mdash; Obra Section 2 &amp; 3, Stone Quarry and Near Circuit House (13 sites total)</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Annual Inspection of Ganga Pollution Intervention (GPI) Operating in Ganga Basin States</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Third-Party Inspection of 37 Under-Construction Piped Water Supplies in Rampur District under MSDP/PM Jan Vikas Program</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Feasibility Study for Installation of Rain Water Harvesting Scheme at IFFCO Phulpur Township</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Design of Inverted Siphon (Saryu Pariyojna, Gonda)</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Scientific Study for Investigation of Mine-wise Water Availability and Potential for Community Use in ECL</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Feasibility Study for Pond Restoration at Azad Park, Allahabad</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Vetting of Detailed Project Reports under Jal Jeevan Mission</h3>
+    </div>
+
+    <div class="consultancy-card">
+      <h3>Channelization Projects for Flood and Erosion Protection</h3>
+      <ul>
+        <li>Village Gangepur Mathia embankment (Ghaghra River, Azamgarh)</li>
+        <li>Village Chakpurwa Mathia embankment (Sharda River, Lakhimpur)</li>
+        <li>Embankment on right bank of Ghaghra River (Sant Kabir, B.D. Embankment K.B.)</li>
+        <li>Village Achhedih (left bank of Rapti River, Gorakhpur)</li>
+        <li>Village Chandpur Katauli (left bank of Saryu River, Gonda)</li>
+        <li>Village Koirin Purva (right bank of Saryu River, Barabanki)</li>
+        <li>Village Leelapurwa (right bank of Sharda River, Sitapur)</li>
+        <li>Village Jagdishpur (right bank of Rapti River, Gorakhpur)</li>
+        <li>Village Telwari (right bank of Saryu River, Barabanki)</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Physical Models ─────────────────── -->
+  <section class="card">
+    <h2>Physical Models &amp; Exhibits</h2>
+    <div class="project-card" style="border-left-color: #0891b2;">
+      <h3>Ganga Basin Model &mdash; Live Physical Model on Logarithmic Scale</h3>
+      <p style="font-size:.88rem; color:var(--muted); margin: 8px 0 12px;">Housed in the Ganga Research Laboratory, IIT (BHU) Varanasi. Designed by Dr. Pramod Soni.</p>
+      <a href="ganga_model.html" class="link-btn">View Model Details &rarr;</a>
+    </div>
+  </section>
 
 </main>
-
-<footer class="wrap footer">
-  <small>© Dr. Pramod Soni • Academic Website</small>
-</footer>
-
 
 <footer class="site-footer">
   <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
