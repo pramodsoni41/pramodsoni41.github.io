@@ -1,10 +1,81 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Dr. Pramod Soni | Assistant Professor (Grade-I), Civil Engineering, IIT (BHU) Varanasi</title>
+  <title>Students | Dr. Pramod Soni</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .students-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #059669 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .students-hero h1 { color: white; font-size: 1.7rem; margin-bottom: 6px; }
+    .students-hero p  { color: rgba(255,255,255,.82); margin: 0; font-size: .95rem; }
+    .stat-row { display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap; }
+    .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
+    .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* Section labels */
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin: 16px 0 12px;
+    }
+    .label-phd     { background: #dbeafe; color: #1d4ed8; }
+    .label-mtech   { background: #ede9fe; color: #6d28d9; }
+    .label-btech   { background: #fef9c3; color: #92400e; }
+    .label-ext     { background: #fce7f3; color: #be185d; }
+    .label-ongoing { background: #dcfce7; color: #15803d; }
+    .label-completed { background: #f1f5f9; color: #475569; }
+
+    /* Student cards */
+    .student-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+    }
+    .student-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .student-card:hover { box-shadow: 0 6px 20px rgba(15,23,42,.10); transform: translateY(-2px); }
+    .student-card.ongoing { border-left: 3px solid #059669; }
+    .student-card.completed { border-left: 3px solid #94a3b8; }
+
+    .student-name { font-size: .97rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .student-period {
+      display: inline-block;
+      font-size: .72rem; font-weight: 600;
+      background: #e0f2fe; color: #0369a1;
+      border-radius: 999px; padding: 1px 8px;
+      margin-bottom: 6px;
+    }
+    .student-card.completed .student-period { background: #f1f5f9; color: #64748b; }
+    .student-topic { font-size: .83rem; color: var(--muted); line-height: 1.5; }
+    .student-note  { font-size: .75rem; color: #6d28d9; margin-top: 4px; font-style: italic; }
+
+    /* Compact list for B.Tech */
+    .btech-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .btech-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); font-size: .85rem; vertical-align: top; }
+    .btech-table tr:last-child td { border-bottom: none; }
+    .btech-table td:first-child { font-weight: 600; color: var(--text); width: 55%; }
+    .btech-table td:last-child { color: var(--muted); font-size: .8rem; }
+    .btech-table tr:hover td { background: #f8fafc; }
+  </style>
 </head>
 <script>
 (function () {
@@ -39,375 +110,194 @@ document.addEventListener('DOMContentLoaded', function(){
 </nav>
 
 <main class="wrap">
-<section class="card">
-  <h2>Thesis Supervised</h2>
 
-  
-    <div class="item">
-      <h3>Ph.D. Ongoing</h3>
-
-      
-        <ul>
-          
-            <li>
-              <strong>Saurabh Maurya</strong>
-               <span style="color: var(--muted);">(2025–Ongoing)</span>
-              <br><small>Air Pollution and Crop Yield.</small>
-            </li>
-          
-            <li>
-              <strong>Vineet Jain</strong>
-               <span style="color: var(--muted);">(2025–Ongoing)</span>
-              <br><small>Pollution Dispersion in ground Water.</small>
-            </li>
-          
-            <li>
-              <strong>Maniranjan</strong>
-               <span style="color: var(--muted);">(2022–Ongoing)</span>
-              <br><small>Comprehensive Assessment of Groundwater in Tropical River Basins using Machine Learning and SWAT Model.</small>
-            </li>
-          
-            <li>
-              <strong>Megavath Narahari</strong>
-               <span style="color: var(--muted);">(2021–Ongoing)</span>
-              <br><small>Effects of Climate Change on Water Quality.</small>
-            </li>
-          
-            <li>
-              <strong>Krishna Kumar</strong>
-               <span style="color: var(--muted);">(2022–Ongoing)</span>
-              <br><small>Crop Yield Estimation and Forecasting using Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Hari Prakash</strong>
-               <span style="color: var(--muted);">(2023–Ongoing)</span>
-              <br><small>Peak Discharge Estimation for Ungauged Basins.</small>
-            </li>
-          
-            <li>
-              <strong>Ashwin Chitravanshi</strong>
-               <span style="color: var(--muted);">(2023–Ongoing)</span>
-              <br><small>Water Quality Modeling for Varuna River Basin.</small>
-            </li>
-          
-        </ul>
-      
+  <div class="students-hero">
+    <h1>Students Supervised</h1>
+    <p>Department of Civil Engineering &nbsp;&bull;&nbsp; IIT (BHU) Varanasi</p>
+    <div class="stat-row">
+      <div><div class="n">7</div><div class="l">PhD Ongoing</div></div>
+      <div><div class="n">12+</div><div class="l">M.Tech.</div></div>
+      <div><div class="n">30+</div><div class="l">B.Tech. Projects</div></div>
     </div>
-  
-    <div class="item">
-      <h3>M.Tech Students</h3>
+  </div>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Ritika Upadhyay</strong>
-               <span style="color: var(--muted);">(2024-Ongoing)</span>
-              <br><small>Impact of Pollution on Rainfall Characteristics. Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Makardhwaj Awasthi</strong>
-               <span style="color: var(--muted);">(2024-Ongoing)</span>
-              <br><small>Atmospheric–Rainfall Interaction Analysis. Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Buddepu Harsha Vardhan</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>A Comparative Evaluation of WRF and ANN for Weather Prediction: Performance and Accuracy.</small>
-            </li>
-          
-            <li>
-              <strong>Saurabh Maurya</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Investigation of Microphysical Characteristics of Raindrop Size Distribution using WRF Model.</small>
-            </li>
-          
-            <li>
-              <strong>Raju Singh</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Estimation of Surface Velocity in Open Channel Flows using Image Processing.</small>
-            </li>
-          
-            <li>
-              <strong>Shailesh Kushwaha</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Seasonal Forecasting of Crop Yield over Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Tripti Yadav</strong>
-               <span style="color: var(--muted);">(2023-2025)</span>
-              <br><small>Estimation of E-Flow for Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Ritika Upadhyay</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Impact of Pollution on Rainfall Characteristics (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Makardhwaj Awasthi</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Atmospheric–Rainfall Interaction Analysis (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Suryansh Srivastava</strong>
-               <span style="color: var(--muted);">(2025)</span>
-              <br><small>Geomorphological Change Analysis using Arc-GIS (Tentative). Co-supervisor (External with BHU).</small>
-            </li>
-          
-            <li>
-              <strong>Shadab Ansari</strong>
-               <span style="color: var(--muted);">(2020)</span>
-              <br><small>Single and Dual Frequency Atmospheric Free Precise Point Positioning using Combined GPS and GLONASS Observations.</small>
-            </li>
-          
-            <li>
-              <strong>Prity Dhanai</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Rainfall Triggered Slope Instability Analysis with Changing Climate.</small>
-            </li>
-          
-            <li>
-              <strong>Pankaj Singh</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Spatiotemporal Prediction of Criteria Air Pollutants using Air Pollution Monitoring Station Data.</small>
-            </li>
-          
-            <li>
-              <strong>Shubham Khare</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Effects of COVID-19 Lockdown on Meteorological Variables over India.</small>
-            </li>
-          
-            <li>
-              <strong>Anandita Raj</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Impacts of Climate Change on Water Quality for Krishna River Basin.</small>
-            </li>
-          
-        </ul>
-      
-    </div>
-  
-    <div class="item">
-      <h3>B.Tech Students</h3>
+  <!-- ── Ph.D. ─────────────────────────────── -->
+  <section class="card">
+    <h2>Ph.D. Students</h2>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Harshit Patel</strong>
-               <span style="color: var(--muted);">(24065047) (2025-26)</span>
-              <br><small>Dam Break Analysis using HEC-RAS.</small>
-            </li>
-          
-            <li>
-              <strong>Abhyudaya Singh</strong>
-               <span style="color: var(--muted);">(24065008) (2025-26)</span>
-              <br><small>Inland River Water Quality Modeling.</small>
-            </li>
-          
-            <li>
-              <strong>Ketan Kumar</strong>
-               <span style="color: var(--muted);">(24065055) (2025-26)</span>
-              <br><small>Water Quality Analysis using HEC-RAS.</small>
-            </li>
-          
-            <li>
-              <strong>Gautam Kumar</strong>
-               <span style="color: var(--muted);">(24065040) (2025-26)</span>
-              <br><small>Bridge Scour Analysis using HEC-RAS.</small>
-            </li>
-          
-            <li>
-              <strong>Aryan Gupta</strong>
-               <span style="color: var(--muted);">(24065026) (2025-26)</span>
-              <br><small>2D Sediment Transport Modelling of the Ganga River at Varanasi using HEC-RAS 6.6.</small>
-            </li>
-          
-            <li>
-              <strong>Narendra Prasad</strong>
-               <span style="color: var(--muted);">(22065058) (2025-26)</span>
-              <br><small>CFD Modeling of Bridge Pier Scour.</small>
-            </li>
-          
-            <li>
-              <strong>Arushi Aggarwal</strong>
-               <span style="color: var(--muted);">(23064002) (2025-26)</span>
-              <br><small>Geomorphological Analysis.</small>
-            </li>
-          
-            <li>
-              <strong>Abhishek Sharma</strong>
-               <span style="color: var(--muted);">(23065006) (2025-26)</span>
-              <br><small>Forecasting of River Sinuosity using Remote Sensing and Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Bishal Das</strong>
-               <span style="color: var(--muted);">(23065032) (2025-26)</span>
-              <br><small>DSSAT Crop Simulation.</small>
-            </li>
-          
-            <li>
-              <strong>Chandraveer Singh</strong>
-               <span style="color: var(--muted);">(23065035) (2025-26)</span>
-              <br><small>Forecasting of River Sinuosity using Remote Sensing and Machine Learning.</small>
-            </li>
-          
-            <li>
-              <strong>Vaibhav Rajvardhan</strong>
-               <span style="color: var(--muted);">(23065110) (2025-26)</span>
-              <br><small>2D Hydraulic Simulation and Inundation Mapping of the Hirakud Dam Breach.</small>
-            </li>
-          
-            <li>
-              <strong>Mayank Singh</strong>
-               <span style="color: var(--muted);">(23065124) (2025-26)</span>
-              <br><small>Sub-daily Rainfall Analysis over Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Nitish Kumar Maurya</strong>
-               <span style="color: var(--muted);">(20065067), Umesh Harsana (20065109) (2024-25)</span>
-              <br><small>River Meandering Analysis Project.</small>
-            </li>
-          
-            <li>
-              <strong>Dinesh Singh</strong>
-               <span style="color: var(--muted);">(20065035), Harshit Bangari (20065041), Bhuvnesh Gaur (20065030) (2024-25)</span>
-              <br><small>Flood Risk Zone Mapping using ArcGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Mayank Mani Nath Gupta</strong>
-               <span style="color: var(--muted);">(21065127) (2024-25)</span>
-              <br><small>River Extraction using Image Processing and QGIS using Python.</small>
-            </li>
-          
-            <li>
-              <strong>Saatwiik Srivastava</strong>
-               <span style="color: var(--muted);">(21065091) (2024-25)</span>
-              <br><small>Rainfall–Runoff Modeling using ANN.</small>
-            </li>
-          
-            <li>
-              <strong>Vishal Yadav</strong>
-               <span style="color: var(--muted);">(21065113) (2024-25)</span>
-              <br><small>River Boundary Extraction using Image Processing and QGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Aditi Gupta</strong>
-               <span style="color: var(--muted);">(21065006) (2024-25)</span>
-              <br><small>Monthly Discharge Estimation using Image Processing.</small>
-            </li>
-          
-            <li>
-              <strong>Shridhar Kumar</strong>
-               <span style="color: var(--muted);">(21065100) (2024-25)</span>
-              <br><small>Application of ANN in Rainfall–Runoff Modeling.</small>
-            </li>
-          
-            <li>
-              <strong>Aman Mani Shandilya</strong>
-               <span style="color: var(--muted);">(22065012) (2025)</span>
-              <br><small>River Extraction and Analysis using Image Processing and QGIS.</small>
-            </li>
-          
-            <li>
-              <strong>Sanyam Jain</strong>
-               <span style="color: var(--muted);">(22065118) (2025)</span>
-              <br><small>Application of ANN in Rainfall–Runoff Modeling.</small>
-            </li>
-          
-            <li>
-              <strong>Harsh Pant</strong>
-               <span style="color: var(--muted);">(22065128), Aditya Maurya (22065122) (2025)</span>
-              <br><small>Analysis of NCEP Global Forecast Data.</small>
-            </li>
-          
-            <li>
-              <strong>Chandraveer Singh</strong>
-               <span style="color: var(--muted);">(23065035) (2025)</span>
-              <br><small>Topic under progress.</small>
-            </li>
-          
-            <li>
-              <strong>Danish Dubey</strong>
-               <span style="color: var(--muted);">(23065038) (2025)</span>
-              <br><small>CFD Modeling of Varuna River Basin.</small>
-            </li>
-          
-            <li>
-              <strong>Harsh Suryawanshi</strong>
-               <span style="color: var(--muted);">(23065051) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Sachin</strong>
-               <span style="color: var(--muted);">(23065092) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Vaibhav Rajvardhan</strong>
-               <span style="color: var(--muted);">(23065110) (2025)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-            <li>
-              <strong>Mahesh Chandra Verma, Nishant Rai, Balram Yogi, Kuldeep Bhamu</strong>
-               <span style="color: var(--muted);">(2020)</span>
-              <br><small>Impact of Climate Change on Water Resources using Artificial Neural Network (ANN).</small>
-            </li>
-          
-            <li>
-              <strong>Anitya Sagar, Pulkit Garg, Abhay Singh, Umesh Karna</strong>
-               <span style="color: var(--muted);">(2021)</span>
-              <br><small>Design of Rainwater Harvesting Structure for MNNIT Allahabad Campus.</small>
-            </li>
-          
-            <li>
-              <strong>Shiv Virendra Chaubey, Ajit Kumar, Aditya Kumar, Shubham Kumar Singh</strong>
-               <span style="color: var(--muted);">(2022)</span>
-              <br><small>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin, Odisha.</small>
-            </li>
-          
-        </ul>
-      
+    <span class="section-label label-phd label-ongoing">&#9679; Ongoing</span>
+    <div class="student-grid">
+      <div class="student-card ongoing">
+        <div class="student-name">Saurabh Maurya</div>
+        <span class="student-period">2025 – Ongoing</span>
+        <div class="student-topic">Air Pollution and Crop Yield</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Vineet Jain</div>
+        <span class="student-period">2025 – Ongoing</span>
+        <div class="student-topic">Pollution Dispersion in Ground Water</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Maniranjan Kumar</div>
+        <span class="student-period">2022 – Ongoing</span>
+        <div class="student-topic">Comprehensive Assessment of Groundwater in Tropical River Basins using Machine Learning and SWAT Model</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Megavath Narahari</div>
+        <span class="student-period">2021 – Ongoing</span>
+        <div class="student-topic">Effects of Climate Change on Water Quality</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Krishna Kumar</div>
+        <span class="student-period">2022 – Ongoing</span>
+        <div class="student-topic">Crop Yield Estimation and Forecasting using Machine Learning</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Hari Prakash</div>
+        <span class="student-period">2023 – Ongoing</span>
+        <div class="student-topic">Peak Discharge Estimation for Ungauged Basins</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Ashwin Chitravanshi</div>
+        <span class="student-period">2023 – Ongoing</span>
+        <div class="student-topic">Water Quality Modeling for Varuna River Basin</div>
+      </div>
     </div>
-  
-    <div class="item">
-      <h3>External Thesis (BITS Pilani)</h3>
+  </section>
 
-      
-        <ul>
-          
-            <li>
-              <strong>Nimish Tiwari</strong>
-               <span style="color: var(--muted);">(2022A2PS1449H) (2026)</span>
-              <br><small>Prediction of Water Quality Parameters of the Varuna River Basin using Remote Sensing and Machine Learning. Co-supervisor with Prof. Abhradeep Majumder (BITS Pilani).</small>
-            </li>
-          
-        </ul>
-      
+  <!-- ── M.Tech. ────────────────────────────── -->
+  <section class="card">
+    <h2>M.Tech. Students</h2>
+
+    <span class="section-label label-mtech label-ongoing">&#9679; Ongoing</span>
+    <div class="student-grid">
+      <div class="student-card ongoing">
+        <div class="student-name">Ritika Upadhyay</div>
+        <span class="student-period">2024 – Ongoing</span>
+        <div class="student-topic">Impact of Pollution on Rainfall Characteristics</div>
+        <div class="student-note">Co-supervisor (External with BHU)</div>
+      </div>
+      <div class="student-card ongoing">
+        <div class="student-name">Makardhwaj Awasthi</div>
+        <span class="student-period">2024 – Ongoing</span>
+        <div class="student-topic">Atmospheric–Rainfall Interaction Analysis</div>
+        <div class="student-note">Co-supervisor (External with BHU)</div>
+      </div>
     </div>
-  
-</section>
+
+    <span class="section-label label-mtech label-completed" style="margin-top:18px;">&#10003; Completed</span>
+    <div class="student-grid">
+      <div class="student-card completed">
+        <div class="student-name">Buddepu Harsha Vardhan</div>
+        <span class="student-period">2023 – 2025</span>
+        <div class="student-topic">A Comparative Evaluation of WRF and ANN for Weather Prediction: Performance and Accuracy</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Saurabh Maurya</div>
+        <span class="student-period">2023 – 2025</span>
+        <div class="student-topic">Investigation of Microphysical Characteristics of Raindrop Size Distribution using WRF Model</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Raju Singh</div>
+        <span class="student-period">2023 – 2025</span>
+        <div class="student-topic">Estimation of Surface Velocity in Open Channel Flows using Image Processing</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Shailesh Kushwaha</div>
+        <span class="student-period">2023 – 2025</span>
+        <div class="student-topic">Seasonal Forecasting of Crop Yield over Varuna River Basin</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Tripti Yadav</div>
+        <span class="student-period">2023 – 2025</span>
+        <div class="student-topic">Estimation of E-Flow for Varuna River Basin</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Shadab Ansari</div>
+        <span class="student-period">2020</span>
+        <div class="student-topic">Single and Dual Frequency Atmospheric Free Precise Point Positioning using Combined GPS and GLONASS Observations</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Prity Dhanai</div>
+        <span class="student-period">2021</span>
+        <div class="student-topic">Rainfall Triggered Slope Instability Analysis with Changing Climate</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Pankaj Singh</div>
+        <span class="student-period">2021</span>
+        <div class="student-topic">Spatiotemporal Prediction of Criteria Air Pollutants using Air Pollution Monitoring Station Data</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Shubham Khare</div>
+        <span class="student-period">2022</span>
+        <div class="student-topic">Effects of COVID-19 Lockdown on Meteorological Variables over India</div>
+      </div>
+      <div class="student-card completed">
+        <div class="student-name">Anandita Raj</div>
+        <span class="student-period">2022</span>
+        <div class="student-topic">Impacts of Climate Change on Water Quality for Krishna River Basin</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── B.Tech. ────────────────────────────── -->
+  <section class="card">
+    <h2>B.Tech. Projects</h2>
+
+    <span class="section-label label-btech label-ongoing">&#9679; 2025–26</span>
+    <table class="btech-table">
+      <tr><td>Harshit Patel (24065047)</td><td>Dam Break Analysis using HEC-RAS</td></tr>
+      <tr><td>Abhyudaya Singh (24065008)</td><td>Inland River Water Quality Modeling</td></tr>
+      <tr><td>Ketan Kumar (24065055)</td><td>Water Quality Analysis using HEC-RAS</td></tr>
+      <tr><td>Gautam Kumar (24065040)</td><td>Bridge Scour Analysis using HEC-RAS</td></tr>
+      <tr><td>Aryan Gupta (24065026)</td><td>2D Sediment Transport Modelling of Ganga River at Varanasi using HEC-RAS 6.6</td></tr>
+      <tr><td>Narendra Prasad (22065058)</td><td>CFD Modeling of Bridge Pier Scour</td></tr>
+      <tr><td>Arushi Aggarwal (23064002)</td><td>Geomorphological Analysis</td></tr>
+      <tr><td>Abhishek Sharma (23065006)</td><td>Forecasting of River Sinuosity using Remote Sensing and Machine Learning</td></tr>
+      <tr><td>Bishal Das (23065032)</td><td>DSSAT Crop Simulation</td></tr>
+      <tr><td>Chandraveer Singh (23065035)</td><td>Forecasting of River Sinuosity using Remote Sensing and Machine Learning</td></tr>
+      <tr><td>Vaibhav Rajvardhan (23065110)</td><td>2D Hydraulic Simulation and Inundation Mapping of the Hirakud Dam Breach</td></tr>
+      <tr><td>Mayank Singh (23065124)</td><td>Sub-daily Rainfall Analysis over Varuna River Basin</td></tr>
+    </table>
+
+    <span class="section-label label-btech label-completed" style="margin-top:18px;">&#10003; 2024–25</span>
+    <table class="btech-table">
+      <tr><td>Nitish Kumar Maurya (20065067), Umesh Harsana (20065109)</td><td>River Meandering Analysis Project</td></tr>
+      <tr><td>Dinesh Singh, Harshit Bangari, Bhuvnesh Gaur</td><td>Flood Risk Zone Mapping using ArcGIS</td></tr>
+      <tr><td>Mayank Mani Nath Gupta (21065127)</td><td>River Extraction using Image Processing and QGIS using Python</td></tr>
+      <tr><td>Saatwiik Srivastava (21065091)</td><td>Rainfall–Runoff Modeling using ANN</td></tr>
+      <tr><td>Vishal Yadav (21065113)</td><td>River Boundary Extraction using Image Processing and QGIS</td></tr>
+      <tr><td>Aditi Gupta (21065006)</td><td>Monthly Discharge Estimation using Image Processing</td></tr>
+      <tr><td>Shridhar Kumar (21065100)</td><td>Application of ANN in Rainfall–Runoff Modeling</td></tr>
+    </table>
+
+    <span class="section-label label-btech label-completed" style="margin-top:18px;">&#10003; 2020–2022</span>
+    <table class="btech-table">
+      <tr><td>Mahesh Chandra Verma, Nishant Rai, Balram Yogi, Kuldeep Bhamu (2020)</td><td>Impact of Climate Change on Water Resources using ANN</td></tr>
+      <tr><td>Anitya Sagar, Pulkit Garg, Abhay Singh, Umesh Karna (2021)</td><td>Design of Rainwater Harvesting Structure for MNNIT Allahabad Campus</td></tr>
+      <tr><td>Shiv Virendra Chaubey, Ajit Kumar, Aditya Kumar, Shubham Kumar Singh (2022)</td><td>Impact of Climate Change on Water Footprint and Crop Yield over Mahanadi Basin</td></tr>
+    </table>
+  </section>
+
+  <!-- ── External ───────────────────────────── -->
+  <section class="card">
+    <h2>External Thesis</h2>
+    <span class="section-label label-ext">BITS Pilani</span>
+    <div class="student-grid">
+      <div class="student-card ongoing">
+        <div class="student-name">Nimish Tiwari <small style="font-weight:400">(2022A2PS1449H)</small></div>
+        <span class="student-period">2026</span>
+        <div class="student-topic">Prediction of Water Quality Parameters of the Varuna River Basin using Remote Sensing and Machine Learning</div>
+        <div class="student-note">Co-supervisor with Prof. Abhradeep Majumder (BITS Pilani)</div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
   <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
   &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
 </footer>
-
 </body>
 </html>
