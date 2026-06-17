@@ -1,10 +1,140 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Research | Dr. Pramod Soni</title>
+  <title>Other Activities | Dr. Pramod Soni</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .other-hero {
+      background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .other-hero h1 { color: white; font-size: 1.7rem; margin-bottom: 6px; }
+    .other-hero p  { color: rgba(255,255,255,.82); margin: 0; font-size: .95rem; }
+    .stat-row { display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap; }
+    .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
+    .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* Talk cards */
+    .talk-card {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+      line-height: 1.55;
+    }
+    .talk-card:last-child { border-bottom: none; }
+    .talk-year {
+      min-width: 44px;
+      font-size: .75rem;
+      font-weight: 700;
+      color: white;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 3px 0;
+      text-align: center;
+      height: fit-content;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .talk-body .talk-title { font-weight: 600; color: var(--text); }
+    .talk-body .talk-venue { font-size: .82rem; color: var(--muted); margin-top: 3px; }
+
+    /* Skill chips */
+    .skill-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .skill-chip {
+      display: inline-block;
+      background: #f1f5f9;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 14px;
+      font-size: .82rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .skill-chip.highlight { background: #dbeafe; border-color: #bfdbfe; color: #1d4ed8; }
+
+    /* Award cards */
+    .award-card {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: flex-start;
+    }
+    .award-card:last-child { border-bottom: none; }
+    .award-year {
+      min-width: 44px;
+      font-size: .75rem;
+      font-weight: 700;
+      background: #fef9c3;
+      color: #92400e;
+      border-radius: 999px;
+      padding: 3px 0;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .award-body { font-size: .9rem; line-height: 1.5; color: var(--text); }
+
+    /* Membership cards */
+    .membership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .membership-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .membership-card .mem-name { font-weight: 600; font-size: .92rem; color: var(--text); }
+    .membership-card .mem-id   { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+
+    /* News links */
+    .news-card {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: flex-start;
+    }
+    .news-card:last-child { border-bottom: none; }
+    .news-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+    .news-card a { font-size: .9rem; font-weight: 500; color: var(--accent); text-decoration: none; }
+    .news-card a:hover { text-decoration: underline; }
+    .news-card .news-src { font-size: .78rem; color: var(--muted); margin-top: 3px; }
+
+    /* STP / programme list */
+    .prog-list { list-style: none; padding: 0; margin: 0; }
+    .prog-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: .9rem;
+    }
+    .prog-list li:last-child { border-bottom: none; }
+    .prog-list li::before {
+      content: "&#9656;";
+      color: var(--accent);
+      font-size: .8rem;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+  </style>
 </head>
 <script>
 (function () {
@@ -40,154 +170,230 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <main class="wrap">
 
+  <div class="other-hero">
+    <h1>Other Activities</h1>
+    <p>Awards, expert lectures, professional memberships &amp; outreach</p>
+    <div class="stat-row">
+      <div><div class="n">7</div><div class="l">Awards</div></div>
+      <div><div class="n">9+</div><div class="l">Expert Talks</div></div>
+      <div><div class="n">3</div><div class="l">Memberships</div></div>
+    </div>
+  </div>
+
+  <!-- Awards -->
   <section class="card">
-    <h2>New Media & Digital Outreach</h2>
-    <ul>
-      <li><strong>Smart Laboratory on Clean Rivers:</strong>
-        <ul>
-          <li>
-            <a href="https://infra.economictimes.indiatimes.com/news/water/india-denmark-launch-smart-laboratory-on-clean-rivers/112703686" target="_blank">
-              India, Denmark launch Smart Laboratory on Clean Rivers
-            </a>
-          </li>
-          <li>
-            <a href="https://www.domain-b.com/environment-1/india-denmark-partner-to-rejuvenate-river-varuna" target="_blank">
-              India, Denmark partner to rejuvenate river Varuna
-            </a>
-          </li>
-          <li>
-            <a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2047505&reg=3&lang=2" target="_blank">
-              Strategic Alliance between NMCG, IIT (BHU) and Denmark unveils innovative Smart Laboratory on Clean Rivers (SLCR) Project in Varanasi
-            </a>
-          </li>
-        </ul>
-      </li>
+    <h2>Awards &amp; Achievements</h2>
+
+    <div class="award-card">
+      <span class="award-year">2016</span>
+      <div class="award-body">&#127942; <strong>Certificate of Appreciation</strong> — from Director, IIT Kanpur for receiving excellent student feedback during the summer course ESO208A (Introduction to Numerical Methods and Analysis).</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2015</span>
+      <div class="award-body">&#127942; <strong>Best Poster Award</strong> — Monsoon Simulation and Prediction category, Annual Monsoon Workshop Pune (IMSP), India Institute of Tropical Meteorology (IITM), Pune.</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2014–16</span>
+      <div class="award-body">&#127942; <strong>Winner, Institute Pool Championship</strong> — IIT Kanpur (three consecutive years).</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2012</span>
+      <div class="award-body">&#127942; <strong>Academic Excellence Achievement Award</strong> — Highest CPI during M.Tech in Civil Engineering, IIT Kanpur.</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2011</span>
+      <div class="award-body">&#127942; <strong>First Prize, Snooker Inter-Hall Tournament</strong> — IIT Kanpur.</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2011</span>
+      <div class="award-body">&#127942; <strong>DAAD Masters Sandwich Program</strong> — Awarded DAAD Scholarship for research visit to KIT-IMK-IFU, Garmisch, Germany.</div>
+    </div>
+    <div class="award-card">
+      <span class="award-year">2010</span>
+      <div class="award-body">&#127942; <strong>Second Prize, Billiards Inter-Hall Tournament</strong> — IIT Kanpur.</div>
+    </div>
+  </section>
+
+  <!-- Expert Lectures -->
+  <section class="card">
+    <h2>Expert Lectures &amp; Talks</h2>
+
+    <div class="talk-card">
+      <span class="talk-year">2026</span>
+      <div class="talk-body">
+        <div class="talk-title">Estimation of Scour Depth for Large Bridges over Alluvial Rivers</div>
+        <div class="talk-venue">INFRA-IMPACT: Integrated Training on Bridge and Pavement Design, Inspection, Monitoring, Performance Assessment &amp; Capacity Building &mdash; IIT Patna, for engineers of the Rural Works Department, Government of Bihar (10 January 2026)</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2025</span>
+      <div class="talk-body">
+        <div class="talk-title">Forecasting Hydrological Events Using SWAT-GFS Models and Their Role in Decision Support Systems for Water Resource Management</div>
+        <div class="talk-venue">Shelter Academy 2025 (International Program), via Microsoft Teams &mdash; Arcadis–UN-Habitat–UNHCR Consortium</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2022</span>
+      <div class="talk-body">
+        <div class="talk-title">Site Visit to Sewage Treatment Plant (STP)</div>
+        <div class="talk-venue">Novel Approaches in Wastewater Treatment (NAWT-2022)</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2022</span>
+      <div class="talk-body">
+        <div class="talk-title">World Water Day Webinar on Water Conservation and Rain Water Harvesting</div>
+        <div class="talk-venue">Lakshya NGO, Lucknow (2022)</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2022</span>
+      <div class="talk-body">
+        <div class="talk-title">Session Chair — 54th Annual Convention and Exhibition</div>
+        <div class="talk-venue">IWWA Lucknow and Prayagraj Centres, Lucknow</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2021</span>
+      <div class="talk-body">
+        <div class="talk-title">National Innovation and Start-up Policy (NISP): Guiding Framework for HEIs</div>
+        <div class="talk-venue">Sadanlal Savaldas Khanna Girls Degree College</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2019</span>
+      <div class="talk-body">
+        <div class="talk-title">Basics of Linux and MATLAB; InSAR: Theory, Processing and Application</div>
+        <div class="talk-venue">Short Term Programme, MNNIT Allahabad (2019)</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2019</span>
+      <div class="talk-body">
+        <div class="talk-title">Numerical Modeling using Finite Difference Methods, Numerical and Optimization Techniques</div>
+        <div class="talk-venue">NOT-2019, MNNIT Allahabad</div>
+      </div>
+    </div>
+
+    <div class="talk-card">
+      <span class="talk-year">2018–19</span>
+      <div class="talk-body">
+        <div class="talk-title">Waste Management Programme</div>
+        <div class="talk-venue">Green Skill Development Program, Ministry of Environment, Forest and Climate Change &mdash; AFRI, Jodhpur</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Short Term Programmes -->
+  <section class="card">
+    <h2>Short-Term Programmes Organised</h2>
+    <ul class="prog-list">
+      <li>Numerical and Optimization Techniques (NOT-2019)</li>
+      <li>Online Numerical and Optimization Techniques (NOT-2020)</li>
+      <li>Novel Approaches in Wastewater Treatment (NAWT-2022)</li>
+      <li>Drought and Flood Management (DAM-22)</li>
+      <li>National Brainstorming Workshop: People's Varuna — Culturally Connecting with the River</li>
     </ul>
   </section>
 
+  <!-- Professional Memberships -->
   <section class="card">
     <h2>Professional Memberships</h2>
-    <ul>
-      
-        <li>Life Member, Indian Desalination Association (LM-534)</li>
-      
-        <li>Life Member, Indian Concrete Institute (LM-13152)</li>
-      
-        <li>Life Member, Indian Water Works Association (LM-10249)</li>
-      
-    </ul>
+    <div class="membership-grid">
+      <div class="membership-card">
+        <div class="mem-name">Indian Desalination Association</div>
+        <div class="mem-id">Life Member &mdash; LM-534</div>
+      </div>
+      <div class="membership-card">
+        <div class="mem-name">Indian Concrete Institute</div>
+        <div class="mem-id">Life Member &mdash; LM-13152</div>
+      </div>
+      <div class="membership-card">
+        <div class="mem-name">Indian Water Works Association</div>
+        <div class="mem-id">Life Member &mdash; LM-10249</div>
+      </div>
+    </div>
   </section>
 
+  <!-- Skills -->
   <section class="card">
     <h2>Skills</h2>
-    <ul>
-      
-        <li>
-          <strong>Languages</strong><br>
-          <span>Strong reading, writing and speaking competencies for English.</span>
-        </li>
-      
-        <li>
-          <strong>Coding</strong><br>
-          <span>Java, PHP, Python, R, LaTeX, ldots</span>
-        </li>
-      
-        <li>
-          <strong>Web Dev</strong><br>
-          <span>Html, css, JavaScript.</span>
-        </li>
-      
-        <li>
-          <strong>Misc.</strong><br>
-          <span>Academic research, teaching, training, consultation, typesetting and publishing.</span>
-        </li>
-      
-    </ul>
+    <p style="font-size:.88rem; color:var(--muted); margin-bottom:14px;">Software, programming languages, and technical competencies:</p>
+
+    <h3 style="font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 8px;">Hydrological &amp; Hydraulic Modelling</h3>
+    <div class="skill-grid">
+      <span class="skill-chip highlight">HEC-RAS</span>
+      <span class="skill-chip highlight">SWAT</span>
+      <span class="skill-chip highlight">WRF / WRF-Chem</span>
+      <span class="skill-chip highlight">HEC-HMS</span>
+      <span class="skill-chip">EPANET</span>
+      <span class="skill-chip">EPA SWMM</span>
+    </div>
+
+    <h3 style="font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:16px 0 8px;">GIS &amp; Remote Sensing</h3>
+    <div class="skill-grid">
+      <span class="skill-chip highlight">Google Earth Engine</span>
+      <span class="skill-chip highlight">QGIS</span>
+      <span class="skill-chip">ArcGIS</span>
+      <span class="skill-chip">ERDAS</span>
+    </div>
+
+    <h3 style="font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:16px 0 8px;">Programming &amp; Data</h3>
+    <div class="skill-grid">
+      <span class="skill-chip highlight">Python</span>
+      <span class="skill-chip highlight">R</span>
+      <span class="skill-chip">MATLAB</span>
+      <span class="skill-chip">Java</span>
+      <span class="skill-chip">PHP</span>
+      <span class="skill-chip">LaTeX</span>
+      <span class="skill-chip">HTML / CSS / JavaScript</span>
+    </div>
+
+    <h3 style="font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:16px 0 8px;">Languages</h3>
+    <div class="skill-grid">
+      <span class="skill-chip">English (Proficient)</span>
+      <span class="skill-chip">Hindi (Native)</span>
+    </div>
   </section>
 
+  <!-- Media & Outreach -->
   <section class="card">
-    <h2>Expert Lectures / Talks</h2>
-    <ul>
-      
-        <li>Expert Lecture on &#34;Estimation of Scour Depth for Large Bridges over Alluvial Rivers&#34;, delivered under the training program {INFRA-IMPACT: Integrated Training on Bridge and Pavement Design, Inspection, Monitoring, Performance Assessment &amp; Capacity Building}, organized by IIT Patna for engineers of the Rural Works Department, Government of Bihar (10 January 2026)</li>
-      
-        <li>Expert Lecture on &#34;Forecasting Hydrological Events Using SWAT-GFS Models and Their Role in Decision Support Systems for Water Resource Management&#34;, Shelter Academy 2025 (International Program), via Microsoft Teams, organized by Arcadis–UN-Habitat–UNHCR Consortium (2025)</li>
-      
-        <li>Waste management program under the Green Skill Development Program, Ministry of Environment, Forest and Climate Change, AFRI, Jodhpur (2018–2019)</li>
-      
-        <li>Basics of Linux and MATLAB, InSAR: Theory, Processing and Application (2019)</li>
-      
-        <li>Numerical Modeling using Finite Difference Methods, Numerical and Optimization Techniques (NOT-2019)</li>
-      
-        <li>National Innovation and Start-up Policy (NISP): Guiding Framework for HEIs, Sadanlal Savaldas Khanna Girls Degree College</li>
-      
-        <li>Site Visit to Sewage Treatment Plant (STP), NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li>
-      
-        <li>World Water Day Webinar on Water Conservation and Rain Water Harvesting, Lakshya NGO Lucknow (2022) % Conference Session Chaired</li>
-      
-        <li>Chaired session in 54th Annual Convention and Exhibition at Lucknow hosted by IWWA Lucknow and Prayagraj Centres</li>
-      
-    </ul>
-  </section>
+    <h2>Media &amp; Digital Outreach</h2>
+    <p style="font-size:.88rem; color:var(--muted); margin-bottom:12px;">News coverage and press releases related to research and projects:</p>
 
-  <section class="card">
-    <h2>Short Term Programmes / STP</h2>
-    <ul>
-      
-        <li>Numerical and Optimization Techniques (NOT-2019)</li>
-      
-        <li>Online Numerical and Optimization Techniques (NOT-2020)</li>
-      
-        <li>NOVEL APPROACHES IN WASTEWATER TREATMENT (NAWT-2022)</li>
-      
-        <li>DROUGHT AND FLOOD MANAGEMENT (DAM-22)</li>
-      
-        <li>National Brainstorming Workshop: People’s Varuna: Culturally Connecting with the River</li>
-      
-    </ul>
-  </section>
+    <div class="news-card">
+      <span class="news-icon">&#128240;</span>
+      <div>
+        <a href="https://infra.economictimes.indiatimes.com/news/water/india-denmark-launch-smart-laboratory-on-clean-rivers/112703686" target="_blank" rel="noreferrer">India, Denmark launch Smart Laboratory on Clean Rivers</a>
+        <div class="news-src">Economic Times Infrastructure</div>
+      </div>
+    </div>
 
-<section class="card">
-  <h2>Awards & Achievements</h2>
-  <ul>
-    
-      <li>
-        <strong>2016</strong> – Certificate of Appreciation, from Director, IIT Kanpur for receiving excellent feedback from students during the summer course ESO208A (Introduction to Numerical Methods and Analysis).
-      </li>
-    
-      <li>
-        <strong>2015</strong> – Best Poster Award, in category Monsoon Simulation and Prediction at Annual Monsoon Workshop Pune (IMSP), organized by India Institute of Tropical Meteorology (IITM), Pune.
-      </li>
-    
-      <li>
-        <strong>2014, 2015, 2016</strong> – Winner, Institute Pool Championship, IIT Kanpur.
-      </li>
-    
-      <li>
-        <strong>2012</strong> – Academic Excellence Achievement Award, for highest CPI during M.Tech in Civil Engineering, IIT Kanpur.
-      </li>
-    
-      <li>
-        <strong>2011</strong> – First Prize, Snooker Inter-Hall Tournament, IIT Kanpur.
-      </li>
-    
-      <li>
-        <strong>2011</strong> – DAAD Masters Sandwich Program, Awarded DAAD Scholarship.
-      </li>
-    
-      <li>
-        <strong>2010</strong> – Second Prize, Billiards Inter-Hall Tournament, IIT Kanpur.
-      </li>
-    
-  </ul>
-</section>
+    <div class="news-card">
+      <span class="news-icon">&#128240;</span>
+      <div>
+        <a href="https://www.domain-b.com/environment-1/india-denmark-partner-to-rejuvenate-river-varuna" target="_blank" rel="noreferrer">India, Denmark partner to rejuvenate river Varuna</a>
+        <div class="news-src">domain-b.com</div>
+      </div>
+    </div>
+
+    <div class="news-card">
+      <span class="news-icon">&#127963;</span>
+      <div>
+        <a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2047505&reg=3&lang=2" target="_blank" rel="noreferrer">Strategic Alliance between NMCG, IIT (BHU) and Denmark unveils innovative Smart Laboratory on Clean Rivers (SLCR) Project in Varanasi</a>
+        <div class="news-src">Press Information Bureau (PIB), Government of India</div>
+      </div>
+    </div>
+  </section>
 
 </main>
-
-<footer class="wrap footer">
-  <small>© Dr. Pramod Soni</small>
-</footer>
-
 
 <footer class="site-footer">
   <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
