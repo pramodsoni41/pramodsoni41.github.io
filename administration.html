@@ -1,13 +1,65 @@
-﻿<!doctype html>
-
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Administration | Dr. Pramod Soni</title>
   <link rel="stylesheet" href="style.css"/>
-</head>
+  <style>
+    .admin-hero {
+      background: linear-gradient(135deg, #0f4c75 0%, #1b6ca8 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .admin-hero h1 { color: white; font-size: 1.7rem; margin-bottom: 6px; }
+    .admin-hero p  { color: rgba(255,255,255,.82); margin: 0; font-size: .95rem; }
+    .stat-row { display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap; }
+    .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
+    .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
 
+    .inst-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .inst-badge {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 999px;
+    }
+    .badge-iitbhu  { background: #dbeafe; color: #1d4ed8; }
+    .badge-nitjsr  { background: #dcfce7; color: #15803d; }
+    .badge-mnnit   { background: #ede9fe; color: #6d28d9; }
+    .badge-iitk    { background: #fef9c3; color: #92400e; }
+
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .role-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: .88rem;
+      color: var(--text);
+      line-height: 1.45;
+    }
+    .role-card .role-icon {
+      font-size: .95rem;
+      margin-right: 4px;
+    }
+  </style>
+</head>
 <script>
 (function () {
   var links = document.querySelectorAll('.nav-links a');
@@ -42,118 +94,87 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <main class="wrap">
 
+  <div class="admin-hero">
+    <h1>Administration</h1>
+    <p>Institutional roles, committee memberships &amp; academic responsibilities</p>
+    <div class="stat-row">
+      <div><div class="n">4</div><div class="l">Institutes</div></div>
+      <div><div class="n">14+</div><div class="l">Roles at IIT BHU</div></div>
+      <div><div class="n">2023</div><div class="l">IIT BHU Since</div></div>
+    </div>
+  </div>
 
+  <!-- IIT BHU -->
+  <section class="card">
+    <div class="inst-header">
+      <h2 style="margin:0;">IIT (BHU) Varanasi</h2>
+      <span class="inst-badge badge-iitbhu">2023 &ndash; Present</span>
+    </div>
+    <div class="role-grid">
+      <div class="role-card"><span class="role-icon">&#127963;</span><strong>PI, Ganga Research Laboratory</strong><br>Department of Civil Engineering (2023–)</div>
+      <div class="role-card"><span class="role-icon">&#127968;</span><strong>Warden</strong><br>A. S. N. Bose Hostel (2024–)</div>
+      <div class="role-card"><span class="role-icon">&#128110;</span><strong>Proctor</strong><br>IIT (BHU) (2024–)</div>
+      <div class="role-card"><span class="role-icon">&#127881;</span><strong>Chairman, Technex-26</strong><br>IIT (BHU) Varanasi</div>
+      <div class="role-card"><span class="role-icon">&#128499;</span><strong>Deputy Chief Election Officer</strong><br>Student Parliament Elections, 2024–25 &amp; 2025–26</div>
+      <div class="role-card"><span class="role-icon">&#128101;</span><strong>Member, Faculty Forum</strong><br>2026–2027</div>
+      <div class="role-card"><span class="role-icon">&#128202;</span><strong>PI, Time Table</strong><br>Department of Civil Engineering (2023–25)</div>
+      <div class="role-card"><span class="role-icon">&#128203;</span><strong>Examination In-Charge</strong><br>Department of Civil Engineering (2023–25)</div>
+      <div class="role-card"><span class="role-icon">&#128197;</span><strong>Member, Time Table Committee</strong><br>Department of Civil Engineering (2023–25)</div>
+      <div class="role-card"><span class="role-icon">&#127760;</span><strong>Member, Departmental Website Committee</strong><br>Department of Civil Engineering (2023–)</div>
+      <div class="role-card"><span class="role-icon">&#128218;</span><strong>Member, UG Core Courses Committee</strong><br>IIT (BHU) (2023–24)</div>
+      <div class="role-card"><span class="role-icon">&#127979;</span><strong>Counselor, SNTC</strong><br>IIT (BHU) Varanasi (2025–)</div>
+      <div class="role-card"><span class="role-icon">&#128196;</span><strong>Member, IALS</strong><br>IIT (BHU) Varanasi (2025–)</div>
+      <div class="role-card"><span class="role-icon">&#127942;</span><strong>Member, Festival Committee</strong><br>IIT (BHU) (2025–)</div>
+    </div>
+  </section>
 
- <section class="card"> <h2>IIT (BHU) Varanasi (2023–Present)</h2>
+  <!-- NIT Jamshedpur -->
+  <section class="card">
+    <div class="inst-header">
+      <h2 style="margin:0;">NIT Jamshedpur</h2>
+      <span class="inst-badge badge-nitjsr">2022 &ndash; 2023</span>
+    </div>
+    <div class="role-grid">
+      <div class="role-card"><span class="role-icon">&#128203;</span><strong>Co-Faculty In-Charge, Examination</strong></div>
+      <div class="role-card"><span class="role-icon">&#127934;</span><strong>Faculty In-Charge, Lawn Tennis</strong></div>
+      <div class="role-card"><span class="role-icon">&#128202;</span><strong>Coordinator, AISHE</strong></div>
+      <div class="role-card"><span class="role-icon">&#128187;</span><strong>PI, CAD Lab</strong><br>Civil Engineering</div>
+      <div class="role-card"><span class="role-icon">&#127979;</span><strong>Faculty Advisor, Final Year</strong><br>Department of Civil Engineering</div>
+    </div>
+  </section>
 
+  <!-- MNNIT -->
+  <section class="card">
+    <div class="inst-header">
+      <h2 style="margin:0;">MNNIT Allahabad</h2>
+      <span class="inst-badge badge-mnnit">2019 &ndash; 2022</span>
+    </div>
+    <div class="role-grid">
+      <div class="role-card"><span class="role-icon">&#128187;</span><strong>Officer-in-Charge</strong><br>CAD Lab, WRE Lab, Survey Lab &mdash; Civil Engineering</div>
+      <div class="role-card"><span class="role-icon">&#127934;</span><strong>Faculty Coordinator, Tennis</strong></div>
+      <div class="role-card"><span class="role-icon">&#128197;</span><strong>Member, Time Table Committee</strong></div>
+      <div class="role-card"><span class="role-icon">&#128203;</span><strong>Member, B.Tech Project Evaluation Committee</strong></div>
+      <div class="role-card"><span class="role-icon">&#128218;</span><strong>Member, DUGC</strong><br>Departmental Undergraduate Committee</div>
+      <div class="role-card"><span class="role-icon">&#128202;</span><strong>Member, NIRF Committee</strong></div>
+      <div class="role-card"><span class="role-icon">&#127970;</span><strong>Member, TEQIP Committee</strong></div>
+      <div class="role-card"><span class="role-icon">&#127942;</span><strong>Member, NBA Committee</strong></div>
+      <div class="role-card"><span class="role-icon">&#128161;</span><strong>Startup Activity Coordinator</strong><br>Institution Innovation Council</div>
+    </div>
+  </section>
 
-  <ul>
-    
-      <li>Member, Faculty Forum 2026-2027</li>
-    
-      <li>Deupty Chief Election Officer, Student Parilament Elections, 2024-25, 2025-2026</li>
-    
-      <li>Chairman, Technex-26, IIT (BHU) Varanasi</li>
-    
-      <li>Member, Time Table Committee, Department of Civil Engineering (2023–25)</li>
-    
-      <li>Member, Departmental Website Committee, Department of Civil Engineering (2023–)</li>
-    
-      <li>Member, UG Core Courses Committee, IIT (BHU) (2023–24)</li>
-    
-      <li>Proctor, IIT (BHU) (2024–)</li>
-    
-      <li>Warden, A. S. N. Bose Hostel (2024–)</li>
-    
-      <li>PI, Time Table, Department of Civil Engineering (2023–25)</li>
-    
-      <li>Examination In-Charge, Department of Civil Engineering (2023–25)</li>
-    
-      <li>PI, Ganga Laboratory, Department of Civil Engineering (2023–)</li>
-    
-      <li>Counselor, SNTC, IIT (BHU) Varanasi (2025–)</li>
-    
-      <li>Member, IALS, IIT (BHU) Varanasi (2025–)</li>
-    
-      <li>Member, Festival Committee, IIT (BHU) (2025–)</li>
-    
-  </ul>
-
-</section>
-
-
- <section class="card"> <h2>NIT Jamshedpur (2022-2023)</h2>
-
-
-  <ul>
-    
-      <li>Co-FI, Examination</li>
-    
-      <li>FI, Lawn Tennis</li>
-    
-      <li>Coordinator, AISHE</li>
-    
-      <li>P.I. CAD Lab, Civil Engineering</li>
-    
-      <li>Faculty Advisor, Final Year, DCE</li>
-    
-  </ul>
-
-</section>
-
-
- <section class="card"> <h2>MNNIT Allahabad (2019-2022)</h2>
-
-
-  <ul>
-    
-      <li>O.C. CAD Lab, WRE Lab, SURVEY Lab, Civil Engineering</li>
-    
-      <li>Faculty Coordinator, Tennis</li>
-    
-      <li>Member, Time Table Committee,</li>
-    
-      <li>B.Tech Project Evaluation Committee,</li>
-    
-      <li>Member, DUGC</li>
-    
-      <li>Member, NIRF</li>
-    
-      <li>Member, TEQIP Committee</li>
-    
-      <li>Member,NBA Committee</li>
-    
-      <li>Startup Activity Coordinator, Institution Innovation Council</li>
-    
-  </ul>
-
-</section>
-
-
- <section class="card"> <h2>IIT Kanpur</h2>
-
-
-  <ul>
-    
-      <li>Convener, SBRA (2015-2016)</li>
-    
-      <li>In Charge, Billiard Club, Hall-4 (2012-2013)</li>
-    
-  </ul>
-
-</section>
-
-
-
-
-
+  <!-- IIT Kanpur -->
+  <section class="card">
+    <div class="inst-header">
+      <h2 style="margin:0;">IIT Kanpur</h2>
+      <span class="inst-badge badge-iitk">2010 &ndash; 2018</span>
+    </div>
+    <div class="role-grid">
+      <div class="role-card"><span class="role-icon">&#128101;</span><strong>Convener, SBRA</strong><br>Students' Badminton &amp; Recreation Association (2015–2016)</div>
+      <div class="role-card"><span class="role-icon">&#127955;</span><strong>In-Charge, Billiard Club</strong><br>Hall-4 (2012–2013)</div>
+    </div>
+  </section>
 
 </main>
-
-<footer class="wrap footer">
-  <small>© Dr. Pramod Soni • Academic Website</small>
-</footer>
-
 
 <footer class="site-footer">
   <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
