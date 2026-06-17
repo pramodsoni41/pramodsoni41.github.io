@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -61,12 +61,10 @@
   </style>
 </head>
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function(){
   var links = document.querySelectorAll('.nav-links a');
   var current = window.location.pathname.split('/').pop() || 'index.html';
   links.forEach(function(a){ if(a.getAttribute('href')===current) a.classList.add('active'); });
-})();
-document.addEventListener('DOMContentLoaded', function(){
   document.getElementById('navToggle').addEventListener('click', function(){
     document.getElementById('navLinks').classList.toggle('open');
   });
@@ -182,3 +180,4 @@ document.addEventListener('DOMContentLoaded', function(){
 </footer>
 </body>
 </html>
+
