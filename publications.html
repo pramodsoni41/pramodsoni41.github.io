@@ -19,7 +19,7 @@
     .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
     .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
 
-    .pub-type-label {
+    .section-label-pub {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -29,30 +29,27 @@
       text-transform: uppercase;
       padding: 3px 12px;
       border-radius: 999px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .label-journal   { background: #dbeafe; color: #1d4ed8; }
-    .label-conf      { background: #dcfce7; color: #15803d; }
-    .label-book      { background: #fef9c3; color: #92400e; }
+    .label-journal { background: #dbeafe; color: #1d4ed8; }
+    .label-conf    { background: #dcfce7; color: #15803d; }
+    .label-book    { background: #fef9c3; color: #92400e; }
 
-    .pub-list { list-style: none; padding: 0; margin: 0; counter-reset: pub-counter; }
-    .pub-list li {
-      counter-increment: pub-counter;
+    /* Publication card */
+    .pub-card {
       display: flex;
-      gap: 14px;
-      padding: 14px 0;
+      gap: 16px;
+      padding: 16px 0;
       border-bottom: 1px solid var(--line);
-      line-height: 1.6;
-      font-size: .9rem;
     }
-    .pub-list li:last-child { border-bottom: none; }
-    .pub-list li::before {
-      content: counter(pub-counter);
-      min-width: 26px;
-      height: 26px;
+    .pub-card:last-child { border-bottom: none; }
+
+    .pub-num {
+      min-width: 32px;
+      height: 32px;
       background: var(--accent);
       color: white;
-      font-size: .72rem;
+      font-size: .8rem;
       font-weight: 700;
       border-radius: 50%;
       display: flex;
@@ -61,23 +58,62 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
-    .pub-list li em {
-      font-style: normal;
-      font-weight: 600;
-      color: var(--accent);
-    }
 
-    .pub-year-badge {
+    .pub-body { flex: 1; min-width: 0; }
+    .pub-title {
+      font-size: .93rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .pub-authors {
+      font-size: .82rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .pub-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .pub-journal {
       display: inline-block;
-      font-size: .7rem;
-      font-weight: 700;
+      background: #eff6ff;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .pub-details {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+    .pub-year {
+      display: inline-block;
       background: #f1f5f9;
       color: #475569;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 2px 8px;
       border-radius: 999px;
-      padding: 1px 8px;
-      margin-left: 6px;
-      vertical-align: middle;
     }
+    .pub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      background: #eff6ff;
+      padding: 2px 10px;
+      border-radius: 999px;
+      transition: background .15s;
+    }
+    .pub-link:hover { background: #dbeafe; }
   </style>
 </head>
 <script>
@@ -118,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <h1>Publications</h1>
     <p>Department of Civil Engineering &nbsp;&bull;&nbsp; IIT (BHU) Varanasi</p>
     <div class="stat-row">
-      <div><div class="n">26</div><div class="l">Journal Articles</div></div>
+      <div><div class="n">25</div><div class="l">Journal Articles</div></div>
       <div><div class="n">12</div><div class="l">Conference Papers</div></div>
       <div><div class="n">5</div><div class="l">Book Chapters</div></div>
     </div>
@@ -127,67 +163,532 @@ document.addEventListener('DOMContentLoaded', function(){
   <!-- ── Journal Articles ─────────────────── -->
   <section class="card">
     <h2>Journal Articles</h2>
-    <span class="pub-type-label label-journal">Peer-Reviewed Journals</span>
-    <ol class="pub-list">
-      <li>Krishna Kumar Tiwari, R. D. Gupta, Pramod Soni (2026). Seasonal dynamics and transition patterns of land use land cover in Sher River Basin, Madhya Pradesh. <em>Environmental Monitoring and Assessment</em>, 198(5), 537.</li>
-      <li>Saurabh Maurya, Pramod Soni, Ashwin Chitravanshi, Prabhankur Prabhankar, Asif Ansari, Abdul Rahman Quaff (2026). Comparative analysis of meteorological and air quality variables in urban and semi-urban environments: Varanasi and Azamgarh. <em>Air Quality, Atmosphere &amp; Health</em>, 19(3), 57.</li>
-      <li>Maurya, Saurabh; Soni, Pramod (2026). Modelling uncertainty in WRF-based extreme rainfall simulations over India. <em>Atmospheric Research</em>, 109152.</li>
-      <li>Maurya, S.; Soni, Pramod (2026). Comparative assessment of WRF-simulated raindrop size distribution using disdrometer observations in Varanasi. <em>Theoretical and Applied Climatology</em>, 157(3), 179.</li>
-      <li>Meena, R. R.; Singh, R. M.; Soni, P. (2025). Intensification of fluoride removal using electrocoagulation reactor with rotating fins and rings electrodes (aluminium and iron) in different configurations. <em>Chemical Engineering and Processing - Process Intensification</em>.</li>
-      <li>Kumar, Maniranjan; Soni, Pramod; Swargiary, Debshri (2025). Monitoring terrestrial water storage using GRACE/GRACE-FO data over India: a review. <em>Iranian Journal of Science and Technology, Transactions of Civil Engineering</em>, 49(3), 2225–2239.</li>
-      <li>Prakash, Hari; Pandey, Kamlesh Kumar; Soni, Pramod (2025). Peak discharge estimation for ungauged basins: a review. <em>Journal of Water and Climate Change</em>, 16(11), 3483–3507.</li>
-      <li>Hari Prakash; Pramod Soni; Kamlesh Kumar Pandey (2025). Assessing drought trends and prediction using GCMs: a case study of South Bihar. <em>MAUSAM</em>.</li>
-      <li>Soni, Pramod (2024). The impact of data uncertainty on identifying precipitation trends in India. <em>MAUSAM</em>, 75(3), 895–904.</li>
-      <li>Kumar, Ranveer; Gaur, Shishir; Soni, Pramod; Maurya, Puneet; Ohri, Anurag (2024). HRU-based downscaling of GRACE-TWS to quantify the hydrogeological fluxes and specific yield in the Lower Middle Ganga Basin. <em>Journal of Hydrology</em>, 639, 131591.</li>
-      <li>Meena, Ram Raj; Singh, Raj Mohan; Soni, Pramod; Kumar, Rishi; Kumar, Sushil (2024). Fluoride removal using a rotating anode electro-coagulation reactor: parametric optimization, isotherms and kinetic studies, economic analysis and sludge characterization. <em>Journal of Environmental Management</em>, 370, 122600.</li>
-      <li>Singh, Vishal Kumar; Pandey, H. K.; Singh, Sudhir Kumar; Soni, Pramod (2023). Groundwater analysis using GRACE and Google Earth Engine: Bundelkhand region, India. <em>Physics and Chemistry of the Earth, Parts A/B/C</em>, 130, 103401.</li>
-      <li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2023). Review on hydrodynamic simulation and analysis using CFD: electrochemical reactors and redox flow batteries. <em>ChemBioEng Reviews</em>.</li>
-      <li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2023). Hydrodynamic simulation and analysis using computational fluid dynamics: electrochemical reactors and redox flow batteries. <em>ChemBioEng Reviews</em>, 10(5), 670–683.</li>
-      <li>Dhanai, Prity; Singh, V. P.; Soni, Pramod (2022). Rainfall triggered slope instability analysis with changing climate. <em>Indian Geotechnical Journal</em>, 52(2), 477–492.</li>
-      <li>Soni, P.; Srivastava, R.; Tripathi, S. (2022). Impact of renewed solar dimming on streamflow generation in monsoon dominated tropical river basins. <em>Journal of Hydro-environment Research</em>.</li>
-      <li>Singh, Pankaj; Vaishya, Rakesh Chandra; Soni, Pramod; Medhi, Hemanta (2022). A methodological comparison on spatiotemporal prediction of criteria air pollutants. <em>Asian Journal of Atmospheric Environment</em>, 16(1), 2021087.</li>
-      <li>Soni, Pramod; Medhi, Hemanta; Sagar, Anitya; Garg, Pulkit; Singh, Abhay; Karna, Umesh (2022). Runoff estimation using digital image processing for residential areas. <em>AQUA — Water Infrastructure, Ecosystems and Society</em>, 71(8), 938–948.</li>
-      <li>Gupta, Shubham; Soni, Pramod; Gupta, Ankush Kumar (2021). Optimization of WD-XRF analytical technique to measure elemental abundance in PM2.5 dust collected on quartz-fibre filter. <em>Atmospheric Pollution Research</em>, 12(3), 345–351.</li>
-      <li>Soni, Pramod (2021). Effects of COVID-19 lockdown phases in India: an atmospheric perspective. <em>Environment, Development and Sustainability</em>, 23(8), 12044–12055.</li>
-      <li>Soni, Pramod; Tripathi, Shivam; Srivastava, Rajesh (2021). A comparison of regionalization methods in monsoon dominated tropical river basins. <em>Journal of Water and Climate Change</em>, 12(5), 1975–1996.</li>
-      <li>Gupta, Ankush Kumar; Soni, Pramod (2021). Wheat crop yield estimation using geomatics tools in Saharanpur District. <em>Indian Journal of Agricultural Research</em>, 1, 8.</li>
-      <li>Soni, Pramod; Srivastava, Rajesh; Tripathi, Shivam (2019). Implication of data uncertainty in the detection of surface radiation trends and observational evidence of renewed solar dimming over India. <em>Theoretical and Applied Climatology</em>, 137(3), 2663–2680.</li>
-      <li>Soni, Pramod; Tripathi, Sachchida Nand; Srivastava, Rajesh (2018). Radiative effects of black carbon aerosols on Indian monsoon: a study using WRF-Chem model. <em>Theoretical and Applied Climatology</em>, 132(1), 115–134.</li>
-      <li>Soni, P.; Srivastava, R.; Tripathi, S. (2017). Observational evidence of streamflow trends in India. <em>Modelling of Environmental and Water Resources Systems</em>.</li>
-    </ol>
+    <span class="section-label-pub label-journal">Peer-Reviewed Journals</span>
+
+    <div class="pub-card">
+      <div class="pub-num">1</div>
+      <div class="pub-body">
+        <div class="pub-title">Seasonal dynamics and transition patterns of land use land cover in Sher River Basin, Madhya Pradesh</div>
+        <div class="pub-authors">Tiwari K. K., Gupta R. D., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">Environmental Monitoring and Assessment</span>
+          <span class="pub-details">198(5), 537</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">2</div>
+      <div class="pub-body">
+        <div class="pub-title">Comparative analysis of meteorological and air quality variables in urban and semi-urban environments: a case study of Varanasi and Azamgarh</div>
+        <div class="pub-authors">Maurya S., Soni P., Chitravanshi A., Prabhankar P., Ansari A., Quaff A. R.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">Air Quality, Atmosphere &amp; Health</span>
+          <span class="pub-details">19(3), 57</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">3</div>
+      <div class="pub-body">
+        <div class="pub-title">Modelling uncertainty in WRF-based extreme rainfall simulations over India: a review toward integrated atmosphere-chemistry-hydrology frameworks</div>
+        <div class="pub-authors">Maurya S., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">Atmospheric Research</span>
+          <span class="pub-details">109152</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">4</div>
+      <div class="pub-body">
+        <div class="pub-title">Comparative assessment of WRF-simulated raindrop size distribution using disdrometer observations in Varanasi</div>
+        <div class="pub-authors">Maurya S., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">Theoretical and Applied Climatology</span>
+          <span class="pub-details">157(3), 179</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">5</div>
+      <div class="pub-body">
+        <div class="pub-title">Intensification of fluoride removal using electrocoagulation reactor with rotating fins and rings electrodes (aluminium and iron) in different configurations</div>
+        <div class="pub-authors">Meena R. R., Singh R. M., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Chemical Engineering and Processing – Process Intensification</span>
+          <a class="pub-link" href="https://doi.org/10.1016/j.cep.2025.110463" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">6</div>
+      <div class="pub-body">
+        <div class="pub-title">Monitoring terrestrial water storage using GRACE/GRACE-FO data over India: a review</div>
+        <div class="pub-authors">Kumar M., Soni P., Swargiary D.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Iranian Journal of Science and Technology, Transactions of Civil Engineering</span>
+          <span class="pub-details">49(3), 2225–2239</span>
+          <a class="pub-link" href="https://doi.org/10.1007/s40996-024-01623-2" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">7</div>
+      <div class="pub-body">
+        <div class="pub-title">Peak discharge estimation for ungauged basins: a review</div>
+        <div class="pub-authors">Prakash H., Pandey K. K., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Journal of Water and Climate Change</span>
+          <span class="pub-details">16(11), 3483–3507</span>
+          <a class="pub-link" href="https://doi.org/10.2166/wcc.2025.153" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">8</div>
+      <div class="pub-body">
+        <div class="pub-title">Assessing drought trends and prediction using GCMs: a case study of South Bihar</div>
+        <div class="pub-authors">Prakash H., Soni P., Pandey K. K.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">MAUSAM</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">9</div>
+      <div class="pub-body">
+        <div class="pub-title">The impact of data uncertainty on identifying precipitation trends in India</div>
+        <div class="pub-authors">Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2024</span>
+          <span class="pub-journal">MAUSAM</span>
+          <span class="pub-details">75(3), 895–904</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">10</div>
+      <div class="pub-body">
+        <div class="pub-title">HRU-based downscaling of GRACE-TWS to quantify the hydrogeological fluxes and specific yield in the Lower Middle Ganga Basin</div>
+        <div class="pub-authors">Kumar R., Gaur S., Soni P., Maurya P., Ohri A.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2024</span>
+          <span class="pub-journal">Journal of Hydrology</span>
+          <span class="pub-details">639, 131591</span>
+          <a class="pub-link" href="https://doi.org/10.1016/j.jhydrol.2024.131591" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">11</div>
+      <div class="pub-body">
+        <div class="pub-title">Fluoride removal using a rotating anode electro-coagulation reactor: parametric optimization, isotherms and kinetic studies, economic analysis and sludge characterization</div>
+        <div class="pub-authors">Meena R. R., Singh R. M., Soni P., Kumar R., Kumar S.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2024</span>
+          <span class="pub-journal">Journal of Environmental Management</span>
+          <span class="pub-details">370, 122600</span>
+          <a class="pub-link" href="https://doi.org/10.1016/j.jenvman.2024.122600" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">12</div>
+      <div class="pub-body">
+        <div class="pub-title">Groundwater analysis using Gravity Recovery, Climate Experiment and Google Earth Engine: Bundelkhand region, India</div>
+        <div class="pub-authors">Singh V. K., Pandey H. K., Singh S. K., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">Physics and Chemistry of the Earth, Parts A/B/C</span>
+          <span class="pub-details">130, 103401</span>
+          <a class="pub-link" href="https://doi.org/10.1016/j.pce.2023.103401" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">13</div>
+      <div class="pub-body">
+        <div class="pub-title">Hydrodynamic simulation and analysis using computational fluid dynamics: electrochemical reactors and redox flow batteries</div>
+        <div class="pub-authors">Meena R. R., Kumar S., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">ChemBioEng Reviews</span>
+          <span class="pub-details">10(5), 670–683</span>
+          <a class="pub-link" href="https://doi.org/10.1002/cben.202200055" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">14</div>
+      <div class="pub-body">
+        <div class="pub-title">Rainfall triggered slope instability analysis with changing climate</div>
+        <div class="pub-authors">Dhanai P., Singh V. P., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2022</span>
+          <span class="pub-journal">Indian Geotechnical Journal</span>
+          <span class="pub-details">52(2), 477–492</span>
+          <a class="pub-link" href="https://doi.org/10.1007/s40098-021-00581-0" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">15</div>
+      <div class="pub-body">
+        <div class="pub-title">Impact of renewed solar dimming on streamflow generation in monsoon dominated tropical river basins</div>
+        <div class="pub-authors">Soni P., Srivastava R., Tripathi S.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2022</span>
+          <span class="pub-journal">Journal of Hydro-environment Research</span>
+          <a class="pub-link" href="https://www.sciencedirect.com/science/article/abs/pii/S1570644322000119" target="_blank" rel="noreferrer">Link &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">16</div>
+      <div class="pub-body">
+        <div class="pub-title">A methodological comparison on spatiotemporal prediction of criteria air pollutants</div>
+        <div class="pub-authors">Singh P., Vaishya R. C., Soni P., Medhi H.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2022</span>
+          <span class="pub-journal">Asian Journal of Atmospheric Environment</span>
+          <span class="pub-details">16(1), 2021087</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">17</div>
+      <div class="pub-body">
+        <div class="pub-title">Runoff estimation using digital image processing for residential areas</div>
+        <div class="pub-authors">Soni P., Medhi H., Sagar A., Garg P., Singh A., Karna U.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2022</span>
+          <span class="pub-journal">AQUA — Water Infrastructure, Ecosystems and Society</span>
+          <span class="pub-details">71(8), 938–948</span>
+          <a class="pub-link" href="https://doi.org/10.2166/aqua.2022.070" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">18</div>
+      <div class="pub-body">
+        <div class="pub-title">Optimization of WD-XRF analytical technique to measure elemental abundance in PM2.5 dust collected on quartz-fibre filter</div>
+        <div class="pub-authors">Gupta S., Soni P., Gupta A. K.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2021</span>
+          <span class="pub-journal">Atmospheric Pollution Research</span>
+          <span class="pub-details">12(3), 345–351</span>
+          <a class="pub-link" href="https://www.sciencedirect.com/science/article/abs/pii/S1309104221000027" target="_blank" rel="noreferrer">Link &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">19</div>
+      <div class="pub-body">
+        <div class="pub-title">Effects of COVID-19 lockdown phases in India: an atmospheric perspective</div>
+        <div class="pub-authors">Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2021</span>
+          <span class="pub-journal">Environment, Development and Sustainability</span>
+          <span class="pub-details">23(8), 12044–12055</span>
+          <a class="pub-link" href="https://doi.org/10.1007/s10668-020-01156-4" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">20</div>
+      <div class="pub-body">
+        <div class="pub-title">A comparison of regionalization methods in monsoon dominated tropical river basins</div>
+        <div class="pub-authors">Soni P., Tripathi S., Srivastava R.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2021</span>
+          <span class="pub-journal">Journal of Water and Climate Change</span>
+          <span class="pub-details">12(5), 1975–1996</span>
+          <a class="pub-link" href="https://doi.org/10.2166/wcc.2021.298" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">21</div>
+      <div class="pub-body">
+        <div class="pub-title">Wheat crop yield estimation using geomatics tools in Saharanpur District</div>
+        <div class="pub-authors">Gupta A. K., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2021</span>
+          <span class="pub-journal">Indian Journal of Agricultural Research</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">22</div>
+      <div class="pub-body">
+        <div class="pub-title">Implication of data uncertainty in the detection of surface radiation trends and observational evidence of renewed solar dimming over India</div>
+        <div class="pub-authors">Soni P., Srivastava R., Tripathi S.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2019</span>
+          <span class="pub-journal">Theoretical and Applied Climatology</span>
+          <span class="pub-details">137(3), 2663–2680</span>
+          <a class="pub-link" href="https://doi.org/10.1007/s00704-018-2743-7" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">23</div>
+      <div class="pub-body">
+        <div class="pub-title">Radiative effects of black carbon aerosols on Indian monsoon: a study using WRF-Chem model</div>
+        <div class="pub-authors">Soni P., Tripathi S. N., Srivastava R.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2018</span>
+          <span class="pub-journal">Theoretical and Applied Climatology</span>
+          <span class="pub-details">132(1), 115–134</span>
+          <a class="pub-link" href="https://doi.org/10.1007/s00704-017-2057-1" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">24</div>
+      <div class="pub-body">
+        <div class="pub-title">Observational evidence of streamflow trends in India</div>
+        <div class="pub-authors">Soni P., Srivastava R., Tripathi S.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2017</span>
+          <span class="pub-journal">Modelling of Environmental and Water Resources Systems</span>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ── Conference Papers ─────────────────── -->
   <section class="card">
     <h2>Conference Papers</h2>
-    <span class="pub-type-label label-conf">Proceedings &amp; Abstracts</span>
-    <ol class="pub-list">
-      <li>Chitravanshi, Ashwin; Soni, Pramod; Tiwari, Nimish (2026). Remote sensing based pH estimation in Eastern Uttar Pradesh using Sentinel-2 and machine learning. <em>Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)</em>.</li>
-      <li>Maurya, Saurabh; Soni, Pramod (2026). AI-engineering integration of rainfall microphysics and vegetation indicators for agricultural intelligence over Varanasi, India. <em>Proceedings of the 2026 IEEE International Conference on AI Engineering and Innovation (AIEI 2026)</em>.</li>
-      <li>Prakash, Hari; Soni, Pramod; Pandey, Kamlesh Kumar (2026). Downscaling and bias-correcting satellite precipitation using a hybrid machine learning framework for flood modelling in ungauged basins. <em>Copernicus Meetings</em>.</li>
-      <li>Narahari, Megavath; Rawal, N. R.; Soni, Pramod (2025). Steady flow analysis performed for flood inundation mapping using HEC-RAS. <em>Flood Forecasting and Hydraulic Structures: Select Proceedings of HYDRO 2023</em>, 95.</li>
-      <li>Chitravanshi, Ashwin; Soni, Pramod (2025). Machine learning approaches for prediction of the coefficient of discharge of broad crested weirs. <em>AIMS 2025 — International Conference on AI and Materials for Sustainability</em>.</li>
-      <li>Megavath Narahari; Nekram Rawal; Pramod Soni (2023). Steady flow analysis performed for flood inundation mapping using HEC-RAS. <em>Hydro 2023</em>.</li>
-      <li>Krishna Kumar; R. D. Gupta; Pramod Soni (2023). ANN for urban flood flow modelling using real time data. <em>Hydro 2023</em>.</li>
-      <li>Megavath Narahari; Nekram Rawal; Pramod Soni (2023). Assessment of surface run-off for Brahmani-Baitarani river basin. <em>RHHAR-2023</em>.</li>
-      <li>Krishna Kumar; R. D. Gupta; Pramod Soni (2023). Study the effect of urbanization on groundwater balance in agroclimatic zone using ANN. <em>RHHAR-2023</em>.</li>
-      <li>Narahari, Megavath; Rawal, N. R.; Soni, Pramod (2023). Steady flow analysis performed for flood inundation mapping using HEC-RAS. <em>International Conference on Hydraulics, Water Resources and Coastal Engineering</em>, 95–109.</li>
-      <li>Srivastava, Rajesh; Soni, Pramod; Tripathi, Shivam (2017). Impact of renewed solar dimming on hydrology of river basins in peninsular India. <em>AGU Fall Meeting Abstracts</em>, GC23A–1041.</li>
-      <li>Soni, P.; Tripathi, S. N.; Srivastava, R. (2015). Performance of WRF-Chem model during monsoon season over India. <em>Annual Monsoon Workshop Pune</em>.</li>
-    </ol>
+    <span class="section-label-pub label-conf">Proceedings &amp; Abstracts</span>
+
+    <div class="pub-card">
+      <div class="pub-num">1</div>
+      <div class="pub-body">
+        <div class="pub-title">Remote sensing based pH estimation in Eastern Uttar Pradesh using Sentinel-2 and machine learning</div>
+        <div class="pub-authors">Chitravanshi A., Soni P., Tiwari N.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">IEEE AIEI 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">2</div>
+      <div class="pub-body">
+        <div class="pub-title">AI-engineering integration of rainfall microphysics and vegetation indicators for agricultural intelligence over Varanasi, India</div>
+        <div class="pub-authors">Maurya S., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">IEEE AIEI 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">3</div>
+      <div class="pub-body">
+        <div class="pub-title">Downscaling and bias-correcting satellite precipitation using a hybrid machine learning framework for flood modelling in ungauged basins</div>
+        <div class="pub-authors">Prakash H., Soni P., Pandey K. K.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2026</span>
+          <span class="pub-journal">Copernicus Meetings</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">4</div>
+      <div class="pub-body">
+        <div class="pub-title">Steady flow analysis performed for flood inundation mapping using HEC-RAS</div>
+        <div class="pub-authors">Narahari M., Rawal N. R., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Flood Forecasting &amp; Hydraulic Structures: Select Proceedings of HYDRO 2023</span>
+          <span class="pub-details">p. 95</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">5</div>
+      <div class="pub-body">
+        <div class="pub-title">Machine learning approaches for prediction of the coefficient of discharge of broad crested weirs</div>
+        <div class="pub-authors">Chitravanshi A., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">AIMS 2025 — International Conference on AI and Materials for Sustainability</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">6</div>
+      <div class="pub-body">
+        <div class="pub-title">ANN for urban flood flow modelling using real time data</div>
+        <div class="pub-authors">Kumar K., Gupta R. D., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">Hydro 2023</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">7</div>
+      <div class="pub-body">
+        <div class="pub-title">Assessment of surface run-off for Brahmani-Baitarani river basin</div>
+        <div class="pub-authors">Narahari M., Rawal N., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">RHHAR-2023</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">8</div>
+      <div class="pub-body">
+        <div class="pub-title">Study the effect of urbanization on groundwater balance in agroclimatic zone using ANN</div>
+        <div class="pub-authors">Kumar K., Gupta R. D., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">RHHAR-2023</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">9</div>
+      <div class="pub-body">
+        <div class="pub-title">Steady flow analysis performed for flood inundation mapping using HEC-RAS</div>
+        <div class="pub-authors">Narahari M., Rawal N. R., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2023</span>
+          <span class="pub-journal">International Conference on Hydraulics, Water Resources and Coastal Engineering</span>
+          <span class="pub-details">95–109</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">10</div>
+      <div class="pub-body">
+        <div class="pub-title">Impact of renewed solar dimming on hydrology of river basins in Peninsular India</div>
+        <div class="pub-authors">Srivastava R., Soni P., Tripathi S.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2017</span>
+          <span class="pub-journal">AGU Fall Meeting Abstracts</span>
+          <span class="pub-details">GC23A–1041</span>
+          <a class="pub-link" href="https://ui.adsabs.harvard.edu/abs/2017AGUFMGC23A1041S/abstract" target="_blank" rel="noreferrer">Link &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">11</div>
+      <div class="pub-body">
+        <div class="pub-title">Performance of WRF-Chem model during monsoon season over India</div>
+        <div class="pub-authors">Soni P., Tripathi S. N., Srivastava R.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2015</span>
+          <span class="pub-journal">Annual Monsoon Workshop Pune</span>
+          <span class="pub-details">&#127942; Best Poster Award — IITM Pune</span>
+        </div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ── Book Chapters ─────────────────── -->
   <section class="card">
     <h2>Book Chapters</h2>
-    <span class="pub-type-label label-book">Books &amp; Chapters</span>
-    <ol class="pub-list">
-      <li>Praveen Kumar; Ram Raj Meena; Pramod Soni (2025). Sustainable environmental waste management strategies: the study of urban solid waste management's development. <em>Innovative Technologies for Waste Management</em>, 978–3.</li>
-      <li>Meena, Ram Raj; Rathva, Hemangini; Soni, Pramod (2025). Electrochemical processes for arsenic mitigation. <em>Emerging and Innovative Arsenic Removal Technologies for a Sustainable Future</em>, 107–128.</li>
-      <li>Meena, Ram Raj; Kumar, Sushil; Soni, Pramod (2024). Electrocoagulation of fluoride from water with Fe-based ion electrode. <em>Advanced Treatment Technologies for Fluoride Removal in Water: Water Purification</em>, 159–180.</li>
-      <li>Meena, R. R.; Kumar, S.; Soni, P. (2023). Electrocoagulation of fluoride from water with Fe-based ion electrode. <em>Advanced Treatment Technologies for Fluoride Removal in Water</em>.</li>
-      <li>Medhi, Hemanta; Soni, Pramod (2022). Understanding the relationship between normalized difference vegetation index and meteorological attribute using clustering algorithm. <em>Smart Sensors, Actuators and Decision Support Systems for Precision Agriculture</em>.</li>
-    </ol>
+    <span class="section-label-pub label-book">Books &amp; Chapters</span>
+
+    <div class="pub-card">
+      <div class="pub-num">1</div>
+      <div class="pub-body">
+        <div class="pub-title">Sustainable environmental waste management strategies: the study of urban solid waste management's development</div>
+        <div class="pub-authors">Kumar P., Meena R. R., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Innovative Technologies for Waste Management</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">2</div>
+      <div class="pub-body">
+        <div class="pub-title">Electrochemical processes for arsenic mitigation</div>
+        <div class="pub-authors">Meena R. R., Rathva H., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2025</span>
+          <span class="pub-journal">Emerging and Innovative Arsenic Removal Technologies for a Sustainable Future</span>
+          <span class="pub-details">107–128</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">3</div>
+      <div class="pub-body">
+        <div class="pub-title">Electrocoagulation of fluoride from water with Fe-based ion electrode</div>
+        <div class="pub-authors">Meena R. R., Kumar S., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2024</span>
+          <span class="pub-journal">Advanced Treatment Technologies for Fluoride Removal in Water: Water Purification</span>
+          <span class="pub-details">159–180</span>
+          <a class="pub-link" href="https://doi.org/10.1007/978-3-031-38845-3_9" target="_blank" rel="noreferrer">DOI &#8599;</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pub-card">
+      <div class="pub-num">4</div>
+      <div class="pub-body">
+        <div class="pub-title">Understanding the relationship between normalized difference vegetation index and meteorological attribute using clustering algorithm</div>
+        <div class="pub-authors">Medhi H., Soni P.</div>
+        <div class="pub-meta">
+          <span class="pub-year">2022</span>
+          <span class="pub-journal">Smart Sensors, Actuators and Decision Support Systems for Precision Agriculture</span>
+        </div>
+      </div>
+    </div>
+
   </section>
 
 </main>
