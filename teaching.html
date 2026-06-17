@@ -1,10 +1,79 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Teaching | Dr. Pramod Soni</title>
   <link rel="stylesheet" href="style.css"/>
+  <style>
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .course-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+      transition: box-shadow .2s, transform .15s;
+    }
+    .course-card:hover {
+      box-shadow: 0 6px 20px rgba(15,23,42,.10);
+      transform: translateY(-2px);
+    }
+    .course-code {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .course-name {
+      font-size: .95rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .course-type {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+    .level-badge {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    .level-ug   { background: #dcfce7; color: #15803d; }
+    .level-pg   { background: #ede9fe; color: #6d28d9; }
+    .level-lab  { background: #fef9c3; color: #92400e; }
+    .teaching-intro {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      color: white;
+      margin-bottom: 4px;
+    }
+    .teaching-intro h1 { color: white; font-size: 1.7rem; margin-bottom: 6px; }
+    .teaching-intro p  { color: rgba(255,255,255,.82); margin: 0; font-size: .95rem; }
+    .stat-row {
+      display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap;
+    }
+    .stat-row div { text-align: center; }
+    .stat-row .n { font-size: 1.6rem; font-weight: 700; color: white; }
+    .stat-row .l { font-size: .75rem; color: rgba(255,255,255,.7); text-transform: uppercase; letter-spacing: .05em; }
+  </style>
 </head>
 <script>
 (function () {
@@ -40,74 +109,115 @@ document.addEventListener('DOMContentLoaded', function(){
 
 <main class="wrap">
 
-  <section class="card">
-    <h2>Teaching</h2>
+  <div class="teaching-intro">
+    <h1>Teaching</h1>
+    <p>Department of Civil Engineering &nbsp;&bull;&nbsp; IIT (BHU) Varanasi</p>
+    <div class="stat-row">
+      <div><div class="n">15+</div><div class="l">Courses Taught</div></div>
+      <div><div class="n">UG &amp; PG</div><div class="l">Levels</div></div>
+      <div><div class="n">IIT BHU</div><div class="l">Current Institute</div></div>
+    </div>
+  </div>
 
-    
-      <div class="item">
-        <h3>Courses Taught</h3>
-        <ul>
-          
-            <li>
-              <strong>Climate Change and Water Resources Modeling</strong>
-              
-            </li>
-          
-            <li>
-              <strong>Ground Water Hydrology</strong>
-               – CE-21352
-            </li>
-          
-            <li>
-              <strong>Environment and Climate Change</strong>
-               – CE-12101
-            </li>
-          
-            <li>
-              <strong>Computer Based Numerical Techniques</strong>
-               – CE-13102
-            </li>
-          
-            <li>
-              <strong>Computer Based Numerical Techniques Lab</strong>
-               – CE-13202
-            </li>
-          
-            <li>
-              <strong>Engineering Hydrology</strong>
-               – CE-17310
-            </li>
-          
-            <li>
-              <strong>Open Channel Hydraulics</strong>
-               – CE-18309
-            </li>
-          
-            <li>
-              <strong>Surveying Lab</strong>
-               – CE-14201
-            </li>
-          
-            <li>
-              <strong>Water Resource Engineering-I</strong>
-               – CE-1851
-            </li>
-          
-            <li>
-              <strong>Fluid Mechanics-II</strong>
-               – CE-4105
-            </li>
-          
-        </ul>
+  <!-- IIT (BHU) Varanasi -->
+  <section class="card" style="margin-top:16px;">
+    <h2>IIT (BHU) Varanasi &nbsp;<small style="font-size:.8rem;font-weight:400;color:var(--muted)">2023 &ndash; Present</small></h2>
+
+    <span class="level-badge level-ug">Undergraduate (UG)</span>
+    <div class="course-grid">
+      <div class="course-card">
+        <span class="course-code">CE311</span>
+        <div class="course-name">Open Channel Hydraulics</div>
+        <div class="course-type">B.Tech. &mdash; Civil Engineering</div>
       </div>
-    
+      <div class="course-card">
+        <span class="course-code">CE314</span>
+        <div class="course-name">Open Channel Flow (OCF)</div>
+        <div class="course-type">B.Tech. &mdash; Civil Engineering</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE412</span>
+        <div class="course-name">Irrigation Engineering</div>
+        <div class="course-type">B.Tech. &mdash; Civil Engineering</div>
+      </div>
+    </div>
+
+    <span class="level-badge level-pg" style="margin-top:18px;">Postgraduate (PG)</span>
+    <div class="course-grid">
+      <div class="course-card">
+        <span class="course-code">CE-515</span>
+        <div class="course-name">Surface Water Hydrology</div>
+        <div class="course-type">M.Tech. &mdash; Civil Engineering</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-527</span>
+        <div class="course-name">Computational Techniques in Water Resources</div>
+        <div class="course-type">M.Tech. &mdash; Civil Engineering</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">&mdash;</span>
+        <div class="course-name">Climate Change and Water Resources Modeling</div>
+        <div class="course-type">M.Tech. &mdash; Civil Engineering</div>
+      </div>
+    </div>
+
+    <span class="level-badge level-lab" style="margin-top:18px;">Laboratory</span>
+    <div class="course-grid">
+      <div class="course-card">
+        <span class="course-code">CE-610</span>
+        <div class="course-name">Hydraulics Lab</div>
+        <div class="course-type">M.Tech. &mdash; Civil Engineering</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Previous Institutes -->
+  <section class="card">
+    <h2>Previous Institutes</h2>
+
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:14px;">Courses taught at MNNIT Allahabad, NIT Jamshedpur, and M.B.M. Engineering College.</p>
+
+    <div class="course-grid">
+      <div class="course-card">
+        <span class="course-code">CE-21352</span>
+        <div class="course-name">Ground Water Hydrology</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-12101</span>
+        <div class="course-name">Environment and Climate Change</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-13102</span>
+        <div class="course-name">Computer Based Numerical Techniques</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-13202</span>
+        <div class="course-name">Computer Based Numerical Techniques Lab</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-17310</span>
+        <div class="course-name">Engineering Hydrology</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-18309</span>
+        <div class="course-name">Open Channel Hydraulics</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-14201</span>
+        <div class="course-name">Surveying Lab</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-1851</span>
+        <div class="course-name">Water Resource Engineering-I</div>
+      </div>
+      <div class="course-card">
+        <span class="course-code">CE-4105</span>
+        <div class="course-name">Fluid Mechanics-II</div>
+      </div>
+    </div>
   </section>
 
 </main>
-
-<footer class="wrap footer">
-  <small>© Dr. Pramod Soni</small>
-</footer>
 
 <footer class="site-footer">
   <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
