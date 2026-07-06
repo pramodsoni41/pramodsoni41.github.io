@@ -86,35 +86,34 @@ document.getElementById('navToggle').addEventListener('click',function(){documen
 const RHO=998, K=2.06e9, A=Math.sqrt(K/RHO); // wave speed ~1436 m/s
 const cv=document.getElementById('stage'),ctx=cv.getContext('2d');
 const W=cv.width,H=cv.height;
-let closed=0, closing=false, t=0, surge=0, over=false, result=null, lastNow=0;
+let closed=0, closing=false, vel=0, t=0, surge=0, over=false, result=null, lastNow=0;
 let L=600, V0=2.5, burst=0, tc=0, peakSurge=0;
 
 function limits(){ L=+document.getElementById('pipeL').value; V0=+document.getElementById('v0').value;
   // burst rating scaled so a well-paced closure is achievable
   burst = RHO*A*V0/1000 * 0.42; }
-function reset(){ closed=0; closing=false; t=0; surge=0; over=false; result=null; peakSurge=0; tc=0; limits(); }
+function reset(){ closed=0; closing=false; vel=0; t=0; surge=0; over=false; result=null; peakSurge=0; tc=0; limits(); }
 reset();
 
 function step(now){
   requestAnimationFrame(step);
   const dt = lastNow? Math.min(0.05,(now-lastNow)/1000):0; lastNow=now;
   limits();
-  if(!over && closing && closed<100){
-    closed = Math.min(100, closed + dt*45);   // close rate while held (~2.2 s min full close)
-    t += dt; tc = t;
-    // instantaneous surge from current closure rate: dV/dt of the stopped column
-    // effective closure time so far maps to Joukowsky (rapid) vs slow-closure formula
-    const rate = 45/100;                       // fraction per second while held
-    const tClose = 1/rate;                     // projected full-closure time
-    const period = 2*L/A;
-    let dp;
-    if(tClose <= period) dp = RHO*A*V0;         // rapid → full Joukowsky
-    else dp = RHO*L*V0/tClose;                  // slow → reduced surge
-    // surge grows with how much is closed (momentum being arrested)
-    surge = dp/1000 * (closed/100);
-    peakSurge=Math.max(peakSurge,surge);
-    if(surge>burst){ over=true; result='burst'; }
-    if(closed>=100 && !over){ over=true; result='win'; }
+  if(!over){
+    // closure velocity RAMPS while held (like flooring a pedal) and decays when released,
+    // so the skill is feathering it — slam it shut and the surge spikes past the burst line.
+    if(closing) vel = Math.min(2.6, vel + 1.9*dt);
+    else        vel = Math.max(0,   vel - 7.0*dt);
+    // instantaneous surge from the closure rate: slow-closure Δp = ρ·L·V₀·(dclose/dt),
+    // capped at the rapid Joukowsky surge ρ·a·V₀.
+    surge = Math.min(RHO*A*V0, RHO*L*V0*vel)/1000;
+    if(closed<100){
+      t += dt; tc = t;
+      closed = Math.min(100, closed + vel*dt*100);
+      peakSurge = Math.max(peakSurge, surge);
+      if(surge>burst){ over=true; result='burst'; }
+      else if(closed>=100){ over=true; result='win'; }
+    }
   }
   draw();
 }
