@@ -7,8 +7,6 @@
 <style>
   :root{ --bg:#101418; --panel:#161c22; --line:#232c35; --ink:#e8eef2; --dim:#7b8894; --accent:#ffd23f; }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{ background:var(--bg); color-scheme:dark; scrollbar-color:#232c35 #101418; }
-  html,body{ overflow-x:hidden; }
   body{ background:var(--bg); color:var(--ink); font-family:"Courier New",ui-monospace,monospace;
     min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:28px 16px 40px; }
   h1{font-size:15px;letter-spacing:.45em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:18px;text-align:center}
@@ -46,7 +44,6 @@
     <button id="dropBtn">Drop blocks</button>
   </div>
   <div class="hud">
-    <span>Pieces <b id="hudPieces">0/0</b></span>
     <span>Lines <b id="hudLines">0</b></span>
     <span>Score <b id="hudScore">0</b></span>
   </div>
@@ -126,7 +123,6 @@ function buildPlan(name){
 const canvas = document.getElementById("cv");
 const ctx = canvas.getContext("2d");
 const dpr = Math.min(window.devicePixelRatio||1, 2);
-const hudPieces = document.getElementById("hudPieces");
 const hudLines  = document.getElementById("hudLines");
 const hudScore  = document.getElementById("hudScore");
 
@@ -350,15 +346,15 @@ function drawFrame(now){
   }
   for(const rk in lineFlash){
     const r = +rk, age = now - lineFlash[rk];
-    const burst = Math.max(0, 1 - age/500);             // bright flash on completion
-    const glow  = 0.10 + 0.06*Math.sin(now/500 + r);    // gentle steady highlight after
-    ctx.fillStyle = "rgba(255,255,255,"+(0.55*burst)+")";
+    const burst = Math.max(0, 1 - age/500);             // bright flash at the moment of completion
+    ctx.fillStyle = "rgba(188,194,205,0.28)";           // steady gray highlight that stays visible
     ctx.fillRect(OX, OY + r*cell, grid.cols*cell, cell);
-    ctx.fillStyle = "rgba(255,210,63,"+glow+")";
-    ctx.fillRect(OX, OY + r*cell, grid.cols*cell, cell);
+    if(burst > 0){
+      ctx.fillStyle = "rgba(255,255,255,"+(0.5*burst)+")";
+      ctx.fillRect(OX, OY + r*cell, grid.cols*cell, cell);
+    }
   }
 
-  hudPieces.textContent = landedCount + "/" + order.length;
   hudLines.textContent  = completedLines;
   hudScore.textContent  = completedLines * 100;         // points only for completed lines
 
