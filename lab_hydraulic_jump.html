@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 1: Hydraulic Jump | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311 Open Channel Flow: study the formation of a hydraulic jump in a rectangular flume — set discharge and gate, position the jump, and record observations."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+    @media(max-width:860px){.sim{grid-template-columns:1fr}}
+    canvas#flume{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#eff6ff,#f8fafc)}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .status{padding:9px 12px;border-radius:10px;font-weight:700;font-size:.86rem;text-align:center;margin-top:4px}
+    .status.stable{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .status.swept{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+    .status.drown{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+    .status.nojump{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.9rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:10px 18px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.84rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:6px 7px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.76rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.92rem}
+    .results{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+    @media(max-width:560px){.results{grid-template-columns:1fr}}
+    .rcard{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px;text-align:center}
+    .rcard .n{font-size:1.4rem;font-weight:700;color:#0369a1}
+    .rcard .l{font-size:.78rem;color:var(--muted)}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 1</span>
+    <h1>&#127754; Formation of a Hydraulic Jump</h1>
+    <p>A virtual re-creation of the flume experiment. Set the discharge and sluice-gate opening to launch a fast
+       supercritical stream, then raise the tailgate until the tailwater matches the sequent depth and a stable jump
+       stands still in the test section. Measure it, record six observations, and compute the jump characteristics.</p>
+  </div>
+
+  <section class="card">
+    <h2>Aim</h2>
+    <p>To study the formation of a hydraulic jump in a rectangular channel and to determine the characteristics of the
+       jump — sequent depths, Froude number, height, length and energy loss.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>A hydraulic jump forms when a supercritical stream (Fr&nbsp;&gt;&nbsp;1) meets a subcritical tailwater of
+       sufficient depth. The stream abruptly rises from its initial depth <em>y₁</em> to its sequent depth <em>y₂</em>
+       through a turbulent roller, dissipating energy. For a horizontal rectangular channel the momentum equation gives
+       the Belanger sequent-depth relation:</p>
+    <p class="eqn">Fr₁ = V₁/√(g·y₁) &nbsp;•&nbsp; y₂/y₁ = ½(√(1 + 8·Fr₁²) − 1) &nbsp;•&nbsp;
+       ΔE = (y₂ − y₁)³ / (4·y₁·y₂) &nbsp;•&nbsp; L ≈ 6.9(y₂ − y₁)</p>
+    <p><strong>Classification by Fr₁:</strong> 1–1.7 undular · 1.7–2.5 weak · 2.5–4.5 oscillating ·
+       4.5–9 steady · &gt;9 strong jump.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Re-circulating rectangular tilting flume (10 m × 0.30 m × 0.60 m), upstream and downstream sluice gates, pump
+       with delivery valve, pointer gauge, collecting tank &amp; stopwatch, steel ruler.</p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="flume" width="640" height="330"></canvas>
+        <div class="status" id="status">—</div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Discharge, Q <span class="val"><span id="vQ">20</span> L/s</span></label>
+          <input type="range" id="Q" min="5" max="35" step="1" value="20">
+        </div>
+        <div class="ctrl">
+          <label>Sluice-gate opening → y₁ <span class="val"><span id="vY1">2.0</span> cm</span></label>
+          <input type="range" id="y1" min="1" max="6" step="0.1" value="2">
+        </div>
+        <div class="ctrl">
+          <label>Tailgate → tailwater <span class="val"><span id="vYt">20</span> cm</span></label>
+          <input type="range" id="yt" min="2" max="35" step="0.5" value="20">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Match the tailwater to the sequent depth y₂ to hold the jump still.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Unit discharge q</span><b id="oQ">—</b></div>
+          <div class="row"><span>V₁ (supercritical)</span><b id="oV1">—</b></div>
+          <div class="row"><span>Froude number Fr₁</span><b id="oFr">—</b></div>
+          <div class="row"><span>Sequent depth y₂</span><b id="oY2">—</b></div>
+          <div class="row"><span>Jump type</span><b id="oType">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" id="recBtn" disabled>Record reading</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Width of flume B = 0.30 m. Record at least 6 observations at different discharges / gate settings (only a <em>stable</em> jump can be recorded).</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Q (L/s)</th><th>y₁ (cm)</th><th>y₂ (cm)</th><th>Fr₁</th><th>y₂/y₁</th>
+        <th>h<sub>j</sub>=y₂−y₁ (cm)</th><th>L (cm)</th><th>ΔE (m)</th><th>Type</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="10" style="color:var(--muted)">No observations yet — form a stable jump and press “Record reading”.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Results</h2>
+    <div class="results">
+      <div class="rcard"><div class="n" id="avgH">—</div><div class="l">Average height of jump h<sub>j</sub> (cm)</div></div>
+      <div class="rcard"><div class="n" id="avgL">—</div><div class="l">Average length of jump L (cm)</div></div>
+      <div class="rcard"><div class="n" id="avgE">—</div><div class="l">Average energy loss ΔE (m)</div></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Questions &amp; Precautions</h2>
+    <details class="qa"><summary>What is the purpose of a hydraulic jump and its applications?</summary>
+      <p>It dissipates surplus kinetic energy of supercritical flow, preventing scour downstream of spillways, sluice
+         gates and chutes. It is also used to mix chemicals, aerate water, and raise the downstream water level for
+         irrigation off-takes.</p></details>
+    <details class="qa"><summary>Why can't the energy equation be applied directly across the jump?</summary>
+      <p>The jump is highly turbulent with an unknown, large energy loss in the roller, so energy is not conserved across
+         it. The <em>momentum</em> equation is applied instead, giving the Belanger sequent-depth relation; the energy
+         loss is then found as the difference E₁ − E₂ = (y₂−y₁)³/(4y₁y₂).</p></details>
+    <details class="qa"><summary>Jump types (undular, weak, oscillating, strong)</summary>
+      <p>Undular (Fr₁ 1–1.7): surface undulations, little loss. Weak (1.7–2.5): smooth roller, ~5–18% loss. Oscillating
+         (2.5–4.5): an unstable jet causes surface waves travelling downstream. Steady/strong (&gt;4.5): a well-defined,
+         stable jump dissipating 45–85% of the energy.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> ensure the sluice gate is seated properly; form the jump near
+       the gate within the test section; vary the flow and adjust the tailgate accordingly; take readings only after the
+       jump is steady.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+const G=9.81, B=0.30;
+const els={Q:document.getElementById('Q'),y1:document.getElementById('y1'),yt:document.getElementById('yt')};
+let obs=[], state=null;
+
+function compute(){
+  const Q=+els.Q.value/1000, y1=+els.y1.value/100, yt=+els.yt.value/100;
+  const q=Q/B, V1=q/y1, Fr1=V1/Math.sqrt(G*y1);
+  const y2=(y1/2)*(Math.sqrt(1+8*Fr1*Fr1)-1);
+  const V2=q/y2, E1=y1+V1*V1/(2*G), E2=y2+V2*V2/(2*G);
+  const dE=(y2-y1)**3/(4*y1*y2), Lj=6.9*(y2-y1), hj=y2-y1;
+  const type = Fr1<1?'No jump (subcritical)':Fr1<1.7?'Undular':Fr1<2.5?'Weak':Fr1<4.5?'Oscillating':Fr1<9?'Steady':'Strong';
+  // jump stability from tailwater vs sequent depth
+  let cls='stable', msg='Stable jump — ready to record', posFrac=0.46;
+  if(Fr1<1){ cls='nojump'; msg='Flow is subcritical (Fr₁ < 1) — open the gate more or raise Q'; }
+  else {
+    const diff=(yt-y2)/y2;                 // >0 submerged, <0 swept
+    posFrac=0.46 - diff*1.1;
+    if(diff>0.12){ cls='drown'; msg='Jump submerged / pushed onto the gate — lower the tailgate'; posFrac=Math.max(0.12,posFrac); }
+    else if(diff<-0.12){ cls='swept'; msg='Jump swept downstream / washed out — raise the tailgate'; posFrac=Math.min(0.9,posFrac); }
+    else { cls='stable'; msg='Stable jump — ready to record ✓'; posFrac=0.46-diff*1.1; }
+  }
+  return {Q:+els.Q.value,y1,y2,yt,q,V1,V2,Fr1,dE,Lj,hj,type,cls,msg,posFrac};
+}
+
+function refresh(){
+  const r=compute(); state=r;
+  document.getElementById('vQ').textContent=els.Q.value;
+  document.getElementById('vY1').textContent=(+els.y1.value).toFixed(1);
+  document.getElementById('vYt').textContent=(+els.yt.value).toFixed(0);
+  document.getElementById('oQ').textContent=r.q.toFixed(4)+' m²/s';
+  document.getElementById('oV1').textContent=r.V1.toFixed(2)+' m/s';
+  document.getElementById('oFr').textContent=r.Fr1.toFixed(2);
+  document.getElementById('oY2').textContent=(r.y2*100).toFixed(1)+' cm';
+  document.getElementById('oType').textContent=r.type;
+  const st=document.getElementById('status'); st.className='status '+r.cls; st.textContent=r.msg;
+  document.getElementById('recBtn').disabled = r.cls!=='stable';
+}
+Object.values(els).forEach(e=>e.addEventListener('input',refresh));
+
+// ---- flume rendering ----
+const cv=document.getElementById('flume'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height, BED=H-24, SCALE=(H-60)/0.40; // px per metre (0.40 m tall view)
+let phase=0;
+function draw(){
+  requestAnimationFrame(draw);
+  const r=state||compute(); phase+=1;
+  ctx.clearRect(0,0,W,H);
+  // bed & flume
+  ctx.fillStyle='#cbd5e1'; ctx.fillRect(0,BED,W,H-BED);
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,BED); ctx.lineTo(W,BED); ctx.stroke();
+
+  const gateX=54, tailX=W-46;
+  const y1px=r.y1*SCALE, ytpx=r.yt*SCALE, y2px=r.y2*SCALE;
+  const xJump = r.Fr1<1 ? W*0.5 : Math.max(gateX+40, Math.min(tailX-40, W*r.posFrac));
+
+  // upstream supercritical layer (thin, fast)
+  ctx.fillStyle='#38bdf8';
+  ctx.fillRect(gateX, BED-y1px, xJump-gateX, y1px);
+  // downstream subcritical layer (deep, slow) at tailwater depth
+  ctx.fillStyle='#0ea5e9';
+  ctx.fillRect(xJump, BED-ytpx, tailX-xJump, ytpx);
+  // the jump face rising from y1 to yt with a turbulent roller
+  if(r.Fr1>=1){
+    ctx.fillStyle='#0ea5e9';
+    ctx.beginPath(); ctx.moveTo(xJump,BED); ctx.lineTo(xJump,BED-y1px);
+    ctx.quadraticCurveTo(xJump+18,BED-ytpx,xJump+34,BED-ytpx); ctx.lineTo(xJump+34,BED); ctx.closePath(); ctx.fill();
+    // roller foam
+    ctx.fillStyle='rgba(255,255,255,.9)';
+    for(let i=0;i<26;i++){ const bx=xJump-6+Math.random()*40, by=BED-y1px-Math.random()*(ytpx-y1px); ctx.beginPath(); ctx.arc(bx,by,1.5+Math.random()*2.5,0,7); ctx.fill(); }
+  }
+
+  // flow particles: fast upstream, slow downstream
+  ctx.fillStyle='rgba(255,255,255,.75)';
+  for(let i=0;i<40;i++){ let x=(gateX+ (i*17+phase*4)% (xJump-gateX-4)); const yy=BED-2-Math.random()*Math.max(2,y1px-3); if(x<xJump-4) ctx.fillRect(x,yy,4,2); }
+  ctx.fillStyle='rgba(255,255,255,.5)';
+  for(let i=0;i<26;i++){ let x=(xJump+8+ (i*23+phase*1.1)% Math.max(4,tailX-xJump-10)); const yy=BED-4-Math.random()*Math.max(3,ytpx-6); ctx.fillRect(x,yy,5,2); }
+
+  // sluice gate (upstream)
+  ctx.fillStyle='#334155'; ctx.fillRect(gateX-6,20,10,BED-20-y1px);
+  ctx.fillStyle='#1e293b'; ctx.fillRect(gateX-9,16,16,6);
+  // tailgate (downstream)
+  ctx.fillStyle='#334155'; ctx.fillRect(tailX,BED-Math.max(ytpx-6,10),8, H-24-(BED-Math.max(ytpx-6,10)));
+  // pointer gauges (depth markers)
+  markGauge(gateX+ (xJump-gateX)/2, BED, y1px, '#0369a1', 'y₁');
+  if(r.Fr1>=1) markGauge(xJump+ (tailX-xJump)/2, BED, ytpx, '#075985', 'y₂');
+
+  // labels
+  ctx.fillStyle='#334155'; ctx.font='12px Inter';
+  ctx.fillText('supercritical', gateX+6, 40);
+  ctx.fillText('subcritical (tailwater)', xJump+8, 34);
+  ctx.fillText('Fr₁ = '+r.Fr1.toFixed(2), gateX+6, 56);
+
+  function markGauge(x,bed,dpx,col,lbl){
+    ctx.strokeStyle=col; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(x,bed); ctx.lineTo(x,bed-dpx); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x-4,bed-dpx); ctx.lineTo(x+4,bed-dpx); ctx.stroke();
+    ctx.fillStyle=col; ctx.font='11px Inter'; ctx.fillText(lbl+' '+(dpx/SCALE*100).toFixed(1)+'cm', x+6, bed-dpx-3);
+  }
+}
+requestAnimationFrame(draw);
+
+// ---- record / table ----
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="10" style="color:var(--muted)">No observations yet — form a stable jump and press “Record reading”.</td></tr>'; }
+  else{
+    tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.Q+'</td><td>'+(o.y1*100).toFixed(1)+'</td><td>'+(o.y2*100).toFixed(1)+
+      '</td><td>'+o.Fr1.toFixed(2)+'</td><td>'+(o.y2/o.y1).toFixed(2)+'</td><td>'+(o.hj*100).toFixed(1)+'</td><td>'+(o.Lj*100).toFixed(1)+
+      '</td><td>'+o.dE.toFixed(4)+'</td><td>'+o.type+'</td></tr>').join('');
+  }
+  const avg=(f)=>obs.length?(obs.reduce((s,o)=>s+f(o),0)/obs.length):null;
+  const aH=avg(o=>o.hj*100), aL=avg(o=>o.Lj*100), aE=avg(o=>o.dE);
+  document.getElementById('avgH').textContent=aH==null?'—':aH.toFixed(1);
+  document.getElementById('avgL').textContent=aL==null?'—':aL.toFixed(1);
+  document.getElementById('avgE').textContent=aE==null?'—':aE.toFixed(4);
+}
+document.getElementById('recBtn').addEventListener('click',()=>{ if(state&&state.cls==='stable'){ obs.push(state); renderTable(); } });
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+
+refresh();
+</script>
+</body>
+</html>
