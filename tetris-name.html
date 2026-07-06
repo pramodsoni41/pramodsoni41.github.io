@@ -288,7 +288,7 @@ function drawFrame(now){
       landedCount++;
       if(p.landAt === undefined){ p.landAt = now; playSettle(); }
       const flash = Math.max(0, 1-(now-p.landAt)/150);
-      for(const [r,c] of p.cells){ const isBdr=c===0||c===grid.cols-1||r===grid.rows-1; drawBlock(OX + c*cell, OY + r*cell, isBdr?'#0c1014':p.color, flash); rowHave[r]++; }
+      for(const [r,c] of p.cells){ const isBdr=c===0||c===grid.cols-1||r===grid.rows-1; if(!isBdr) drawBlock(OX + c*cell, OY + r*cell, p.color, flash); if(r<grid.rows-1) rowHave[r]++; }
     }else{
       allLanded = false;
       // vertical: hover up in the SKY through move + rotate, then hard-drop down
@@ -348,7 +348,7 @@ function drawFrame(now){
   for(const rk in lineFlash){
     const r = +rk, age = now - lineFlash[rk];
     const burst = Math.max(0, 1 - age/500);             // white flash at the moment of completion
-    for(let c=0;c<grid.cols;c++)                         // whole line becomes a clean uniform gray
+    for(let c=1;c<grid.cols-1;c++)                       // whole line becomes a clean uniform gray (skip border cols)
       drawBlock(OX + c*cell, OY + r*cell, "#9aa1ac", 0);
     if(burst > 0){
       ctx.fillStyle = "rgba(255,255,255,"+(0.5*burst)+")";
