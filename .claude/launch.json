@@ -6,12 +6,6 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3737"],
       "port": 3737
-    },
-    {
-      "name": "tetris-check",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4757"],
-      "port": 4757
     }
   ]
 }

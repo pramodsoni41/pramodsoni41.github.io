@@ -24,6 +24,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Trim non-website files from the deploy artifact
+        # These are not part of the website (a PyInstaller desktop tool and its
+        # 39 MB .exe / 38 MB build output). Shipping them bloats the Pages
+        # artifact to ~112 MB and makes deploys slow/unreliable. Removing them
+        # here excludes them from the deploy only — the files stay in the repo.
+        run: |
+          rm -rf iitbhu_sync
+          echo "Artifact size after trim:"; du -sh . 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
