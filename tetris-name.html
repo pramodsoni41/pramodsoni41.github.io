@@ -24,7 +24,8 @@
   .hud{ display:flex;gap:24px;justify-content:center;margin-bottom:10px;
     font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim); }
   .hud b{color:var(--accent);font-weight:700}
-  .stage{ position:relative; background:linear-gradient(#0c1014,#0e1319); }
+  .stage{ position:relative;border:1px solid var(--line); background:linear-gradient(#0c1014,#0e1319);
+    box-shadow:0 0 0 6px #0b0e12, 0 20px 60px rgba(0,0,0,.5); }
   canvas{display:block}
   .stage::after{ content:"";position:absolute;inset:0;pointer-events:none;
     background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px); }
@@ -68,7 +69,7 @@ for(const ch in BAND_ENC){
     pc.split(";").map(rc => rc.split(",").map(Number)));
 }
 
-const COLORS = ["#1a6a75","#7a6010","#5a2878","#1a5a22","#7a1a18","#1a3070","#7a4818"];
+const COLORS = ["#3fd8e8","#ffd23f","#b06ae8","#5fdd6a","#f25f5c","#5c8df2","#f2a35c"];
 const BAND_W = 7, ROWS = 11;
 
 /* ---------- Assemble the wall from per-letter bands ---------- */
@@ -288,7 +289,7 @@ function drawFrame(now){
       landedCount++;
       if(p.landAt === undefined){ p.landAt = now; playSettle(); }
       const flash = Math.max(0, 1-(now-p.landAt)/150);
-      for(const [r,c] of p.cells){ const isBdr=c===0||c===grid.cols-1||r===grid.rows-1; if(!isBdr) drawBlock(OX + c*cell, OY + r*cell, p.color, flash); if(r<grid.rows-1) rowHave[r]++; }
+      for(const [r,c] of p.cells){ drawBlock(OX + c*cell, OY + r*cell, p.color, flash); rowHave[r]++; }
     }else{
       allLanded = false;
       // vertical: hover up in the SKY through move + rotate, then hard-drop down
@@ -348,7 +349,7 @@ function drawFrame(now){
   for(const rk in lineFlash){
     const r = +rk, age = now - lineFlash[rk];
     const burst = Math.max(0, 1 - age/500);             // white flash at the moment of completion
-    for(let c=1;c<grid.cols-1;c++)                       // whole line becomes a clean uniform gray (skip border cols)
+    for(let c=0;c<grid.cols;c++)                         // whole line becomes a clean uniform gray
       drawBlock(OX + c*cell, OY + r*cell, "#9aa1ac", 0);
     if(burst > 0){
       ctx.fillStyle = "rgba(255,255,255,"+(0.5*burst)+")";
