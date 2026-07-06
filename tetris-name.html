@@ -7,7 +7,8 @@
 <style>
   :root{ --bg:#101418; --panel:#161c22; --line:#232c35; --ink:#e8eef2; --dim:#7b8894; --accent:#ffd23f; }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{ background:var(--bg); color:var(--ink); font-family:"Courier New",ui-monospace,monospace;
+  html{background:#101418;color-scheme:dark;overscroll-behavior:none;scrollbar-color:#232c35 #101418;scrollbar-width:thin}
+  body{ background:#101418; overscroll-behavior:none; color:var(--ink); font-family:"Courier New",ui-monospace,monospace;
     min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:28px 16px 40px; }
   h1{font-size:15px;letter-spacing:.45em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:18px;text-align:center}
   h1 b{color:var(--accent);font-weight:700}
