@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Falling-Sphere Viscometer | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive falling-sphere viscometer: explore density, specific gravity, viscosity, buoyancy and Stokes' law. A fluid-properties teaching game for engineering students."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero {
+      background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%);
+      border-radius: 18px; padding: 26px 28px; margin-top: 16px; color: #fff;
+    }
+    .game-hero h1 { margin: 0 0 6px; font-size: 1.8rem; color: #fff; }
+    .game-hero .badge {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35); border-radius: 999px;
+      padding: 3px 14px; font-size: 0.82rem; margin-bottom: 10px;
+    }
+    .game-hero p { color: rgba(255,255,255,0.88); margin: 4px 0 0; max-width: 720px; }
+
+    .mode-tabs { display:flex; gap:8px; margin:18px 0 4px; }
+    .mode-tabs button {
+      padding:9px 18px; border:1px solid var(--line); background:var(--card);
+      border-radius:10px; font:inherit; font-weight:600; color:var(--muted); cursor:pointer; transition:.15s;
+    }
+    .mode-tabs button.active { background:#4f46e5; color:#fff; border-color:#4f46e5; }
+
+    .sim-grid { display:grid; grid-template-columns: 330px 1fr; gap:18px; align-items:start; }
+    @media (max-width: 880px){ .sim-grid { grid-template-columns:1fr; } }
+
+    .controls .ctrl { margin-bottom:15px; }
+    .controls label { display:flex; justify-content:space-between; align-items:baseline;
+      font-weight:600; font-size:.9rem; margin-bottom:6px; }
+    .controls label .val { color:#4f46e5; font-variant-numeric:tabular-nums; font-size:.95rem; }
+    .controls input[type=range]{ width:100%; accent-color:#4f46e5; }
+    .controls select { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:9px;
+      font:inherit; background:#f8fafc; color:var(--text); }
+    .hint { font-size:.78rem; color:var(--muted); margin-top:4px; }
+    .drop-btn { width:100%; padding:11px; border:none; border-radius:10px; background:#4f46e5; color:#fff;
+      font:inherit; font-weight:700; cursor:pointer; margin-top:4px; }
+    .drop-btn:hover { background:#4338ca; }
+
+    .stage-wrap { display:grid; grid-template-columns: 210px 1fr; gap:16px; align-items:start; }
+    @media (max-width:620px){ .stage-wrap{ grid-template-columns:1fr; } }
+    canvas#stage { width:100%; height:auto; display:block; border-radius:12px; border:1px solid var(--line);
+      background:linear-gradient(#eef2ff,#f8fafc); }
+
+    .props { }
+    .prop-row { display:flex; justify-content:space-between; padding:7px 2px; border-bottom:1px dashed var(--line); font-size:.9rem; }
+    .prop-row:last-child { border-bottom:none; }
+    .prop-row .k { color:var(--muted); }
+    .prop-row .v { font-weight:700; font-variant-numeric:tabular-nums; }
+    .grp-title { font-size:.74rem; text-transform:uppercase; letter-spacing:.05em; color:#4f46e5; font-weight:800; margin:12px 0 2px; }
+
+    .status { margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .chip { padding:6px 14px; border-radius:999px; font-weight:700; font-size:.85rem; border:1px solid; }
+    .chip.sink { background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    .chip.float { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+    .chip.valid { background:#f1f5f9; color:#475569; border-color:#e2e8f0; }
+    .chip.invalid { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+
+    .challenge-box { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:16px 18px; }
+    .challenge-box.win { background:#ecfdf5; border-color:#a7f3d0; }
+    .challenge-box h3 { margin:0 0 6px; color:#92400e; }
+    .challenge-box.win h3 { color:#065f46; }
+    .score-row { display:flex; gap:22px; align-items:center; margin:10px 0 2px; flex-wrap:wrap; }
+    .score-row b { font-size:1.5rem; color:#4f46e5; font-variant-numeric:tabular-nums; }
+    .btn { padding:9px 18px; border:none; border-radius:10px; background:#4f46e5; color:#fff;
+      font:inherit; font-weight:600; cursor:pointer; transition:.15s; }
+    .btn:hover { background:#4338ca; }
+    .btn.ghost { background:#fff; color:#4f46e5; border:1px solid var(--line); }
+    .target-line { display:flex; align-items:center; gap:8px; margin:6px 0; font-size:.92rem; }
+    .target-line .ok { color:#059669; font-weight:700; }
+    .target-line .no { color:#b45309; font-weight:700; }
+    .eqn { font-family:ui-monospace,monospace; background:#f8fafc; border:1px solid var(--line);
+      border-radius:10px; padding:12px 14px; overflow-x:auto; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <p style="margin-bottom:0; font-size:0.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+
+  <div class="game-hero">
+    <span class="badge">Interactive Teaching Tool &nbsp;·&nbsp; Fluid Properties · Stokes' Law</span>
+    <h1>&#9899; Falling-Sphere Viscometer</h1>
+    <p>Drop a sphere into a jar of viscous fluid and watch it settle to a steady terminal velocity.
+       From that speed you measure the fluid's <strong>viscosity</strong> — the classic falling-sphere
+       viscometer. Change the fluid, the temperature, the sphere material and size, and see density,
+       specific gravity, buoyancy and viscosity all in play. Some spheres even float!</p>
+  </div>
+
+  <div class="mode-tabs">
+    <button id="tabSandbox" class="active">&#128295; Sandbox</button>
+    <button id="tabChallenge">&#127942; Lab Challenge</button>
+  </div>
+
+  <section class="card" id="challengeCard" style="display:none;">
+    <div class="challenge-box" id="challengeBox">
+      <h3 id="chTitle">Challenge</h3>
+      <p id="chDesc" style="margin:0 0 6px;"></p>
+      <div id="chTargets"></div>
+      <div class="score-row">
+        <div>Score: <b id="chScore">0</b></div>
+        <div>Streak: <b id="chStreak" style="color:#d97706;">0</b></div>
+        <button class="btn" id="chSubmit">Submit</button>
+        <button class="btn ghost" id="chSkip">Skip</button>
+      </div>
+      <p id="chFeedback" style="margin:8px 0 0; font-weight:600;"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sim-grid">
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl">
+          <label>Working fluid</label>
+          <select id="fluid">
+            <option value="glycerin" selected>Glycerin</option>
+            <option value="honey">Honey</option>
+            <option value="oil">Light oil (SAE-10)</option>
+            <option value="water">Water</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Temperature <span class="val"><span id="vT">20</span> &deg;C</span></label>
+          <input type="range" id="T" min="5" max="80" step="1" value="20">
+          <div class="hint">Viscosity falls sharply as the fluid warms.</div>
+        </div>
+        <div class="ctrl">
+          <label>Sphere material</label>
+          <select id="mat">
+            <option value="steel" selected>Steel (7850 kg/m³)</option>
+            <option value="lead">Lead (11340)</option>
+            <option value="glass">Glass (2500)</option>
+            <option value="aluminium">Aluminium (2700)</option>
+            <option value="nylon">Nylon / plastic (1140)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Sphere diameter <span class="val"><span id="vD">5</span> mm</span></label>
+          <input type="range" id="D" min="1" max="20" step="0.5" value="5">
+        </div>
+        <button class="drop-btn" id="dropBtn">&#8681; Drop the sphere</button>
+        <div class="hint" id="timerNote" style="margin-top:8px;">Press drop to release from the top.</div>
+      </div>
+
+      <!-- VISUAL + PROPERTIES -->
+      <div>
+        <div class="stage-wrap">
+          <canvas id="stage" width="220" height="360"></canvas>
+
+          <div class="props" id="props">
+            <div class="grp-title">Fluid</div>
+            <div class="prop-row"><span class="k">Density &rho;</span><span class="v" id="pRho">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Specific weight &gamma;</span><span class="v" id="pGamma">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Specific gravity</span><span class="v" id="pSG">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Dynamic visc. &mu;</span><span class="v" id="pMu">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Kinematic visc. &nu;</span><span class="v" id="pNu">&mdash;</span></div>
+
+            <div class="grp-title">Sphere &amp; motion</div>
+            <div class="prop-row"><span class="k">Sphere density</span><span class="v" id="pRhoS">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Weight / Buoyancy</span><span class="v" id="pWB">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Terminal velocity</span><span class="v" id="pVt">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Live velocity</span><span class="v" id="pVnow">&mdash;</span></div>
+            <div class="prop-row"><span class="k">Reynolds number</span><span class="v" id="pRe">&mdash;</span></div>
+          </div>
+        </div>
+
+        <div class="status">
+          <span class="chip" id="chipDir">&mdash;</span>
+          <span class="chip" id="chipStokes">&mdash;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>The physics behind the game</h2>
+    <p>A sphere released in a still fluid feels three forces: its weight, the upward buoyancy, and viscous
+       drag. When they balance, it stops accelerating and falls at a constant <strong>terminal velocity</strong>.
+       For slow (creeping) flow, drag follows <strong>Stokes' law</strong> and the balance gives:</p>
+    <p class="eqn">
+      v<sub>t</sub> = (&rho;<sub>s</sub> &minus; &rho;<sub>f</sub>) g d&sup2; / (18&mu;)
+      &nbsp;&bull;&nbsp; &mu; = (&rho;<sub>s</sub> &minus; &rho;<sub>f</sub>) g d&sup2; / (18 v<sub>t</sub>)
+      &nbsp;&bull;&nbsp; Re = &rho;<sub>f</sub> v<sub>t</sub> d / &mu;
+    </p>
+    <p>The second form is exactly how a <strong>falling-sphere viscometer</strong> works: time the sphere
+       over a known distance to get v<sub>t</sub>, then solve for &mu;. If &rho;<sub>s</sub> &lt; &rho;<sub>f</sub>
+       the sphere <strong>floats</strong> instead. Stokes' law is only valid for <strong>Re &lt; ~1</strong>;
+       for a heavy sphere in a thin fluid (large Re) the true terminal velocity is far lower than the formula
+       predicts, so the tool flags that regime. Values are illustrative teaching approximations.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
+  &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
+</footer>
+
+<script>
+// ---- nav ----
+document.getElementById('navToggle').addEventListener('click', function () {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+(function(){ var links=document.querySelectorAll('.nav-links a');
+  var cur=window.location.pathname.split('/').pop()||'index.html';
+  links.forEach(function(a){ if(a.getAttribute('href')===cur) a.classList.add('active'); }); })();
+
+// ======================= MODEL =======================
+const G = 9.81, RHO_W = 998;
+// fluid: rho at 20C, mu20 (Pa·s), k (per °C, Arrhenius-ish decay), colour
+const FLUIDS = {
+  glycerin: { rho:1260, mu20:1.41,  k:0.075, name:'Glycerin', col:'rgba(202,138,4,0.30)' },
+  honey:    { rho:1420, mu20:10.0,  k:0.110, name:'Honey',    col:'rgba(180,83,9,0.34)'  },
+  oil:      { rho:870,  mu20:0.20,  k:0.035, name:'Light oil',col:'rgba(202,138,4,0.20)' },
+  water:    { rho:998,  mu20:0.0010,k:0.020, name:'Water',    col:'rgba(59,130,246,0.22)'}
+};
+const MAT = {
+  steel:{rho:7850,col:'#64748b',name:'Steel'}, lead:{rho:11340,col:'#334155',name:'Lead'},
+  glass:{rho:2500,col:'#7dd3fc',name:'Glass'}, aluminium:{rho:2700,col:'#cbd5e1',name:'Aluminium'},
+  nylon:{rho:1140,col:'#fca5a5',name:'Nylon'}
+};
+
+function muAt(f, T){ return Math.max(1e-5, f.mu20 * Math.exp(-f.k*(T-20))); }
+
+function simulate(inp){
+  const f = FLUIDS[inp.fluid], m = MAT[inp.mat];
+  const mu = muAt(f, inp.T);
+  const d = inp.D/1000;
+  const V = Math.PI/6*d*d*d;
+  const W = m.rho*V*G, Fb = f.rho*V*G;
+  const vt = (m.rho - f.rho)*G*d*d/(18*mu);      // m/s, + sinks / − floats
+  const Re = f.rho*Math.abs(vt)*d/mu;
+  const tau = m.rho*d*d/(18*mu);                  // time constant
+  const stokesValid = Re < 1;
+  return { f, m, mu, d, V, W, Fb, vt, Re, tau, stokesValid,
+           rhoF:f.rho, gamma:f.rho*G, SG:f.rho/RHO_W, nu:mu/f.rho };
+}
+
+// ======================= UI =======================
+const els = { fluid:document.getElementById('fluid'), T:document.getElementById('T'),
+  mat:document.getElementById('mat'), D:document.getElementById('D') };
+function readInputs(){ return { fluid:els.fluid.value, T:+els.T.value, mat:els.mat.value, D:+els.D.value }; }
+
+let latest=null;
+function fmt(x, u, dp){ return (Math.abs(x)>=1000? x.toExponential(2): x.toFixed(dp==null?2:dp)) + ' ' + u; }
+
+function refresh(){
+  const inp = readInputs();
+  const r = simulate(inp); latest = r;
+
+  document.getElementById('vT').textContent = inp.T;
+  document.getElementById('vD').textContent = inp.D;
+
+  document.getElementById('pRho').textContent   = r.rhoF.toFixed(0)+' kg/m³';
+  document.getElementById('pGamma').textContent = (r.gamma/1000).toFixed(2)+' kN/m³';
+  document.getElementById('pSG').textContent    = r.SG.toFixed(3);
+  document.getElementById('pMu').textContent    = (r.mu>=0.01? r.mu.toFixed(3): r.mu.toExponential(2))+' Pa·s';
+  document.getElementById('pNu').textContent    = (r.nu*1e6).toFixed(1)+' mm²/s';
+  document.getElementById('pRhoS').textContent  = r.m.rho.toFixed(0)+' kg/m³';
+  document.getElementById('pWB').textContent    = (r.W*1000).toFixed(2)+' / '+(r.Fb*1000).toFixed(2)+' mN';
+  document.getElementById('pVt').textContent    = (r.vt*1000).toFixed(1)+' mm/s';
+  document.getElementById('pRe').textContent    = (r.Re>=1000? r.Re.toExponential(2): r.Re.toFixed(3));
+
+  const cd = document.getElementById('chipDir');
+  if (r.vt >= 0){ cd.className='chip sink'; cd.textContent='Sphere sinks ↓'; }
+  else { cd.className='chip float'; cd.textContent='Sphere floats ↑ (ρₛ < ρ_fluid)'; }
+
+  const cs = document.getElementById('chipStokes');
+  if (r.stokesValid){ cs.className='chip valid'; cs.textContent='Stokes valid (Re < 1)'; }
+  else { cs.className='chip invalid'; cs.textContent='⚠ Stokes invalid (Re > 1)'; }
+
+  if (challengeMode) renderTargets();
+}
+Object.values(els).forEach(e => e.addEventListener('input', ()=>{ refresh(); resetDrop(); }));
+
+// ======================= ANIMATION =======================
+const cv = document.getElementById('stage'), ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+const TOP = 30, BOT = H-20;                 // fluid column top/bottom (px)
+const MARK1 = TOP + (BOT-TOP)*0.28, MARK2 = TOP + (BOT-TOP)*0.82;  // timing marks
+const PX_PER_M = (BOT-TOP)/0.30;            // map ~0.30 m of travel to the column
+let ball = null, tElapsed=0, lastTs=0, running=false, markT1=null, markT2=null;
+
+function resetDrop(){ running=false; ball=null; markT1=markT2=null; tElapsed=0;
+  document.getElementById('timerNote').textContent='Press drop to release from the top.';
+  document.getElementById('pVnow').textContent='0.0 mm/s'; }
+
+function startDrop(){
+  const r = latest || simulate(readInputs());
+  ball = { yM:0 };                          // position in metres from top mark region
+  running = true; tElapsed = 0; lastTs = 0; markT1=markT2=null;
+  document.getElementById('timerNote').textContent = r.vt>=0 ? 'Falling…' : 'Rising (buoyant)…';
+}
+document.getElementById('dropBtn').addEventListener('click', startDrop);
+
+function currentV(r, t){
+  // analytic linear-drag solution: v(t) = vt (1 − e^{−t/τ})
+  return r.vt * (1 - Math.exp(-t/Math.max(1e-4,r.tau)));
+}
+
+function draw(ts){
+  const r = latest || simulate(readInputs());
+  ctx.clearRect(0,0,W,H);
+
+  // jar
+  ctx.fillStyle = r.f.col;
+  ctx.fillRect(24, TOP, W-48, BOT-TOP);
+  ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+  ctx.strokeRect(24, TOP, W-48, BOT-TOP);
+  // meniscus
+  ctx.strokeStyle = 'rgba(100,116,139,0.6)';
+  ctx.beginPath(); ctx.moveTo(26, TOP+2); ctx.lineTo(W-26, TOP+2); ctx.stroke();
+
+  // timing marks
+  ctx.strokeStyle = '#4f46e5'; ctx.setLineDash([5,4]); ctx.lineWidth=1.2;
+  [MARK1,MARK2].forEach((y,i)=>{ ctx.beginPath(); ctx.moveTo(24,y); ctx.lineTo(W-24,y); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle='#4f46e5'; ctx.font='10px Inter';
+    ctx.fillText('mark '+(i+1), W-58, y-3); ctx.setLineDash([5,4]); });
+  ctx.setLineDash([]);
+
+  // ball physics
+  const rad = Math.max(3, Math.min(16, r.d*PX_PER_M*0.5));
+  let yPx;
+  if (running && ball){
+    const dt = lastTs? Math.min(0.05,(ts-lastTs)/1000):0; lastTs=ts;
+    tElapsed += dt;
+    const v = currentV(r, tElapsed);         // m/s (signed)
+    // cap visual speed so Stokes-invalid cases don't teleport
+    const vVis = Math.max(-2.5, Math.min(2.5, v));
+    ball.yM += vVis*dt;
+    document.getElementById('pVnow').textContent = (v*1000).toFixed(1)+' mm/s';
+
+    // position: sinkers start at top, floaters start at bottom
+    const startY = r.vt>=0 ? TOP+rad+4 : BOT-rad-4;
+    yPx = startY + ball.yM*PX_PER_M;
+
+    // timing between marks (only meaningful for sinkers moving down)
+    if (r.vt>=0){
+      if (markT1==null && yPx>=MARK1) markT1=tElapsed;
+      if (markT2==null && yPx>=MARK2){ markT2=tElapsed;
+        const dist=(MARK2-MARK1)/PX_PER_M, vMeas=dist/(markT2-markT1);
+        const muMeas=(r.m.rho-r.f.rho)*G*r.d*r.d/(18*vMeas);
+        document.getElementById('timerNote').innerHTML =
+          '⏱ '+(markT2-markT1).toFixed(2)+' s between marks → measured μ ≈ <b>'+
+          (muMeas>=0.01?muMeas.toFixed(3):muMeas.toExponential(2))+' Pa·s</b>';
+      }
+    }
+    // stop at container ends
+    if (yPx>BOT-rad-2){ yPx=BOT-rad-2; running=false; }
+    if (yPx<TOP+rad+2){ yPx=TOP+rad+2; running=false; }
+  } else {
+    yPx = (latest && latest.vt<0)? BOT-rad-4 : TOP+rad+4;
+    lastTs = ts;
+  }
+
+  // draw ball
+  ctx.beginPath(); ctx.arc(W/2, yPx, rad, 0, 7);
+  const g = ctx.createRadialGradient(W/2-rad*0.3, yPx-rad*0.3, 1, W/2, yPx, rad);
+  g.addColorStop(0,'#fff'); g.addColorStop(0.25, r.m.col); g.addColorStop(1, '#1e293b');
+  ctx.fillStyle=g; ctx.fill();
+  ctx.strokeStyle='#1e293b'; ctx.lineWidth=1; ctx.stroke();
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+
+// ======================= CHALLENGES =======================
+let challengeMode=false, score=0, streak=0, current=null;
+const CHALLENGES = [
+  { title:'Make it float', desc:'Pick a sphere and fluid so the sphere rises instead of sinking. Think specific gravity!',
+    tests:[ {label:'Terminal velocity is upward (floats)', ok:r=>r.vt<0, get:r=>(r.vt*1000).toFixed(1)+' mm/s'} ] },
+  { title:'Creeping flow', desc:'Get a sinking sphere whose motion is firmly in the Stokes regime (very low Reynolds number).',
+    tests:[ {label:'Sphere sinks', ok:r=>r.vt>0, get:r=>r.vt>0?'sinking':'floating'},
+            {label:'Reynolds ≤ 0.1', ok:r=>r.Re<=0.1, get:r=>r.Re.toFixed(3)} ] },
+  { title:'Slow settler', desc:'Configure a sinking sphere with a very slow, easy-to-time terminal velocity.',
+    tests:[ {label:'Terminal velocity between 1 and 8 mm/s', ok:r=>{const v=r.vt*1000; return v>=1&&v<=8;}, get:r=>(r.vt*1000).toFixed(1)+' mm/s'} ] },
+  { title:'Heat it up', desc:'Start from cold honey, then use temperature to more than double the terminal velocity (viscosity–temperature effect).',
+    tests:[ {label:'Fluid is honey', ok:r=>r.f===FLUIDS.honey, get:r=>r.f.name},
+            {label:'Terminal velocity ≥ 40 mm/s', ok:r=>r.vt*1000>=40, get:r=>(r.vt*1000).toFixed(1)+' mm/s'} ] },
+  { title:'Break Stokes’ law', desc:'Push into the regime where Stokes’ law no longer holds — a heavy sphere in a thin fluid.',
+    tests:[ {label:'Reynolds number ≥ 1', ok:r=>r.Re>=1, get:r=>r.Re>=1000?r.Re.toExponential(1):r.Re.toFixed(2)} ] },
+  { title:'Densest fluid', desc:'Maximise the fluid specific weight while keeping the sphere sinking.',
+    tests:[ {label:'Specific weight γ ≥ 13.5 kN/m³', ok:r=>r.gamma/1000>=13.5, get:r=>(r.gamma/1000).toFixed(2)+' kN/m³'},
+            {label:'Sphere still sinks', ok:r=>r.vt>0, get:r=>r.vt>0?'sinking':'floating'} ] }
+];
+
+function loadChallenge(){
+  current = CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
+  document.getElementById('chTitle').textContent='🎯 '+current.title;
+  document.getElementById('chDesc').textContent=current.desc;
+  document.getElementById('chFeedback').textContent='';
+  document.getElementById('challengeBox').classList.remove('win');
+  refresh();
+}
+function renderTargets(){
+  const r=latest;
+  document.getElementById('chTargets').innerHTML = current.tests.map(t=>{
+    const pass=t.ok(r);
+    return '<div class="target-line"><span class="'+(pass?'ok':'no')+'">'+(pass?'✔':'✷')+'</span> '+
+      t.label+' <span style="color:var(--muted)">— now: '+t.get(r)+'</span></div>';
+  }).join('');
+}
+document.getElementById('chSubmit').addEventListener('click', ()=>{
+  const r=latest, allPass=current.tests.every(t=>t.ok(r));
+  const box=document.getElementById('challengeBox'), fb=document.getElementById('chFeedback');
+  if (allPass){
+    const gain=100+streak*25; score+=gain; streak++;
+    box.classList.add('win'); fb.style.color='#059669';
+    fb.textContent='✅ Solved! +'+gain+' points. Next challenge…';
+    document.getElementById('chScore').textContent=score;
+    document.getElementById('chStreak').textContent=streak;
+    setTimeout(loadChallenge,1400);
+  } else {
+    streak=0; document.getElementById('chStreak').textContent=0;
+    fb.style.color='#b45309';
+    fb.textContent='❌ Not all targets met — adjust and try again.';
+  }
+});
+document.getElementById('chSkip').addEventListener('click', loadChallenge);
+
+function setMode(ch){
+  challengeMode=ch;
+  document.getElementById('tabSandbox').classList.toggle('active',!ch);
+  document.getElementById('tabChallenge').classList.toggle('active',ch);
+  document.getElementById('challengeCard').style.display=ch?'block':'none';
+  if (ch && !current) loadChallenge();
+  refresh();
+}
+document.getElementById('tabSandbox').addEventListener('click', ()=>setMode(false));
+document.getElementById('tabChallenge').addEventListener('click', ()=>setMode(true));
+
+refresh();
+</script>
+</body>
+</html>
