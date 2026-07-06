@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Bernoulli Flow Lab | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive venturi / pipe-flow simulator: continuity, Bernoulli's equation, Reynolds number and cavitation. A teaching game for fluid-mechanics students."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero {
+      background: linear-gradient(135deg, #0f766e 0%, #0891b2 100%);
+      border-radius: 18px; padding: 26px 28px; margin-top: 16px; color: #fff;
+    }
+    .game-hero h1 { margin: 0 0 6px; font-size: 1.8rem; color: #fff; }
+    .game-hero .badge {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35); border-radius: 999px;
+      padding: 3px 14px; font-size: 0.82rem; margin-bottom: 10px;
+    }
+    .game-hero p { color: rgba(255,255,255,0.88); margin: 4px 0 0; max-width: 720px; }
+
+    .mode-tabs { display:flex; gap:8px; margin:18px 0 4px; }
+    .mode-tabs button {
+      padding:9px 18px; border:1px solid var(--line); background:var(--card);
+      border-radius:10px; font:inherit; font-weight:600; color:var(--muted); cursor:pointer; transition:.15s;
+    }
+    .mode-tabs button.active { background:#0891b2; color:#fff; border-color:#0891b2; }
+
+    .sim-grid { display:grid; grid-template-columns: 340px 1fr; gap:18px; align-items:start; }
+    @media (max-width: 880px){ .sim-grid { grid-template-columns:1fr; } }
+
+    .controls .ctrl { margin-bottom:16px; }
+    .controls label { display:flex; justify-content:space-between; align-items:baseline;
+      font-weight:600; font-size:.9rem; margin-bottom:6px; }
+    .controls label .val { color:#0891b2; font-variant-numeric:tabular-nums; font-size:.95rem; }
+    .controls input[type=range]{ width:100%; accent-color:#0891b2; }
+    .controls select { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:9px;
+      font:inherit; background:#f8fafc; color:var(--text); }
+    .hint { font-size:.78rem; color:var(--muted); margin-top:4px; }
+
+    canvas#stage { width:100%; height:auto; display:block; border-radius:12px;
+      background:linear-gradient(#ecfeff,#f0f9ff); border:1px solid var(--line); }
+
+    .out-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+    @media (max-width:560px){ .out-grid{ grid-template-columns:repeat(2,1fr);} }
+    .ocard { background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:12px; }
+    .ocard h4 { margin:0 0 6px; font-size:.74rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700; }
+    .ocard .num { font-size:1.3rem; font-weight:700; font-variant-numeric:tabular-nums; }
+    .ocard .sub { font-size:.78rem; color:var(--muted); }
+
+    .status { margin-top:12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .chip { padding:6px 14px; border-radius:999px; font-weight:700; font-size:.85rem; border:1px solid; }
+    .chip.laminar { background:#ecfdf5; color:#065f46; border-color:#a7f3d0; }
+    .chip.transitional { background:#fffbeb; color:#92400e; border-color:#fde68a; }
+    .chip.turbulent { background:#eff6ff; color:#1e40af; border-color:#bfdbfe; }
+    .chip.ok { background:#f1f5f9; color:#475569; border-color:#e2e8f0; }
+    .chip.warn { background:#fef2f2; color:#991b1b; border-color:#fecaca; }
+
+    .challenge-box { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:16px 18px; }
+    .challenge-box.win { background:#ecfdf5; border-color:#a7f3d0; }
+    .challenge-box h3 { margin:0 0 6px; color:#92400e; }
+    .challenge-box.win h3 { color:#065f46; }
+    .score-row { display:flex; gap:22px; align-items:center; margin:10px 0 2px; flex-wrap:wrap; }
+    .score-row b { font-size:1.5rem; color:#0891b2; font-variant-numeric:tabular-nums; }
+    .btn { padding:9px 18px; border:none; border-radius:10px; background:#0891b2; color:#fff;
+      font:inherit; font-weight:600; cursor:pointer; transition:.15s; }
+    .btn:hover { background:#0e7490; }
+    .btn.ghost { background:#fff; color:#0891b2; border:1px solid var(--line); }
+    .target-line { display:flex; align-items:center; gap:8px; margin:6px 0; font-size:.92rem; }
+    .target-line .ok { color:#059669; font-weight:700; }
+    .target-line .no { color:#b45309; font-weight:700; }
+    .eqn { font-family:ui-monospace,monospace; background:#f8fafc; border:1px solid var(--line);
+      border-radius:10px; padding:12px 14px; overflow-x:auto; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <p style="margin-bottom:0; font-size:0.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+
+  <div class="game-hero">
+    <span class="badge">Interactive Teaching Tool &nbsp;·&nbsp; Continuity · Bernoulli · Reynolds</span>
+    <h1>&#127754; Bernoulli Flow Lab</h1>
+    <p>Push fluid through a venturi and watch it speed up in the throat (continuity), lose pressure
+       (Bernoulli), and switch between laminar and turbulent flow (Reynolds). Squeeze the throat too
+       hard and you'll see <strong>cavitation</strong>. Then take on the Flow Challenges. Built for
+       fluid-mechanics &amp; hydraulics students.</p>
+  </div>
+
+  <div class="mode-tabs">
+    <button id="tabSandbox" class="active">&#128295; Sandbox</button>
+    <button id="tabChallenge">&#127942; Flow Challenge</button>
+  </div>
+
+  <section class="card" id="challengeCard" style="display:none;">
+    <div class="challenge-box" id="challengeBox">
+      <h3 id="chTitle">Challenge</h3>
+      <p id="chDesc" style="margin:0 0 6px;"></p>
+      <div id="chTargets"></div>
+      <div class="score-row">
+        <div>Score: <b id="chScore">0</b></div>
+        <div>Streak: <b id="chStreak" style="color:#d97706;">0</b></div>
+        <button class="btn" id="chSubmit">Submit design</button>
+        <button class="btn ghost" id="chSkip">Skip</button>
+      </div>
+      <p id="chFeedback" style="margin:8px 0 0; font-weight:600;"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sim-grid">
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl">
+          <label>Flow rate, Q <span class="val"><span id="vQ">40</span> L/s</span></label>
+          <input type="range" id="Q" min="1" max="120" step="1" value="40">
+        </div>
+        <div class="ctrl">
+          <label>Inlet diameter, D&#8321; <span class="val"><span id="vD1">150</span> mm</span></label>
+          <input type="range" id="D1" min="60" max="300" step="5" value="150">
+        </div>
+        <div class="ctrl">
+          <label>Throat diameter, D&#8322; <span class="val"><span id="vD2">60</span> mm</span></label>
+          <input type="range" id="D2" min="20" max="300" step="5" value="60">
+          <div class="hint">Automatically kept &le; inlet diameter.</div>
+        </div>
+        <div class="ctrl">
+          <label>Inlet pressure, p&#8321; <span class="val"><span id="vP1">200</span> kPa</span></label>
+          <input type="range" id="P1" min="0" max="500" step="5" value="200">
+          <div class="hint">Gauge pressure at the wide inlet.</div>
+        </div>
+        <div class="ctrl">
+          <label>Working fluid</label>
+          <select id="fluid">
+            <option value="water" selected>Water (20&deg;C)</option>
+            <option value="oil">Light oil (SAE-10)</option>
+            <option value="glycerin">Glycerin</option>
+          </select>
+          <div class="hint" id="fluidNote"></div>
+        </div>
+      </div>
+
+      <!-- VISUAL + RESULTS -->
+      <div>
+        <canvas id="stage" width="640" height="340"></canvas>
+
+        <div class="out-grid">
+          <div class="ocard"><h4>Inlet velocity V&#8321;</h4><div class="num" id="oV1">0</div><div class="sub">m/s</div></div>
+          <div class="ocard"><h4>Throat velocity V&#8322;</h4><div class="num" id="oV2">0</div><div class="sub">m/s</div></div>
+          <div class="ocard"><h4>Throat pressure p&#8322;</h4><div class="num" id="oP2">0</div><div class="sub">kPa gauge</div></div>
+          <div class="ocard"><h4>Reynolds (throat)</h4><div class="num" id="oRe">0</div><div class="sub" id="oReSub">&nbsp;</div></div>
+        </div>
+
+        <div class="status">
+          <span class="chip" id="chipRegime">&mdash;</span>
+          <span class="chip" id="chipCav">&mdash;</span>
+          <span class="chip ok" id="chipC">Contraction ratio &mdash;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>The physics behind the game</h2>
+    <p><strong>Continuity</strong> forces the fluid faster through the narrow throat; <strong>Bernoulli's
+       equation</strong> then trades that kinetic energy for a pressure drop:</p>
+    <p class="eqn">
+      A = &pi;D&sup2;/4 &nbsp;&bull;&nbsp; V = Q/A &nbsp;&bull;&nbsp;
+      p&#8322; = p&#8321; + &frac12;&rho;(V&#8321;&sup2; &minus; V&#8322;&sup2;) &nbsp;&bull;&nbsp;
+      Re = &rho;V&#8322;D&#8322;/&mu;
+    </p>
+    <p>Flow is <strong>laminar</strong> for Re &lt; 2300, <strong>transitional</strong> up to ~4000, and
+      <strong>turbulent</strong> above. If the throat's <em>absolute</em> pressure falls below the fluid's
+      vapour pressure, the liquid boils locally — <strong>cavitation</strong> — the effect that erodes pumps,
+      valves and propellers. The model assumes steady, incompressible, ideal flow (losses neglected), so
+      treat the numbers as teaching illustrations rather than a calibrated design.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
+  &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
+</footer>
+
+<script>
+// ---- nav ----
+document.getElementById('navToggle').addEventListener('click', function () {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+(function(){ var links=document.querySelectorAll('.nav-links a');
+  var cur=window.location.pathname.split('/').pop()||'index.html';
+  links.forEach(function(a){ if(a.getAttribute('href')===cur) a.classList.add('active'); }); })();
+
+// ======================= FLUID MODEL =======================
+const PATM = 101.3;                        // kPa, atmospheric
+const G = 9.81;
+const FLUIDS = {
+  water:    { rho:998,  mu:0.0010, pv:2.34,  name:'Water',    col:'#0891b2' },
+  oil:      { rho:870,  mu:0.0650, pv:0.40,  name:'Light oil',col:'#b45309' },
+  glycerin: { rho:1260, mu:0.9500, pv:0.001, name:'Glycerin', col:'#ca8a04' }
+};
+
+function simulate(inp){
+  const f = FLUIDS[inp.fluid];
+  const Q = inp.Q/1000;                    // m^3/s
+  const D1 = inp.D1/1000, D2 = inp.D2/1000;
+  const A1 = Math.PI/4*D1*D1, A2 = Math.PI/4*D2*D2;
+  const V1 = Q/A1, V2 = Q/A2;
+  const p2 = inp.P1 + 0.5*f.rho*(V1*V1 - V2*V2)/1000;   // kPa gauge
+  const Re2 = f.rho*V2*D2/f.mu;
+  const p2abs = p2 + PATM;
+  const regime = Re2 < 2300 ? 'laminar' : (Re2 < 4000 ? 'transitional' : 'turbulent');
+  const cav = p2abs <= f.pv;
+  const suction = p2 < 0;
+  const ratio = (D2/D1);
+  return { f, Q, V1, V2, p2, p2abs, Re2, regime, cav, suction, ratio, D1:inp.D1, D2:inp.D2 };
+}
+
+// ======================= UI WIRING =======================
+const els = {
+  Q:document.getElementById('Q'), D1:document.getElementById('D1'), D2:document.getElementById('D2'),
+  P1:document.getElementById('P1'), fluid:document.getElementById('fluid')
+};
+function readInputs(){
+  let d1 = +els.D1.value, d2 = +els.D2.value;
+  if (d2 > d1){ d2 = d1; els.D2.value = d1; }        // keep throat <= inlet
+  return { Q:+els.Q.value, D1:d1, D2:d2, P1:+els.P1.value, fluid:els.fluid.value };
+}
+
+let latest = null;
+function refresh(){
+  const inp = readInputs();
+  const r = simulate(inp);
+  latest = r;
+
+  document.getElementById('vQ').textContent  = inp.Q;
+  document.getElementById('vD1').textContent = inp.D1;
+  document.getElementById('vD2').textContent = inp.D2;
+  document.getElementById('vP1').textContent = inp.P1;
+  document.getElementById('fluidNote').textContent =
+    r.f.name + ': ρ = ' + r.f.rho + ' kg/m³, μ = ' + r.f.mu + ' Pa·s';
+
+  document.getElementById('oV1').textContent = r.V1.toFixed(2);
+  document.getElementById('oV2').textContent = r.V2.toFixed(2);
+  document.getElementById('oP2').textContent = r.p2.toFixed(0);
+  document.getElementById('oRe').textContent = r.Re2 >= 100000
+      ? (r.Re2/1000).toFixed(0)+'k' : r.Re2.toFixed(0);
+  document.getElementById('oReSub').textContent = 'p₂(abs) = ' + r.p2abs.toFixed(0) + ' kPa';
+
+  const cr = document.getElementById('chipRegime');
+  cr.className = 'chip ' + r.regime;
+  cr.textContent = r.regime.charAt(0).toUpperCase()+r.regime.slice(1)+' flow';
+
+  const cc = document.getElementById('chipCav');
+  if (r.cav){ cc.className='chip warn'; cc.textContent='⚠ Cavitation!'; }
+  else if (r.suction){ cc.className='chip transitional'; cc.textContent='Suction (p₂ < atm)'; }
+  else { cc.className='chip ok'; cc.textContent='No cavitation'; }
+
+  document.getElementById('chipC').textContent =
+    'β = D₂/D₁ = ' + r.ratio.toFixed(2);
+
+  if (challengeMode) renderTargets();
+}
+Object.values(els).forEach(e => e.addEventListener('input', refresh));
+
+// ======================= CANVAS ANIMATION =======================
+const cv = document.getElementById('stage');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+const AX = H*0.58;                 // pipe centre-line y
+const PIPE_L = W;                  // full width
+let parts = [];
+
+// pipe half-height (in px) as a function of x, forming a converging-diverging venturi
+function halfH(x, r){
+  const maxR = 62, minR = maxR * Math.max(0.14, r.D2/r.D1);
+  // throat centred at 0.5W, smooth cosine transition over a central zone
+  const tx = x / W;
+  let shape;
+  if (tx < 0.32) shape = 1;
+  else if (tx > 0.68) shape = 1;
+  else { const u = (tx-0.32)/0.36; shape = 0.5*(1+Math.cos(u*2*Math.PI))*0.5 + 0.5; // dip
+         shape = 0.5 + 0.5*Math.cos(u*2*Math.PI); }               // 1 -> 0 -> 1
+  const rr = minR + (maxR-minR)*shape;
+  return rr;
+}
+
+function localVel(x, r){
+  // velocity ∝ 1/area ∝ 1/halfH² ; scale to px/frame
+  const hh = halfH(x, r);
+  const vpx = (r.V2>0? r.V2:0.001) * Math.pow(halfH(W*0.5,r)/hh, 2);
+  return Math.min(9, 0.4 + vpx*0.5);
+}
+
+function initParts(n, r){
+  parts = [];
+  for (let i=0;i<n;i++){
+    const x = Math.random()*W;
+    const hh = halfH(x,r)*0.86;
+    parts.push({ x, y: AX + (Math.random()*2-1)*hh, lane:(Math.random()*2-1) });
+  }
+}
+
+function draw(){
+  const r = latest || simulate(readInputs());
+  const wantN = 90;
+  if (parts.length !== wantN) initParts(wantN, r);
+
+  ctx.clearRect(0,0,W,H);
+
+  // ---- pipe body ----
+  ctx.beginPath();
+  ctx.moveTo(0, AX-halfH(0,r));
+  for (let x=0;x<=W;x+=6) ctx.lineTo(x, AX-halfH(x,r));
+  for (let x=W;x>=0;x-=6) ctx.lineTo(x, AX+halfH(x,r));
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0,AX-62,0,AX+62);
+  grad.addColorStop(0,'#e2e8f0'); grad.addColorStop(0.5,'#f8fafc'); grad.addColorStop(1,'#cbd5e1');
+  ctx.fillStyle = grad; ctx.fill();
+  ctx.strokeStyle = '#334155'; ctx.lineWidth = 2.5; ctx.stroke();
+
+  // ---- fluid particles ----
+  ctx.fillStyle = r.f.col;
+  for (const p of parts){
+    const v = localVel(p.x, r);
+    p.x += v;
+    if (p.x > W){ p.x -= W; }
+    const hh = halfH(p.x, r)*0.82;
+    p.y = AX + p.lane*hh;
+    ctx.beginPath(); ctx.arc(p.x, p.y, 2.6, 0, 7); ctx.fill();
+  }
+
+  // ---- piezometer tubes (pressure heads) ----
+  const inletX = W*0.16, throatX = W*0.5;
+  drawTube(inletX, r, r.p2==null? r.p2 : latest_p1(), '#0369a1', 'p₁');
+  drawTube(throatX, r, r.p2, '#0891b2', 'p₂');
+
+  // labels
+  ctx.fillStyle='#334155'; ctx.font='12px Inter, sans-serif';
+  ctx.fillText('inlet', inletX-14, AX+halfH(inletX,r)+18);
+  ctx.fillText('throat', throatX-16, AX+halfH(throatX,r)+18);
+  ctx.fillText('flow →', 8, 18);
+
+  // cavitation bubbles at throat
+  if (r.cav){
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    for (let i=0;i<10;i++){
+      const bx=throatX+(Math.random()*40-20), by=AX+(Math.random()*halfH(throatX,r)*1.4-halfH(throatX,r)*0.7);
+      ctx.beginPath(); ctx.arc(bx,by,1.5+Math.random()*2,0,7); ctx.fill();
+    }
+    ctx.fillStyle='#b91c1c'; ctx.font='bold 12px Inter';
+    ctx.fillText('cavitation', throatX-26, AX-halfH(throatX,r)-40);
+  }
+  requestAnimationFrame(draw);
+}
+function latest_p1(){ return +els.P1.value; }
+
+function drawTube(x, r, pKpa, color, label){
+  // column height ∝ pressure head h = p/(ρg); clamp for display
+  const head = (pKpa*1000)/(r.f.rho*G);        // m
+  const topPipe = AX - halfH(x, r);
+  const maxUp = topPipe - 8;                    // px available above pipe to canvas top
+  const px = Math.max(-24, Math.min(maxUp, head*3.0)); // 3 px per m, allow slight negative
+  // tube walls
+  ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1.5;
+  ctx.strokeRect(x-6, 4, 12, topPipe-4);
+  // fluid column
+  const colTop = Math.max(6, topPipe - px);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.85;
+  ctx.fillRect(x-5, colTop, 10, (topPipe - colTop));
+  ctx.globalAlpha = 1;
+  // value
+  ctx.fillStyle=color; ctx.font='bold 11px Inter';
+  ctx.fillText(pKpa.toFixed(0)+' kPa', x-16, Math.max(14, colTop-4));
+}
+requestAnimationFrame(draw);
+
+// ======================= CHALLENGE MODE =======================
+let challengeMode = false, score = 0, streak = 0, current = null;
+
+const CHALLENGES = [
+  { title:'Make it turbulent', desc:'Warm-up: get the throat flow firmly into the turbulent regime.',
+    tests:[ {label:'Reynolds ≥ 4000', ok:r=>r.Re2>=4000, get:r=>'Re = '+Math.round(r.Re2)} ] },
+  { title:'Keep it laminar', desc:'Now the opposite — coax the throat flow into smooth laminar motion. (Hint: viscous fluid, gentle flow.)',
+    tests:[ {label:'Reynolds ≤ 2300', ok:r=>r.Re2<=2300, get:r=>'Re = '+Math.round(r.Re2)} ] },
+  { title:'Venturi suction', desc:'Squeeze the throat so its pressure drops below atmospheric — the principle behind a carburettor and an aspirator.',
+    tests:[ {label:'Throat pressure p₂ < 0 kPa (gauge)', ok:r=>r.p2<0, get:r=>r.p2.toFixed(0)+' kPa'},
+            {label:'Still no cavitation', ok:r=>!r.cav, get:r=>r.cav?'cavitating':'stable'} ] },
+  { title:'Trigger cavitation', desc:'Push it too far: drop the throat ABSOLUTE pressure below the fluid vapour pressure and watch bubbles form.',
+    tests:[ {label:'Cavitation occurs', ok:r=>r.cav, get:r=>r.cav?'yes — bubbles!':'not yet'} ] },
+  { title:'Hit the target velocity', desc:'Precision run: tune the geometry so the throat velocity lands in the target window.',
+    tests:[ {label:'Throat velocity V₂ between 5.8 and 6.2 m/s', ok:r=>r.V2>=5.8&&r.V2<=6.2, get:r=>r.V2.toFixed(2)+' m/s'} ] },
+  { title:'Flow-meter design', desc:'Design a usable venturi meter: a clear pressure drop, but keep the flow well away from cavitation.',
+    tests:[ {label:'Pressure drop p₁−p₂ ≥ 40 kPa', ok:r=>(latest_p1()-r.p2)>=40, get:r=>(latest_p1()-r.p2).toFixed(0)+' kPa'},
+            {label:'Throat abs. pressure ≥ 30 kPa (safe)', ok:r=>r.p2abs>=30, get:r=>r.p2abs.toFixed(0)+' kPa'} ] }
+];
+
+function loadChallenge(){
+  current = CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
+  document.getElementById('chTitle').textContent = '🎯 ' + current.title;
+  document.getElementById('chDesc').textContent = current.desc;
+  document.getElementById('chFeedback').textContent = '';
+  document.getElementById('challengeBox').classList.remove('win');
+  refresh();
+}
+function renderTargets(){
+  const r = latest;
+  document.getElementById('chTargets').innerHTML = current.tests.map(t=>{
+    const pass = t.ok(r);
+    return '<div class="target-line"><span class="'+(pass?'ok':'no')+'">'+(pass?'✔':'✷')+'</span> '+
+      t.label+' <span style="color:var(--muted)">— now: '+t.get(r)+'</span></div>';
+  }).join('');
+}
+
+document.getElementById('chSubmit').addEventListener('click', ()=>{
+  const r = latest;
+  const allPass = current.tests.every(t=>t.ok(r));
+  const box = document.getElementById('challengeBox');
+  const fb = document.getElementById('chFeedback');
+  if (allPass){
+    const gain = 100 + streak*25; score += gain; streak++;
+    box.classList.add('win'); fb.style.color='#059669';
+    fb.textContent = '✅ Nailed it! +'+gain+' points. Next challenge loading…';
+    document.getElementById('chScore').textContent = score;
+    document.getElementById('chStreak').textContent = streak;
+    setTimeout(loadChallenge, 1400);
+  } else {
+    streak = 0; document.getElementById('chStreak').textContent = 0;
+    fb.style.color='#b45309';
+    fb.textContent = '❌ Not all targets met — adjust the controls and try again.';
+  }
+});
+document.getElementById('chSkip').addEventListener('click', loadChallenge);
+
+function setMode(challenge){
+  challengeMode = challenge;
+  document.getElementById('tabSandbox').classList.toggle('active', !challenge);
+  document.getElementById('tabChallenge').classList.toggle('active', challenge);
+  document.getElementById('challengeCard').style.display = challenge ? 'block':'none';
+  if (challenge && !current) loadChallenge();
+  refresh();
+}
+document.getElementById('tabSandbox').addEventListener('click', ()=>setMode(false));
+document.getElementById('tabChallenge').addEventListener('click', ()=>setMode(true));
+
+refresh();
+</script>
+</body>
+</html>
