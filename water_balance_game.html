@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Watershed Water-Balance Simulator | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive rainfall–runoff and water-balance simulator based on the SCS Curve Number method. A teaching game for hydrology and water-resources students."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero {
+      background: linear-gradient(135deg, #1f3c88 0%, #2563eb 100%);
+      border-radius: 18px;
+      padding: 26px 28px;
+      margin-top: 16px;
+      color: #fff;
+    }
+    .game-hero h1 { margin: 0 0 6px; font-size: 1.8rem; color: #fff; }
+    .game-hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      padding: 3px 14px; font-size: 0.82rem; margin-bottom: 10px;
+    }
+    .game-hero p { color: rgba(255,255,255,0.85); margin: 4px 0 0; max-width: 720px; }
+
+    .mode-tabs { display:flex; gap:8px; margin:18px 0 4px; }
+    .mode-tabs button {
+      flex:0 0 auto; padding:9px 18px; border:1px solid var(--line); background:var(--card);
+      border-radius:10px; font:inherit; font-weight:600; color:var(--muted); cursor:pointer;
+      transition:.15s;
+    }
+    .mode-tabs button.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+    .sim-grid { display:grid; grid-template-columns: 340px 1fr; gap:18px; align-items:start; }
+    @media (max-width: 880px){ .sim-grid { grid-template-columns:1fr; } }
+
+    .controls .ctrl { margin-bottom:16px; }
+    .controls label { display:flex; justify-content:space-between; align-items:baseline;
+      font-weight:600; font-size:.9rem; margin-bottom:6px; }
+    .controls label .val { color:var(--accent); font-variant-numeric:tabular-nums; font-size:.95rem; }
+    .controls input[type=range]{ width:100%; accent-color:var(--accent); }
+    .controls select {
+      width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:9px;
+      font:inherit; background:#f8fafc; color:var(--text);
+    }
+    .hint { font-size:.78rem; color:var(--muted); margin-top:4px; }
+
+    canvas#stage { width:100%; height:auto; display:block; border-radius:12px;
+      background:linear-gradient(#bfe3ff, #e8f6ff 60%); border:1px solid var(--line); }
+
+    .cn-pill { display:inline-block; background:#eff6ff; border:1px solid #bfdbfe; color:#1e40af;
+      border-radius:999px; padding:2px 12px; font-weight:700; font-size:.85rem; }
+
+    .balance { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:14px; }
+    @media (max-width:520px){ .balance{ grid-template-columns:repeat(2,1fr);} }
+    .bcard { background:#f8fafc; border:1px solid var(--line); border-radius:12px; padding:12px 12px 14px; }
+    .bcard .dot { width:11px; height:11px; border-radius:50%; display:inline-block; margin-right:6px; }
+    .bcard h4 { margin:0 0 6px; font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:700; }
+    .bcard .num { font-size:1.35rem; font-weight:700; font-variant-numeric:tabular-nums; }
+    .bcard .pct { font-size:.82rem; color:var(--muted); }
+    .barrow { height:16px; border-radius:6px; overflow:hidden; display:flex; margin-top:12px; border:1px solid var(--line); }
+    .barrow span { display:block; height:100%; transition:width .35s ease; }
+
+    .challenge-box { background:#fffbeb; border:1px solid #fde68a; border-radius:12px; padding:16px 18px; }
+    .challenge-box.win { background:#ecfdf5; border-color:#a7f3d0; }
+    .challenge-box h3 { margin:0 0 6px; color:#92400e; }
+    .challenge-box.win h3 { color:#065f46; }
+    .score-row { display:flex; gap:22px; align-items:center; margin:10px 0 2px; flex-wrap:wrap; }
+    .score-row b { font-size:1.5rem; color:var(--accent); font-variant-numeric:tabular-nums; }
+    .btn { display:inline-block; padding:9px 18px; border:none; border-radius:10px; background:var(--accent);
+      color:#fff; font:inherit; font-weight:600; cursor:pointer; transition:.15s; }
+    .btn:hover { background:var(--accent2); }
+    .btn.ghost { background:#fff; color:var(--accent); border:1px solid var(--line); }
+    .target-line { display:flex; align-items:center; gap:8px; margin:6px 0; font-size:.92rem; }
+    .target-line .ok { color:#059669; font-weight:700; }
+    .target-line .no { color:#b45309; font-weight:700; }
+    .legend-key { font-size:.8rem; color:var(--muted); margin-top:10px; line-height:1.7; }
+    .legend-key .k { display:inline-block; width:10px; height:10px; border-radius:2px; margin:0 5px 0 12px; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="administration.html">Administration</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <p style="margin-bottom:0; font-size:0.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+
+  <div class="game-hero">
+    <span class="badge">Interactive Teaching Tool &nbsp;·&nbsp; SCS Curve Number Method</span>
+    <h1>&#128167; Watershed Water-Balance Simulator</h1>
+    <p>Drag the controls and watch a design-storm partition into surface runoff, evapotranspiration,
+       soil storage and groundwater recharge in real time. Then switch to <strong>Design Challenge</strong>
+       mode and compete to hit hydrological targets. Built for hydrology &amp; water-resources students.</p>
+  </div>
+
+  <div class="mode-tabs">
+    <button id="tabSandbox" class="active">&#128295; Sandbox</button>
+    <button id="tabChallenge">&#127942; Design Challenge</button>
+  </div>
+
+  <!-- Challenge banner (hidden in sandbox) -->
+  <section class="card" id="challengeCard" style="display:none;">
+    <div class="challenge-box" id="challengeBox">
+      <h3 id="chTitle">Challenge</h3>
+      <p id="chDesc" style="margin:0 0 6px;"></p>
+      <div id="chTargets"></div>
+      <div class="score-row">
+        <div>Score: <b id="chScore">0</b></div>
+        <div>Streak: <b id="chStreak" style="color:#d97706;">0</b></div>
+        <button class="btn" id="chSubmit">Submit design</button>
+        <button class="btn ghost" id="chSkip">Skip</button>
+      </div>
+      <p id="chFeedback" style="margin:8px 0 0; font-weight:600;"></p>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="sim-grid">
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <div class="ctrl">
+          <label>Design rainfall, P <span class="val"><span id="vP">80</span> mm</span></label>
+          <input type="range" id="P" min="0" max="200" step="1" value="80">
+          <div class="hint">Total depth of the storm event.</div>
+        </div>
+
+        <div class="ctrl">
+          <label>Land cover</label>
+          <select id="land">
+            <option value="forest">Forest (good condition)</option>
+            <option value="grass" selected>Grassland / pasture</option>
+            <option value="agri">Row-crop agriculture</option>
+            <option value="suburb">Suburban / residential</option>
+            <option value="urban">Urban / paved</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <label>Hydrologic soil group</label>
+          <select id="soil">
+            <option value="0">A — sandy, high infiltration</option>
+            <option value="1" selected>B — loam, moderate</option>
+            <option value="2">C — clay-loam, slow</option>
+            <option value="3">D — clay, very slow</option>
+          </select>
+        </div>
+
+        <div class="ctrl">
+          <label>Average slope <span class="val"><span id="vSlope">5</span> %</span></label>
+          <input type="range" id="slope" min="0" max="30" step="1" value="5">
+        </div>
+
+        <div class="ctrl">
+          <label>Potential ET (PET) <span class="val"><span id="vPET">5</span> mm</span></label>
+          <input type="range" id="pet" min="0" max="15" step="0.5" value="5">
+          <div class="hint">Atmospheric evaporative demand for the event/day.</div>
+        </div>
+
+        <div class="ctrl">
+          <label>Initial soil moisture <span class="val"><span id="vSM">40</span> %</span></label>
+          <input type="range" id="sm" min="0" max="100" step="1" value="40">
+          <div class="hint">Antecedent wetness (% of 150 mm capacity).</div>
+        </div>
+
+        <div style="margin-top:6px;">
+          Computed Curve Number: <span class="cn-pill" id="cnPill">CN = 69</span>
+          <div class="hint" id="cnNote"></div>
+        </div>
+      </div>
+
+      <!-- VISUAL + RESULTS -->
+      <div>
+        <canvas id="stage" width="640" height="360"></canvas>
+
+        <div class="barrow" id="bar" title="Partition of rainfall">
+          <span id="barQ"  style="background:#2563eb;"></span>
+          <span id="barET" style="background:#f59e0b;"></span>
+          <span id="barR"  style="background:#10b981;"></span>
+          <span id="barS"  style="background:#8b5cf6;"></span>
+        </div>
+
+        <div class="balance">
+          <div class="bcard">
+            <h4><span class="dot" style="background:#2563eb;"></span>Surface runoff</h4>
+            <div class="num" id="oQ">0</div><div class="pct" id="pQ">mm · 0%</div>
+          </div>
+          <div class="bcard">
+            <h4><span class="dot" style="background:#f59e0b;"></span>Evapotransp.</h4>
+            <div class="num" id="oET">0</div><div class="pct" id="pET">mm · 0%</div>
+          </div>
+          <div class="bcard">
+            <h4><span class="dot" style="background:#10b981;"></span>GW recharge</h4>
+            <div class="num" id="oR">0</div><div class="pct" id="pR">mm · 0%</div>
+          </div>
+          <div class="bcard">
+            <h4><span class="dot" style="background:#8b5cf6;"></span>&Delta; Soil store</h4>
+            <div class="num" id="oS">0</div><div class="pct" id="pS">mm · 0%</div>
+          </div>
+        </div>
+
+        <div class="legend-key">
+          Runoff coefficient C = Q / P = <b id="runoffC">0.00</b>.
+          <br>
+          <span class="k" style="background:#2563eb;"></span>Runoff
+          <span class="k" style="background:#f59e0b;"></span>ET
+          <span class="k" style="background:#10b981;"></span>Recharge
+          <span class="k" style="background:#8b5cf6;"></span>Soil storage
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>The model behind the game</h2>
+    <p>Surface runoff is computed with the <strong>USDA-SCS Curve Number</strong> method:</p>
+    <p style="font-family:ui-monospace,monospace; background:#f8fafc; border:1px solid var(--line); border-radius:10px; padding:12px 14px; overflow-x:auto;">
+      S = 25400/CN − 254&nbsp;&nbsp;(mm) &nbsp;&bull;&nbsp; I<sub>a</sub> = 0.2 S &nbsp;&bull;&nbsp;
+      Q = (P − I<sub>a</sub>)² / (P − I<sub>a</sub> + S)&nbsp; for P &gt; I<sub>a</sub>, else Q = 0
+    </p>
+    <p>Infiltration F = P − Q feeds a single-bucket soil store (field capacity 150 mm). Actual ET is drawn from
+      the store up to the PET limit; any water above field capacity becomes <strong>groundwater recharge</strong>.
+      The four outputs close the balance: <em>P = Q + ET + Recharge + &Delta;Soil storage</em>.
+      CN is looked up from the land-cover × soil-group table and nudged upward for steeper slopes and wetter
+      antecedent conditions (AMC). Values are illustrative teaching approximations, not a substitute for a
+      calibrated model such as SWAT or HEC-HMS.</p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
+  &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
+</footer>
+
+<script>
+// ---- nav ----
+document.getElementById('navToggle').addEventListener('click', function () {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+(function(){ var links=document.querySelectorAll('.nav-links a');
+  var cur=window.location.pathname.split('/').pop()||'index.html';
+  links.forEach(function(a){ if(a.getAttribute('href')===cur) a.classList.add('active'); }); })();
+
+// ======================= HYDROLOGY MODEL =======================
+// CN2 lookup: [A, B, C, D] hydrologic soil groups (illustrative, AMC-II)
+const CN_TABLE = {
+  forest: [36, 60, 73, 79],
+  grass:  [49, 69, 79, 84],
+  agri:   [67, 78, 85, 89],
+  suburb: [61, 75, 83, 87],
+  urban:  [89, 92, 94, 95]
+};
+const LAND_LABEL = { forest:'Forest', grass:'Grassland', agri:'Agriculture', suburb:'Suburban', urban:'Urban' };
+const SOIL_CAP = 150; // mm field capacity
+
+function computeCN(land, soilIdx, slope, smPct){
+  let cn = CN_TABLE[land][soilIdx];
+  // slope: gentle upward nudge, up to ~+6 at 30%
+  cn += Math.min(6, slope * 0.2);
+  // antecedent moisture: dry soils -> lower CN, wet -> higher (toward AMC I / III)
+  cn += (smPct - 50) * 0.10;               // ±5 across the range
+  return Math.max(30, Math.min(98, cn));
+}
+
+function simulate(inp){
+  const cn = computeCN(inp.land, inp.soilIdx, inp.slope, inp.smPct);
+  const S = 25400/cn - 254;
+  const Ia = 0.2 * S;
+  const P = inp.P;
+  let Q = 0;
+  if (P > Ia) Q = Math.pow(P - Ia, 2) / (P - Ia + S);
+  Q = Math.min(Q, P);
+  const F = P - Q;                          // infiltration
+
+  let soil = (inp.smPct/100) * SOIL_CAP;    // starting store
+  const soil0 = soil;
+  soil += F;
+  let recharge = 0;
+  if (soil > SOIL_CAP){ recharge = soil - SOIL_CAP; soil = SOIL_CAP; }
+  let et = Math.min(inp.PET, soil);         // actual ET limited by supply
+  soil -= et;
+  const dStore = soil - soil0;              // change in soil storage
+
+  return { cn, S, Ia, Q, F, ET:et, recharge, dStore, P, runoffC: P>0 ? Q/P : 0 };
+}
+
+// ======================= UI WIRING =======================
+const els = {
+  P:document.getElementById('P'), land:document.getElementById('land'),
+  soil:document.getElementById('soil'), slope:document.getElementById('slope'),
+  pet:document.getElementById('pet'), sm:document.getElementById('sm')
+};
+function readInputs(){
+  return {
+    P:+els.P.value, land:els.land.value, soilIdx:+els.soil.value,
+    slope:+els.slope.value, PET:+els.pet.value, smPct:+els.sm.value
+  };
+}
+
+let latest = null;
+function refresh(){
+  const inp = readInputs();
+  const r = simulate(inp);
+  latest = r;
+
+  document.getElementById('vP').textContent = inp.P;
+  document.getElementById('vSlope').textContent = inp.slope;
+  document.getElementById('vPET').textContent = inp.PET;
+  document.getElementById('vSM').textContent = inp.smPct;
+  document.getElementById('cnPill').textContent = 'CN = ' + r.cn.toFixed(0);
+  document.getElementById('cnNote').textContent =
+    LAND_LABEL[inp.land] + ' on soil group ' + 'ABCD'[inp.soilIdx] +
+    ' · S = ' + r.S.toFixed(0) + ' mm · Iₐ = ' + r.Ia.toFixed(1) + ' mm';
+
+  const P = Math.max(inp.P, 0.0001);
+  function set(idNum, idPct, v){
+    document.getElementById(idNum).textContent = v.toFixed(1);
+    document.getElementById(idPct).textContent = 'mm · ' + (100*v/P).toFixed(0) + '%';
+  }
+  set('oQ','pQ', r.Q);
+  set('oET','pET', r.ET);
+  set('oR','pR', r.recharge);
+  // soil storage can be negative; show signed
+  const dS = r.dStore;
+  document.getElementById('oS').textContent = (dS>=0?'+':'') + dS.toFixed(1);
+  document.getElementById('pS').textContent = 'mm · ' + (100*Math.abs(dS)/P).toFixed(0) + '%';
+
+  // stacked bar (use magnitudes; treat negative storage as 0 width so bar reads as outflow split)
+  const parts = [r.Q, r.ET, r.recharge, Math.max(0,dS)];
+  const tot = parts.reduce((a,b)=>a+b,0) || 1;
+  document.getElementById('barQ').style.width  = (100*parts[0]/tot)+'%';
+  document.getElementById('barET').style.width = (100*parts[1]/tot)+'%';
+  document.getElementById('barR').style.width  = (100*parts[2]/tot)+'%';
+  document.getElementById('barS').style.width  = (100*parts[3]/tot)+'%';
+
+  document.getElementById('runoffC').textContent = r.runoffC.toFixed(2);
+
+  if (challengeMode) evaluateLive();
+}
+
+Object.values(els).forEach(e => e.addEventListener('input', refresh));
+
+// ======================= CANVAS ANIMATION =======================
+const cv = document.getElementById('stage');
+const ctx = cv.getContext('2d');
+const W = cv.width, H = cv.height;
+const GROUND = H*0.52;            // surface line at left
+let drops = [], t0 = performance.now();
+
+function initDrops(n){
+  drops = [];
+  for (let i=0;i<n;i++) drops.push({ x:Math.random()*W, y:Math.random()*GROUND, sp:2+Math.random()*3, len:6+Math.random()*8 });
+}
+initDrops(120);
+
+function draw(now){
+  const r = latest || simulate(readInputs());
+  const intensity = Math.min(1, r.P/120);          // rain density
+  const wantDrops = Math.round(20 + intensity*160);
+  if (Math.abs(wantDrops - drops.length) > 8) initDrops(wantDrops);
+
+  ctx.clearRect(0,0,W,H);
+
+  // sky already via CSS bg; draw sloped ground
+  const slopeInp = +els.slope.value;
+  const rise = (slopeInp/30) * H*0.16;             // visual slope
+  ctx.beginPath();
+  ctx.moveTo(0, GROUND - rise);
+  ctx.lineTo(W, GROUND + rise*0.2);
+  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+
+  // soil colour by group
+  const soilCols = ['#e6c98f','#cbb085','#b79b74','#9c8563'];
+  ctx.fillStyle = soilCols[+els.soil.value];
+  ctx.fill();
+
+  // groundwater band
+  ctx.fillStyle = 'rgba(37,99,235,0.18)';
+  ctx.fillRect(0, H*0.86, W, H*0.14);
+  ctx.fillStyle = '#1e40af';
+  ctx.font = '11px Inter, sans-serif';
+  ctx.fillText('Groundwater / aquifer', 10, H*0.86+16);
+
+  // grass/veg tufts or buildings depending on cover
+  const land = els.land.value;
+  drawCover(land, GROUND, rise);
+
+  // ---- rain ----
+  ctx.strokeStyle = 'rgba(37,99,235,0.55)';
+  ctx.lineWidth = 1.4;
+  for (const d of drops){
+    const surfY = GROUND - rise + (d.x/W)*(rise*1.2);
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x-1.5, d.y+d.len);
+    ctx.stroke();
+    d.y += d.sp * (0.6 + intensity);
+    if (d.y > surfY){ d.y = -d.len - Math.random()*30; d.x = Math.random()*W; }
+  }
+
+  // ---- flux arrows sized by results ----
+  const P = Math.max(r.P, 0.001);
+  const fQ = r.Q/P, fET = r.ET/P, fRe = r.recharge/P, fIn = r.F/P;
+
+  // Surface runoff: blue arrow sliding downslope to the right/off-edge
+  drawFlux('runoff', fQ, now);
+  // Infiltration: downward arrows into soil
+  drawArrow(W*0.30, GROUND-rise*0.2, W*0.30, H*0.80, '#16a34a', 2+fIn*8, 'infiltration ' + (100*fIn).toFixed(0)+'%');
+  // ET: upward orange arrow
+  drawArrow(W*0.62, GROUND-rise*0.4, W*0.62, GROUND-rise*0.4 - (40+fET*90), '#f59e0b', 2+fET*10, 'ET '+(100*fET).toFixed(0)+'%', true);
+  // Recharge: arrow from soil into aquifer
+  drawArrow(W*0.30, H*0.80, W*0.30, H*0.86, '#10b981', 2+fRe*10, '');
+  if (fRe>0.01){ ctx.fillStyle='#047857'; ctx.font='11px Inter'; ctx.fillText('recharge '+(100*fRe).toFixed(0)+'%', W*0.30+8, H*0.83); }
+
+  requestAnimationFrame(draw);
+}
+
+let runoffPhase = 0;
+function drawFlux(kind, frac, now){
+  // animated runoff sheet flowing off the right edge along the surface
+  if (frac <= 0.01) return;
+  const slopeInp = +els.slope.value;
+  const rise = (slopeInp/30) * H*0.16;
+  runoffPhase = (now*0.06) % 40;
+  ctx.strokeStyle = 'rgba(37,99,235,0.8)';
+  ctx.lineWidth = Math.max(2, frac*10);
+  const y0 = GROUND - rise + 3;
+  for (let x = 10; x < W-10; x += 40){
+    const xx = x + runoffPhase;
+    const y = y0 + (xx/W)*(rise*1.2) + 4;
+    ctx.beginPath();
+    ctx.moveTo(xx, y);
+    ctx.quadraticCurveTo(xx+14, y+3, xx+26, y);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#1d4ed8'; ctx.font='bold 12px Inter';
+  ctx.fillText('surface runoff '+(100*frac).toFixed(0)+'%', W-190, y0-6);
+}
+
+function drawArrow(x1,y1,x2,y2,color,w,label,up){
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = Math.max(1.5,w);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  const a = Math.atan2(y2-y1, x2-x1), hs = 6+w;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-hs*Math.cos(a-0.4), y2-hs*Math.sin(a-0.4));
+  ctx.lineTo(x2-hs*Math.cos(a+0.4), y2-hs*Math.sin(a+0.4));
+  ctx.closePath(); ctx.fill();
+  if (label){ ctx.font='11px Inter'; ctx.fillText(label, x2+8, up? y2+4 : y2+4); }
+}
+
+function drawCover(land, ground, rise){
+  ctx.save();
+  const surfAt = x => ground - rise + (x/W)*(rise*1.2);
+  if (land==='urban' || land==='suburb'){
+    const n = land==='urban'? 6 : 4;
+    ctx.fillStyle = land==='urban'? '#94a3b8' : '#a3b18a';
+    for (let i=0;i<n;i++){
+      const x = 30 + i*(W-60)/n, y=surfAt(x);
+      const hgt = 26+Math.random()*0; // deterministic-ish
+      ctx.fillStyle = land==='urban'? '#7c8794' : '#c7b299';
+      ctx.fillRect(x, y-30, 34, 30);
+      ctx.fillStyle='#e2e8f0';
+      ctx.fillRect(x+6,y-24,7,7); ctx.fillRect(x+20,y-24,7,7);
+      ctx.fillRect(x+6,y-12,7,7); ctx.fillRect(x+20,y-12,7,7);
+    }
+  } else {
+    // vegetation tufts / trees
+    const n = land==='forest'? 9 : 14;
+    for (let i=0;i<n;i++){
+      const x = 20 + i*(W-40)/n, y=surfAt(x);
+      if (land==='forest'){
+        ctx.fillStyle='#4d7c0f'; ctx.beginPath(); ctx.arc(x,y-16,11,0,7); ctx.fill();
+        ctx.fillStyle='#6b4423'; ctx.fillRect(x-2,y-8,4,10);
+      } else {
+        ctx.strokeStyle= land==='agri' ? '#a16207' : '#65a30d';
+        ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y-9);
+        ctx.moveTo(x,y-3); ctx.lineTo(x-4,y-9); ctx.moveTo(x,y-3); ctx.lineTo(x+4,y-9);
+        ctx.stroke();
+      }
+    }
+  }
+  ctx.restore();
+}
+requestAnimationFrame(draw);
+
+// ======================= CHALLENGE MODE =======================
+let challengeMode = false;
+let score = 0, streak = 0, current = null;
+
+const CHALLENGES = [
+  { title:'Flood control', desc:'Storm season is coming. Configure a catchment so the storm produces LOW surface runoff.',
+    tests:[ {label:'Runoff coefficient C ≤ 0.25', ok:r=>r.runoffC<=0.25, get:r=>'C = '+r.runoffC.toFixed(2)} ],
+    lock:{P:120} },
+  { title:'Recharge the aquifer', desc:'A village depends on groundwater. Maximise recharge while keeping runoff modest.',
+    tests:[ {label:'GW recharge ≥ 25 mm', ok:r=>r.recharge>=25, get:r=>r.recharge.toFixed(0)+' mm'},
+            {label:'Runoff coefficient C ≤ 0.35', ok:r=>r.runoffC<=0.35, get:r=>'C = '+r.runoffC.toFixed(2)} ],
+    lock:{P:100, smPct:60} },
+  { title:'Urban flash-flood', desc:'Show why cities flood: make surface runoff DOMINATE the water balance.',
+    tests:[ {label:'Runoff coefficient C ≥ 0.70', ok:r=>r.runoffC>=0.70, get:r=>'C = '+r.runoffC.toFixed(2)} ],
+    lock:{P:90} },
+  { title:'Drought-resilient field', desc:'Keep crop water in the root zone: store water in the soil, waste little to runoff.',
+    tests:[ {label:'Δ Soil storage ≥ 20 mm', ok:r=>r.dStore>=20, get:r=>(r.dStore>=0?'+':'')+r.dStore.toFixed(0)+' mm'},
+            {label:'Runoff coefficient C ≤ 0.30', ok:r=>r.runoffC<=0.30, get:r=>'C = '+r.runoffC.toFixed(2)} ],
+    lock:{P:70, smPct:20, pet:3} },
+  { title:'Balanced watershed', desc:'Engineer a catchment where no single pathway exceeds 55% of rainfall.',
+    tests:[ {label:'Runoff ≤ 55% of P', ok:r=>r.Q/r.P<=0.55, get:r=>(100*r.Q/r.P).toFixed(0)+'%'},
+            {label:'Infiltration ≤ 55% of P', ok:r=>r.F/r.P<=0.55, get:r=>(100*r.F/r.P).toFixed(0)+'%'},
+            {label:'Some recharge (≥ 5 mm)', ok:r=>r.recharge>=5, get:r=>r.recharge.toFixed(0)+' mm'} ],
+    lock:{P:100, smPct:70} }
+];
+
+function loadChallenge(){
+  current = CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
+  document.getElementById('chTitle').textContent = '🎯 ' + current.title;
+  document.getElementById('chDesc').textContent = current.desc;
+  // apply locked inputs (fixed part of the scenario)
+  if (current.lock){
+    if('P' in current.lock){ els.P.value=current.lock.P; }
+    if('smPct' in current.lock){ els.sm.value=current.lock.smPct; }
+    if('pet' in current.lock){ els.pet.value=current.lock.pet; }
+  }
+  document.getElementById('chFeedback').textContent = '';
+  document.getElementById('challengeBox').classList.remove('win');
+  refresh();
+  renderTargets();
+}
+function renderTargets(){
+  const r = latest;
+  document.getElementById('chTargets').innerHTML = current.tests.map(t=>{
+    const pass = t.ok(r);
+    return '<div class="target-line"><span class="'+(pass?'ok':'no')+'">'+(pass?'✔':'✷')+'</span> '+
+      t.label+' <span style="color:var(--muted)">— now: '+t.get(r)+'</span></div>';
+  }).join('');
+}
+function evaluateLive(){ if(current) renderTargets(); }
+
+document.getElementById('chSubmit').addEventListener('click', ()=>{
+  const r = latest;
+  const allPass = current.tests.every(t=>t.ok(r));
+  const box = document.getElementById('challengeBox');
+  const fb = document.getElementById('chFeedback');
+  if (allPass){
+    const gain = 100 + streak*25;
+    score += gain; streak++;
+    box.classList.add('win');
+    fb.style.color='#059669';
+    fb.textContent = '✅ Solved! +'+gain+' points. Loading next challenge…';
+    document.getElementById('chScore').textContent = score;
+    document.getElementById('chStreak').textContent = streak;
+    setTimeout(loadChallenge, 1400);
+  } else {
+    streak = 0;
+    document.getElementById('chStreak').textContent = 0;
+    fb.style.color='#b45309';
+    fb.textContent = '❌ Targets not all met — adjust the controls and try again.';
+  }
+});
+document.getElementById('chSkip').addEventListener('click', loadChallenge);
+
+// ---- tab switching ----
+function setMode(challenge){
+  challengeMode = challenge;
+  document.getElementById('tabSandbox').classList.toggle('active', !challenge);
+  document.getElementById('tabChallenge').classList.toggle('active', challenge);
+  document.getElementById('challengeCard').style.display = challenge ? 'block':'none';
+  if (challenge && !current) loadChallenge();
+  refresh();
+}
+document.getElementById('tabSandbox').addEventListener('click', ()=>setMode(false));
+document.getElementById('tabChallenge').addEventListener('click', ()=>setMode(true));
+
+// init
+refresh();
+</script>
+</body>
+</html>
