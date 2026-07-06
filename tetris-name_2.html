@@ -129,12 +129,11 @@ const hudLines  = document.getElementById("hudLines");
 const hudScore  = document.getElementById("hudScore");
 
 let grid=null, order=[], cell=24, t0=0, running=false, doneAt=null, speed=2;
-let OX=0, OY=0;                            // pixel offset: OX centres horizontally, OY = wall row-0 y
 let lineFlash = {}, completedLines = 0;   // rows fully covered -> flash time; score source
 const ROWS_PER_SEC = 26;
 const DROP_MULT = 3;   // once lined up & rotated, the drop is a fast hard-drop
-let SKY = 10;          // empty rows of "sky" above the wall (set per name for a 9:16 frame)
-let HOVER_ROW = 1 - SKY;   // grid row where a piece hovers (up in the sky) before dropping
+const SKY = 7;         // empty rows of "sky" above the wall for pieces to fall through
+const HOVER_ROW = 1 - SKY;   // grid row where a piece hovers (up in the sky) before dropping
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ---------- Sound: tiny synth via Web Audio (no files, self-contained).
@@ -181,22 +180,14 @@ const playLine   = ()=>{ tone({ freq:660, type:"square", dur:0.09, gain:0.10 });
                          tone({ freq:990, type:"square", dur:0.12, gain:0.10, delay:0.09 }); };
 
 function sizeCanvas(){
-  const totalRows = grid.rows + SKY;
-  // portrait 9:16 stage (reel format), as large as fits the viewport
-  const availW = Math.min(document.body.clientWidth - 34, 520);
-  const availH = Math.max(360, window.innerHeight * 0.82);
-  let Wc = Math.min(availW, availH * 9/16);
-  let Hc = Wc * 16/9;
-  if(Hc > availH){ Hc = availH; Wc = Hc * 9/16; }
-  // fit the playfield (cols x totalRows) inside the frame, centred
-  cell = Math.max(6, Math.floor(Math.min(Wc/grid.cols, Hc/totalRows) * 0.98));
-  const gridW = grid.cols*cell, gridH = totalRows*cell;
-  OX = Math.round((Wc - gridW)/2);
-  OY = Math.round((Hc - gridH)/2) + SKY*cell;      // y of wall row 0 (sky sits above)
-  canvas.width  = Math.round(Wc*dpr);
-  canvas.height = Math.round(Hc*dpr);
-  canvas.style.width  = Wc + "px";
-  canvas.style.height = Hc + "px";
+  const totalRows = grid.rows + SKY;                 // wall + sky above it
+  const maxW = Math.min(document.body.clientWidth - 34, 980);
+  const maxH = Math.max(320, window.innerHeight*0.74);
+  cell = Math.max(9, Math.floor(Math.min(maxW/grid.cols, maxH/totalRows)));
+  canvas.width  = grid.cols*cell*dpr;
+  canvas.height = totalRows*cell*dpr;
+  canvas.style.width  = grid.cols*cell + "px";
+  canvas.style.height = totalRows*cell + "px";
   ctx.setTransform(dpr,0,0,dpr,0,0);
 }
 
@@ -268,16 +259,13 @@ function drawFrame(now){
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   const totalRows = grid.rows + SKY;
-  const OYtop = OY - SKY*cell;                     // top of the playfield (sky included)
-  const pfW = grid.cols*cell, pfH = totalRows*cell;
-  ctx.fillStyle = "rgba(255,255,255,.02)";
-  ctx.fillRect(OX, OYtop, pfW, pfH);              // faint playfield backing
   ctx.strokeStyle = "rgba(255,255,255,.04)"; ctx.lineWidth = 1; ctx.beginPath();
-  for(let c=1;c<grid.cols;c++){ctx.moveTo(OX+c*cell, OYtop); ctx.lineTo(OX+c*cell, OYtop+pfH);}
-  for(let r=1;r<totalRows;r++){ctx.moveTo(OX, OYtop+r*cell); ctx.lineTo(OX+pfW, OYtop+r*cell);}
+  for(let c=1;c<grid.cols;c++){ctx.moveTo(c*cell,0);ctx.lineTo(c*cell,totalRows*cell);}
+  for(let r=1;r<totalRows;r++){ctx.moveTo(0,r*cell);ctx.lineTo(grid.cols*cell,r*cell);}
   ctx.stroke();
 
   const v = ROWS_PER_SEC * speed / 1000;
+  const OY = SKY * cell;                          // pixel offset: wall sits below the sky
   let landedCount = 0, allLanded = true;
   const rowHave = new Array(grid.rows).fill(0);   // landed cells per row this frame
 
@@ -289,7 +277,7 @@ function drawFrame(now){
       landedCount++;
       if(p.landAt === undefined){ p.landAt = now; playSettle(); }
       const flash = Math.max(0, 1-(now-p.landAt)/150);
-      for(const [r,c] of p.cells){ drawBlock(OX + c*cell, OY + r*cell, p.color, flash); rowHave[r]++; }
+      for(const [r,c] of p.cells){ drawBlock(c*cell, r*cell + OY, p.color, flash); rowHave[r]++; }
     }else{
       allLanded = false;
       // vertical: hover up in the SKY through move + rotate, then hard-drop down
@@ -325,7 +313,7 @@ function drawFrame(now){
           angle = remaining * (Math.PI/2) * p.turnDir;
         }
       }
-      const cx = ((p.minCol + p.maxCol + 1)/2)*cell + dx + OX;
+      const cx = ((p.minCol + p.maxCol + 1)/2)*cell + dx;
       const cy = ((p.minRow + p.maxRow + 1)/2)*cell + dy + OY;
       ctx.save();
       ctx.translate(cx, cy);
@@ -351,9 +339,9 @@ function drawFrame(now){
     const burst = Math.max(0, 1 - age/500);             // bright flash on completion
     const glow  = 0.10 + 0.06*Math.sin(now/500 + r);    // gentle steady highlight after
     ctx.fillStyle = "rgba(255,255,255,"+(0.55*burst)+")";
-    ctx.fillRect(OX, OY + r*cell, grid.cols*cell, cell);
+    ctx.fillRect(0, r*cell + OY, grid.cols*cell, cell);
     ctx.fillStyle = "rgba(255,210,63,"+glow+")";
-    ctx.fillRect(OX, OY + r*cell, grid.cols*cell, cell);
+    ctx.fillRect(0, r*cell + OY, grid.cols*cell, cell);
   }
 
   hudPieces.textContent = landedCount + "/" + order.length;
@@ -366,7 +354,7 @@ function drawFrame(now){
     ctx.save();
     ctx.shadowColor = "#ffd23f"; ctx.shadowBlur = 6 + 10*pulse;
     ctx.fillStyle = "rgba(255,210,63,"+(0.10+0.14*pulse)+")";
-    for(const [r,c] of grid.letterCells) ctx.fillRect(OX + c*cell+1, OY + r*cell+1, cell-2, cell-2);
+    for(const [r,c] of grid.letterCells) ctx.fillRect(c*cell+1, r*cell+1 + OY, cell-2, cell-2);
     ctx.restore();
   }
 }
@@ -375,9 +363,6 @@ function start(name){
   speed = parseFloat(document.getElementById("speedSel").value);
   const plan = buildPlan(name || "CLAUDE");
   grid = plan.grid; order = plan.order;
-  // choose sky height so wall+sky sits in a 9:16 portrait frame (min 8 rows of sky)
-  SKY = Math.max(8, Math.round(grid.cols * 16/9) - grid.rows);
-  HOVER_ROW = 1 - SKY;
   sizeCanvas(); scheduleAnim(); doneAt = null;
   lineFlash = {}; completedLines = 0;
   if(reduceMotion) order.forEach(p=>{ p.start = -1e9; p.hangDur = 0; p.fallDur = 0; });
