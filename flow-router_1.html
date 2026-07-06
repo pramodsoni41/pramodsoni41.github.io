@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flow Router — route the water, spin the turbine</title>
+<style>
+  :root{
+    --ink:#071620;
+    --ink-2:#0C2433;
+    --aqua:#53E0D2;
+    --aqua-dim:#2A8F88;
+    --foam:#EAF7F5;
+    --amber:#FFC65C;
+    --coral:#FF7A6B;
+    --line:#16394D;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:
+      radial-gradient(1200px 700px at 70% -10%, #10314466 0%, transparent 60%),
+      var(--ink);
+    color:var(--foam);
+    font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+    display:flex; flex-direction:column;
+    touch-action:none; user-select:none;
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 14px 4px; gap:10px; flex-wrap:wrap;
+  }
+  h1{
+    font-size:clamp(15px,2.4vw,20px);
+    letter-spacing:.08em; text-transform:uppercase;
+    color:var(--aqua); font-weight:800;
+  }
+  h1 span{color:var(--foam); font-weight:300}
+  .hud{
+    display:flex; gap:14px; align-items:center;
+    font-variant-numeric:tabular-nums;
+    font-size:clamp(11px,1.8vw,13px);
+  }
+  .hud b{color:var(--amber)}
+  .hud .lvl b{color:var(--aqua)}
+  #toolbar{
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    padding:4px 14px 6px;
+  }
+  .tbtn{
+    font:inherit; font-size:12px; font-weight:700; letter-spacing:.04em;
+    background:transparent; color:var(--aqua);
+    border:1px solid var(--aqua-dim); border-radius:999px;
+    padding:6px 16px; cursor:pointer;
+    transition:background .12s ease;
+  }
+  .tbtn:hover{background:#53E0D21A}
+  .tbtn.active{background:var(--aqua); color:var(--ink)}
+  .tbtn.warn{color:var(--coral); border-color:#7A3B34}
+  .tbtn.warn:hover{background:#FF7A6B1A}
+  .tbtn:focus-visible{outline:3px solid var(--amber); outline-offset:2px}
+  .slider{
+    display:flex; align-items:center; gap:8px;
+    font-size:11px; color:#9FC4C0;
+  }
+  .slider input{accent-color:var(--aqua); width:110px}
+  #stage{flex:1; position:relative; min-height:0}
+  canvas{position:absolute; inset:0; width:100%; height:100%; display:block}
+  #overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:#071620CC; backdrop-filter:blur(4px);
+    opacity:0; pointer-events:none; transition:opacity .25s ease;
+  }
+  #overlay.show{opacity:1; pointer-events:auto}
+  .card{
+    background:var(--ink-2); border:1px solid var(--line);
+    border-radius:18px; padding:26px 30px; text-align:center;
+    max-width:min(440px,88vw); box-shadow:0 20px 60px #00000066;
+  }
+  .card h2{color:var(--aqua); font-size:clamp(20px,4vw,28px); margin-bottom:8px; letter-spacing:.04em}
+  .card p{color:#9FC4C0; font-size:14px; line-height:1.55; margin-bottom:18px}
+  .card .eff{font-size:22px; color:var(--amber); margin-bottom:12px; font-weight:800}
+  button.primary{
+    font:inherit; font-weight:700; letter-spacing:.05em;
+    background:var(--aqua); color:var(--ink);
+    border:0; border-radius:999px; padding:12px 30px; font-size:15px;
+    cursor:pointer; box-shadow:0 6px 20px #53E0D24D;
+    transition:transform .12s ease;
+  }
+  button.primary:hover{transform:translateY(-2px)}
+  button.primary:focus-visible{outline:3px solid var(--amber); outline-offset:3px}
+  footer{
+    padding:4px 14px 8px; font-size:11px; color:#5D8390;
+    display:flex; justify-content:space-between; gap:10px;
+  }
+  @media (max-width:560px){ footer .kb{display:none} .slider span.lbl{display:none} }
+</style>
+</head>
+<body>
+<header>
+  <h1>Flow <span>Router</span></h1>
+  <div class="hud">
+    <div class="lvl">Level <b id="hudLevel">1</b>/<span id="hudTotal">5</span></div>
+    <div>Turbine <b id="hudFill">0</b>%</div>
+    <div>Efficiency <b id="hudEff">–</b>%</div>
+  </div>
+</header>
+
+<div id="toolbar">
+  <button class="tbtn active" id="btnDraw">✏ Draw ramp</button>
+  <button class="tbtn" id="btnErase">⌫ Erase</button>
+  <button class="tbtn warn" id="btnClear">Clear all</button>
+  <button class="tbtn" id="btnFlow">⏸ Pause flow</button>
+  <div class="slider">
+    <span class="lbl">Channel roughness (Manning-ish)</span>
+    <span>smooth</span>
+    <input type="range" id="rough" min="0" max="100" value="25">
+    <span>rough</span>
+  </div>
+</div>
+
+<div id="stage">
+  <canvas id="game"></canvas>
+  <div id="overlay">
+    <div class="card">
+      <div class="eff" id="cardEff"></div>
+      <h2 id="cardTitle">Flow Router</h2>
+      <p id="cardText">Water pours from the source. Draw ramps by dragging on the canvas to route the flow into the turbine and fill it to 100%. You have a limited length of ramp material (the ink bar, bottom-left). Rougher channels slow the water; smoother ones let it race. Water that escapes off-screen hurts your efficiency score.</p>
+      <button class="primary" id="btnPrimary">Start</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>Drag to draw &middot; ink bar shows ramp material left</div>
+  <div class="kb">E = erase mode &middot; D = draw mode &middot; C = clear &middot; Space = pause flow</div>
+</footer>
+
+<script>
+(() => {
+"use strict";
+
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const stage = document.getElementById('stage');
+const overlay = document.getElementById('overlay');
+const cardTitle = document.getElementById('cardTitle');
+const cardText = document.getElementById('cardText');
+const cardEff = document.getElementById('cardEff');
+const btnPrimary = document.getElementById('btnPrimary');
+const hudLevel = document.getElementById('hudLevel');
+const hudFill = document.getElementById('hudFill');
+const hudEff = document.getElementById('hudEff');
+const hudTotal = document.getElementById('hudTotal');
+const btnDraw = document.getElementById('btnDraw');
+const btnErase = document.getElementById('btnErase');
+const btnClear = document.getElementById('btnClear');
+const btnFlow = document.getElementById('btnFlow');
+const roughSlider = document.getElementById('rough');
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ---------- responsive canvas (design space 1000 x 620) ----------
+const W = 1000, H = 620;
+let scale = 1, offX = 0, offY = 0, dpr = 1;
+function resize(){
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const r = stage.getBoundingClientRect();
+  canvas.width  = Math.round(r.width * dpr);
+  canvas.height = Math.round(r.height * dpr);
+  scale = Math.min(r.width / W, r.height / H);
+  offX = (r.width  - W * scale) / 2;
+  offY = (r.height - H * scale) / 2;
+}
+window.addEventListener('resize', resize);
+resize();
+function toWorld(cx, cy){
+  const r = canvas.getBoundingClientRect();
+  return { x:(cx - r.left - offX)/scale, y:(cy - r.top - offY)/scale };
+}
+
+// ---------- physics constants ----------
+const GRAV = 900;
+const P_R = 4;                 // particle radius
+const MAX_PARTICLES = 380;
+const EMIT_RATE = 26;          // particles per second
+const RAMP_REST = 0.12;        // near-inelastic: water sticks & slides
+const TARGET_FILL = 120;       // particles to collect
+
+// roughness slider -> tangential friction on ramps (Manning-flavoured)
+function rampFriction(){ return 0.002 + (roughSlider.value/100) * 0.06; }
+
+// ---------- levels ----------
+// source {x,y}, turbine {x,y}, obstacles rects {x,y,w,h}, ink = ramp length budget
+const LEVELS = [
+  { ink: 900, source:{x:150,y:60}, turbine:{x:820,y:540},
+    obstacles:[] },
+
+  { ink: 900, source:{x:500,y:50}, turbine:{x:120,y:540},
+    obstacles:[{x:380,y:250,w:240,h:18}] },
+
+  { ink: 1000, source:{x:100,y:60}, turbine:{x:880,y:300},
+    obstacles:[{x:450,y:0,w:18,h:220},{x:450,y:380,w:18,h:240}] },
+
+  { ink: 1100, source:{x:880,y:50}, turbine:{x:150,y:540},
+    obstacles:[{x:250,y:180,w:300,h:18},{x:520,y:360,w:300,h:18},{x:60,y:300,w:18,h:120}] },
+
+  { ink: 1200, source:{x:500,y:50}, turbine:{x:500,y:540},
+    obstacles:[{x:400,y:170,w:200,h:18},{x:180,y:330,w:18,h:160},{x:802,y:330,w:18,h:160},{x:430,y:420,w:140,h:18}] },
+];
+hudTotal.textContent = LEVELS.length;
+
+// ---------- state ----------
+let levelIdx = 0, playing = false, flowing = true;
+let particles = [];
+let ramps = [];                // {x1,y1,x2,y2,len}
+let inkUsed = 0;
+let collected = 0, emitted = 0, lost = 0;
+let mode = 'draw';             // 'draw' | 'erase'
+let drawing = null;            // {x1,y1,x2,y2} while dragging
+let emitAcc = 0;
+let turbineAngle = 0, turbineSpeed = 0;
+let won = false;
+let splashes = [];
+
+function loadLevel(i){
+  levelIdx = i;
+  particles = []; ramps = []; inkUsed = 0;
+  collected = 0; emitted = 0; lost = 0;
+  won = false; flowing = true; drawing = null;
+  turbineSpeed = 0;
+  splashes = [];
+  hudLevel.textContent = i+1;
+  hudFill.textContent = 0;
+  hudEff.textContent = '–';
+  btnFlow.textContent = '⏸ Pause flow';
+}
+
+// ---------- toolbar ----------
+function setMode(m){
+  mode = m;
+  btnDraw.classList.toggle('active', m==='draw');
+  btnErase.classList.toggle('active', m==='erase');
+}
+btnDraw.onclick = () => setMode('draw');
+btnErase.onclick = () => setMode('erase');
+btnClear.onclick = () => { ramps = []; inkUsed = 0; };
+btnFlow.onclick = () => { flowing = !flowing; btnFlow.textContent = flowing ? '⏸ Pause flow' : '▶ Resume flow'; };
+window.addEventListener('keydown', e => {
+  if(e.key==='d'||e.key==='D') setMode('draw');
+  if(e.key==='e'||e.key==='E') setMode('erase');
+  if(e.key==='c'||e.key==='C') btnClear.onclick();
+  if(e.key===' '){ e.preventDefault(); btnFlow.onclick(); }
+});
+
+// ---------- input ----------
+canvas.addEventListener('pointerdown', e => {
+  if(!playing) return;
+  const p = toWorld(e.clientX, e.clientY);
+  if(mode==='draw'){
+    drawing = {x1:p.x, y1:p.y, x2:p.x, y2:p.y};
+    canvas.setPointerCapture(e.pointerId);
+  } else {
+    eraseAt(p);
+  }
+});
+canvas.addEventListener('pointermove', e => {
+  if(!playing) return;
+  const p = toWorld(e.clientX, e.clientY);
+  if(mode==='draw' && drawing){
+    drawing.x2 = p.x; drawing.y2 = p.y;
+  } else if(mode==='erase' && (e.buttons & 1)){
+    eraseAt(p);
+  }
+});
+canvas.addEventListener('pointerup', e => {
+  if(!playing || !drawing) return;
+  const len = Math.hypot(drawing.x2-drawing.x1, drawing.y2-drawing.y1);
+  const L = LEVELS[levelIdx];
+  if(len > 14){
+    const allowed = Math.max(0, L.ink - inkUsed);
+    if(allowed > 5){
+      let seg = drawing;
+      if(len > allowed){ // trim to remaining ink
+        const t = allowed/len;
+        seg = {x1:drawing.x1, y1:drawing.y1,
+               x2:drawing.x1 + (drawing.x2-drawing.x1)*t,
+               y2:drawing.y1 + (drawing.y2-drawing.y1)*t};
+      }
+      const l2 = Math.hypot(seg.x2-seg.x1, seg.y2-seg.y1);
+      ramps.push({...seg, len:l2});
+      inkUsed += l2;
+    }
+  }
+  drawing = null;
+});
+
+function eraseAt(p){
+  for(let i=ramps.length-1; i>=0; i--){
+    if(distToSeg(p.x, p.y, ramps[i]) < 14){
+      inkUsed -= ramps[i].len;
+      ramps.splice(i,1);
+      return;
+    }
+  }
+}
+
+function distToSeg(px, py, s){
+  const dx = s.x2-s.x1, dy = s.y2-s.y1;
+  const l2 = dx*dx+dy*dy || 1e-6;
+  let t = ((px-s.x1)*dx + (py-s.y1)*dy)/l2;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px-(s.x1+dx*t), py-(s.y1+dy*t));
+}
+
+// ---------- particle physics ----------
+function emit(dt){
+  if(!flowing || won) return;
+  emitAcc += EMIT_RATE * dt;
+  const L = LEVELS[levelIdx];
+  while(emitAcc >= 1 && particles.length < MAX_PARTICLES){
+    emitAcc -= 1;
+    particles.push({
+      x: L.source.x + (Math.random()-0.5)*16,
+      y: L.source.y + Math.random()*6,
+      vx: (Math.random()-0.5)*20,
+      vy: 20 + Math.random()*30,
+    });
+    emitted++;
+  }
+  if(emitAcc >= 1) emitAcc = 0;
+}
+
+function collideSeg(p, s, fric){
+  const dx = s.x2-s.x1, dy = s.y2-s.y1;
+  const l2 = dx*dx+dy*dy || 1e-6;
+  let t = ((p.x-s.x1)*dx + (p.y-s.y1)*dy)/l2;
+  t = Math.max(0, Math.min(1, t));
+  const cx = s.x1+dx*t, cy = s.y1+dy*t;
+  let nx = p.x-cx, ny = p.y-cy;
+  const d = Math.hypot(nx, ny);
+  if(d < P_R && d > 1e-5){
+    nx/=d; ny/=d;
+    p.x = cx + nx*P_R; p.y = cy + ny*P_R;
+    const vn = p.vx*nx + p.vy*ny;
+    if(vn < 0){
+      // kill normal velocity (mostly inelastic), keep tangential with friction
+      p.vx -= (1+RAMP_REST)*vn*nx;
+      p.vy -= (1+RAMP_REST)*vn*ny;
+      p.vx *= (1-fric);
+      p.vy *= (1-fric);
+    }
+    return true;
+  }
+  return false;
+}
+
+function collideRectP(p, w){
+  const nx = Math.max(w.x, Math.min(p.x, w.x+w.w));
+  const ny = Math.max(w.y, Math.min(p.y, w.y+w.h));
+  let dx = p.x-nx, dy = p.y-ny;
+  const d = Math.hypot(dx,dy);
+  if(d < P_R){
+    if(d < 1e-5){ dy = -1; dx = 0; }
+    else { dx/=d; dy/=d; }
+    p.x = nx + dx*P_R; p.y = ny + dy*P_R;
+    const vn = p.vx*dx + p.vy*dy;
+    if(vn < 0){
+      p.vx -= (1+RAMP_REST)*vn*dx;
+      p.vy -= (1+RAMP_REST)*vn*dy;
+      p.vx *= 0.985; p.vy *= 0.985;
+    }
+  }
+}
+
+const TURB = { r: 46, catchR: 58 };
+
+function update(dt){
+  if(!playing) return;
+  const L = LEVELS[levelIdx];
+  const fric = rampFriction();
+  emit(dt);
+
+  for(let i=particles.length-1; i>=0; i--){
+    const p = particles[i];
+    p.vy += GRAV*dt;
+    // mild damping = viscosity
+    p.vx *= 0.999; p.vy *= 0.999;
+    p.x += p.vx*dt; p.y += p.vy*dt;
+
+    // side walls of the field
+    if(p.x < P_R){ p.x = P_R; p.vx = -p.vx*0.3; }
+    if(p.x > W-P_R){ p.x = W-P_R; p.vx = -p.vx*0.3; }
+
+    for(const s of ramps) collideSeg(p, s, fric);
+    for(const o of L.obstacles) collideRectP(p, o);
+
+    // turbine catch
+    const tdx = p.x - L.turbine.x, tdy = p.y - L.turbine.y;
+    if(Math.hypot(tdx, tdy) < TURB.catchR && p.vy > -20){
+      const impact = Math.min(Math.hypot(p.vx,p.vy)/600, 1);
+      turbineSpeed = Math.min(turbineSpeed + 1.5 + impact*3, 14);
+      collected++;
+      if(!reduceMotion) splashes.push({x:p.x, y:p.y, t:0.4});
+      particles.splice(i,1);
+      continue;
+    }
+
+    // lost off the bottom
+    if(p.y > H + 30){
+      lost++;
+      particles.splice(i,1);
+    }
+  }
+
+  turbineSpeed = Math.max(0, turbineSpeed - dt*2.2);
+  turbineAngle += turbineSpeed * dt;
+
+  for(const s of splashes) s.t -= dt;
+  splashes = splashes.filter(s => s.t > 0);
+
+  // HUD
+  const fillPct = Math.min(100, Math.round(collected/TARGET_FILL*100));
+  hudFill.textContent = fillPct;
+  const eff = emitted > 0 ? Math.round(collected/Math.max(collected+lost,1)*100) : null;
+  hudEff.textContent = eff === null ? '–' : eff;
+
+  if(!won && collected >= TARGET_FILL){
+    won = true;
+    setTimeout(() => showCard(eff ?? 100), reduceMotion ? 200 : 700);
+  }
+}
+
+// ---------- cards ----------
+function showCard(eff){
+  playing = false;
+  const last = levelIdx === LEVELS.length-1;
+  cardEff.textContent = `Efficiency ${eff}%`;
+  cardTitle.textContent = last ? 'All turbines spinning!' : 'Turbine at full power!';
+  cardText.textContent = eff >= 85
+    ? 'Superb channel design — barely a drop wasted.'
+    : eff >= 60
+      ? 'Good routing. Tighten the channels to cut losses.'
+      : 'It works, but a lot of water escaped. Try steeper, better-aimed ramps.';
+  btnPrimary.textContent = last ? 'Play again' : 'Next level';
+  btnPrimary.onclick = () => {
+    overlay.classList.remove('show');
+    loadLevel(last ? 0 : levelIdx+1);
+    playing = true;
+  };
+  overlay.classList.add('show');
+}
+btnPrimary.onclick = () => {
+  overlay.classList.remove('show');
+  loadLevel(0);
+  playing = true;
+};
+
+// ---------- drawing ----------
+function draw(){
+  const r = canvas.getBoundingClientRect();
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,r.width,r.height);
+  ctx.translate(offX, offY);
+  ctx.scale(scale, scale);
+
+  ctx.strokeStyle = '#16394D'; ctx.lineWidth = 2;
+  ctx.strokeRect(1,1,W-2,H-2);
+
+  const L = LEVELS[levelIdx];
+
+  // obstacles
+  for(const o of L.obstacles){
+    const g = ctx.createLinearGradient(o.x,o.y,o.x,o.y+o.h);
+    g.addColorStop(0,'#1C4A63'); g.addColorStop(1,'#123448');
+    ctx.fillStyle = g;
+    roundRect(o.x,o.y,o.w,o.h,5); ctx.fill();
+    ctx.strokeStyle = '#2A6B85'; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+
+  // source (pipe)
+  drawSource(L.source);
+
+  // turbine
+  drawTurbine(L.turbine);
+
+  // ramps
+  ctx.lineCap = 'round';
+  for(const s of ramps){
+    ctx.strokeStyle = '#3FB4B0';
+    ctx.lineWidth = 7;
+    ctx.beginPath(); ctx.moveTo(s.x1,s.y1); ctx.lineTo(s.x2,s.y2); ctx.stroke();
+    ctx.strokeStyle = '#7FE9DF';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.moveTo(s.x1,s.y1); ctx.lineTo(s.x2,s.y2); ctx.stroke();
+  }
+  // in-progress ramp
+  if(drawing){
+    const len = Math.hypot(drawing.x2-drawing.x1, drawing.y2-drawing.y1);
+    const remain = LEVELS[levelIdx].ink - inkUsed;
+    ctx.strokeStyle = len > remain ? '#FF7A6B' : '#FFC65C';
+    ctx.lineWidth = 5;
+    ctx.setLineDash([8,7]);
+    ctx.beginPath(); ctx.moveTo(drawing.x1,drawing.y1); ctx.lineTo(drawing.x2,drawing.y2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // particles
+  ctx.fillStyle = '#53E0D2';
+  for(const p of particles){
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.arc(p.x, p.y, P_R, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // splashes at turbine
+  for(const s of splashes){
+    ctx.globalAlpha = s.t*2;
+    ctx.fillStyle = '#7FE9DF';
+    ctx.beginPath(); ctx.arc(s.x, s.y, 2.5+(0.4-s.t)*10, 0, 7); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // ink bar (bottom-left)
+  const bw = 200, bh = 10, bx = 20, by = H-26;
+  const remainFrac = Math.max(0, 1 - inkUsed/LEVELS[levelIdx].ink);
+  ctx.fillStyle = '#0C2433'; ctx.strokeStyle = '#2A6B85'; ctx.lineWidth = 1.5;
+  roundRect(bx,by,bw,bh,5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = remainFrac < 0.2 ? '#FF7A6B' : '#53E0D2';
+  ctx.save(); roundRect(bx,by,bw,bh,5); ctx.clip();
+  ctx.fillRect(bx,by,bw*remainFrac,bh); ctx.restore();
+  ctx.fillStyle = '#9FC4C0';
+  ctx.font = '600 11px ui-rounded, "Segoe UI", system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('RAMP MATERIAL', bx, by-5);
+
+  // turbine fill gauge (bottom-right)
+  const gw = 200, gx = W-20-gw, gy = H-26;
+  const fillFrac = Math.min(1, collected/TARGET_FILL);
+  ctx.fillStyle = '#0C2433'; ctx.strokeStyle = '#2A6B85';
+  roundRect(gx,gy,gw,bh,5); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#FFC65C';
+  ctx.save(); roundRect(gx,gy,gw,bh,5); ctx.clip();
+  ctx.fillRect(gx,gy,gw*fillFrac,bh); ctx.restore();
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#9FC4C0';
+  ctx.fillText('TURBINE CHARGE', gx+gw, gy-5);
+}
+
+function drawSource(s){
+  ctx.fillStyle = '#1C4A63';
+  roundRect(s.x-26, s.y-34, 52, 30, 6); ctx.fill();
+  ctx.strokeStyle = '#2A6B85'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = '#53E0D2';
+  ctx.font = '700 10px ui-rounded, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('SOURCE', s.x, s.y-15);
+  // spout
+  ctx.fillStyle = '#123448';
+  ctx.fillRect(s.x-10, s.y-6, 20, 8);
+}
+
+function drawTurbine(t){
+  // glow
+  ctx.save();
+  ctx.globalAlpha = 0.18 + Math.min(turbineSpeed/14,1)*0.25;
+  const halo = ctx.createRadialGradient(t.x,t.y,8,t.x,t.y,100);
+  halo.addColorStop(0,'#FFC65C'); halo.addColorStop(1,'transparent');
+  ctx.fillStyle = halo;
+  ctx.beginPath(); ctx.arc(t.x,t.y,100,0,7); ctx.fill();
+  ctx.restore();
+
+  // housing
+  ctx.strokeStyle = '#FFC65C'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(t.x, t.y, TURB.r, Math.PI*0.15, Math.PI*0.85, true); ctx.stroke();
+
+  // wheel
+  ctx.save();
+  ctx.translate(t.x, t.y);
+  ctx.rotate(reduceMotion ? 0 : turbineAngle);
+  ctx.strokeStyle = '#7FE9DF'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+  for(let i=0;i<6;i++){
+    ctx.rotate(Math.PI/3);
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(TURB.r-12, 0);
+    ctx.quadraticCurveTo(TURB.r-4, 8, TURB.r-6, 16);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#FFC65C';
+  ctx.beginPath(); ctx.arc(0,0,7,0,7); ctx.fill();
+  ctx.restore();
+
+  ctx.fillStyle = '#FFC65C';
+  ctx.font = '700 10px ui-rounded, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('TURBINE', t.x, t.y + TURB.r + 18);
+}
+
+function roundRect(x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+// ---------- loop ----------
+let last = performance.now();
+function loop(now){
+  const dt = Math.min((now-last)/1000, 1/30);
+  last = now;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+loadLevel(0);
+overlay.classList.add('show');
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
