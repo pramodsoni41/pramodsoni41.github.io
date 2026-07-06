@@ -164,6 +164,7 @@ function draw(){
   }
   function halfPipe(x){ return 56*Math.sqrt(betaAt(x)); }  // pipe radius ∝ sqrt(area)
 }
+genProfile();               // populate the pipe so the idle screen renders (game starts on click)
 requestAnimationFrame(draw);
 
 // controls
