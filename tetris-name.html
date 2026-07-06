@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tetris Name Reveal</title>
+<style>
+  :root{ --bg:#101418; --panel:#161c22; --line:#232c35; --ink:#e8eef2; --dim:#7b8894; --accent:#ffd23f; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{ background:var(--bg); color:var(--ink); font-family:"Courier New",ui-monospace,monospace;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:28px 16px 40px; }
+  h1{font-size:15px;letter-spacing:.45em;text-transform:uppercase;color:var(--dim);font-weight:400;margin-bottom:18px;text-align:center}
+  h1 b{color:var(--accent);font-weight:700}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+  input[type=text]{ background:var(--panel);border:1px solid var(--line);color:var(--ink);
+    font-family:inherit;font-size:16px;letter-spacing:.2em;text-transform:uppercase; padding:10px 14px;width:220px;outline:none; }
+  input[type=text]:focus{border-color:var(--accent)}
+  button{ background:var(--accent);color:#1a1a1a;border:none;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:14px;letter-spacing:.15em; text-transform:uppercase;padding:10px 20px; }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:translateY(1px)}
+  select{background:var(--panel);border:1px solid var(--line);color:var(--ink);font-family:inherit;font-size:14px;padding:10px;outline:none;cursor:pointer}
+  .hud{ display:flex;gap:24px;justify-content:center;margin-bottom:10px;
+    font-size:12px;letter-spacing:.25em;text-transform:uppercase;color:var(--dim); }
+  .hud b{color:var(--accent);font-weight:700}
+  .stage{ position:relative;border:1px solid var(--line); background:linear-gradient(#0c1014,#0e1319);
+    box-shadow:0 0 0 6px #0b0e12, 0 20px 60px rgba(0,0,0,.5); }
+  canvas{display:block}
+  .stage::after{ content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px); }
+  .hint{margin-top:16px;font-size:12px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;text-align:center}
+</style>
+</head>
+<body>
+  <h1>■ Block <b>Drop</b> — the gaps spell the name</h1>
+  <div class="controls">
+    <input id="nameInput" type="text" maxlength="10" value="CLAUDE" aria-label="Name to reveal">
+    <select id="speedSel" aria-label="Speed">
+      <option value="0.5" selected>Speed ×0.5</option>
+      <option value="1">Speed ×1</option>
+      <option value="2">Speed ×2</option>
+      <option value="4">Speed ×4</option>
+    </select>
+    <button id="dropBtn">Drop blocks</button>
+  </div>
+  <div class="hud">
+    <span>Pieces <b id="hudPieces">0/0</b></span>
+    <span>Lines <b id="hudLines">0</b></span>
+    <span>Score <b id="hudScore">0</b></span>
+  </div>
+  <div class="stage"><canvas id="cv"></canvas></div>
+  <div class="hint">Type a name (A–Z, 0–9) and press Drop · every piece drops from the top and lands on real support</div>
+
+<script>
+"use strict";
+
+/* Pixel font: '#' = letter pixel = GAP in the wall. */
+const FONT = {"0":[".###.","#...#","#...#","#...#","#...#","#...#",".#.#."],"1":["..#..",".##..","..#..","..#..","..#..","..#..","#####"],"2":[".###.","#...#","....#","...#.","..#..",".#...","#####"],"3":["####.","....#","....#",".###.","....#","....#","####."],"4":["...#.","..##.",".#.#.","#..#.","##.##","...#.","...#."],"5":["#####","#....","##.#.","....#","....#","#...#",".#.#."],"6":[".###.","#....","#....","####.","#...#","#...#",".#.#."],"7":["#####","....#","...#.","..#..","..#..","..#..","..#.."],"8":[".###.","#...#","#...#",".#.#.","#...#","#...#",".#.#."],"9":[".###.","#...#","#...#",".#.##","....#","....#",".#.#."],"A":[".###.","#...#","#...#","##.##","#...#","#...#","#...#"],"B":["####.","#...#","#...#","##.#.","#...#","#...#","##.#."],"C":[".####","#....","#....","#....","#....","#....",".####"],"D":["####.","#...#","#...#","#...#","#...#","#...#","##.#."],"E":["#####","#....","#....","####.","#....","#....","#####"],"F":["#####","#....","#....","####.","#....","#....","#...."],"G":[".####","#....","#....","#.###","#...#","#...#",".#.#."],"H":["#...#","#...#","#...#","##.##","#...#","#...#","#...#"],"I":["#####","..#..","..#..","..#..","..#..","..#..","#####"],"J":["#####","....#","....#","....#","#...#","#...#",".#.#."],"K":["#...#","#..#.","#....","##...","#.#..","#..#.","#...#"],"L":["#....","#....","#....","#....","#....","#....","#####"],"M":["#.#.#","#.#.#","#.#.#","#.#.#","#...#","#...#","#...#"],"N":["#...#","##..#","#...#","#..##","#...#","#...#","#...#"],"O":[".###.","#...#","#...#","#...#","#...#","#...#",".#.#."],"P":["####.","#...#","#...#","##.#.","#....","#....","#...."],"Q":[".###.","#...#","#...#","#...#","#.#.#","#..#.",".#..#"],"R":["####.","#...#","#...#","#.##.","#.#..","#..#.","#...#"],"S":[".####","#....","#....",".###.","....#","....#","####."],"T":["#####","..#..","..#..","..#..","..#..","..#..","..#.."],"U":["#...#","#...#","#...#","#...#","#...#","#...#",".#.#."],"V":["#...#","#...#","#...#","#...#","#...#",".#.#.","....."],"W":["#...#","#...#","#...#","#.#.#","#.#.#","#.#.#","#.#.#"],"X":["#...#","#...#","...#.","..#..",".#.#.","#...#","#...#"],"Y":["#...#","#...#","...#.","..#..","..#..","..#..","..#.."],"Z":["#####","....#","...#.","..#..",".#...","#....","#####"]," ":[".....",".....",".....",".....",".....",".....","....."]};
+
+/* Pre-solved, verified-legal Tetris decomposition for each glyph, as a
+   fixed 7-column band (1 pad col + 5 letter cols + 1 pad col). Each glyph
+   maps to a list of pieces; each piece is a list of [row,col] band cells.
+   Encoded "r,c;r,c|r,c;..." to keep the file small. Every sequence was
+   proven playable: clear top-down drop path + rest on floor/blocks. */
+const BAND_ENC = {"0":"10,4;10,5;10,6;9,5|9,3;9,4;10,2;10,3|9,0;9,1;10,0;10,1|6,6;7,6;8,6;9,6|9,2|6,2;7,2;7,3;8,3|5,0;6,0;7,0;8,0|8,1|8,5|5,4;6,4;7,4;6,3|3,2;4,2;5,2;5,3|2,6;3,6;4,6;5,6|2,0;2,1;3,0;4,0|3,3;3,4;4,3;4,4|1,4;1,5;1,6;2,5|1,1;1,2;1,3;0,3|0,0;0,1;0,2;1,0|0,4;0,5;0,6","1":"10,3;10,4;10,5;9,4|9,0;9,1;10,0;10,1|7,6;8,6;9,6;10,6|9,2;9,3;10,2|9,5|6,1;7,0;7,1;8,0|5,1;5,2;6,2;7,2|6,5;6,6;7,4;7,5|5,4;5,5;5,6;6,4|3,0;4,0;5,0;6,0|2,4;3,4;4,4;4,5|2,0;2,1;3,1;4,1|2,5;3,5;3,6;4,6|4,2|1,2;1,3;1,4;2,2|0,5;1,5;1,6;2,6|0,1;0,2;0,3;1,1|0,0;1,0|0,4|0,6","2":"10,4;10,5;10,6;9,6|9,3;9,4;9,5;10,3|10,0;10,1;10,2;9,0|9,1;9,2|6,1;7,0;7,1;8,0|6,6;7,6;8,6;7,5|6,4;6,5;7,3;7,4|5,1;5,2;5,3;6,2|3,0;4,0;5,0;6,0|2,6;3,6;4,6;5,6|5,5|4,2;4,3;4,4;3,4|4,1|3,2;3,3|0,1;1,1;2,1;2,0|1,4;1,5;1,6;2,5|0,3;0,4;1,2;1,3|0,0;1,0|0,5;0,6|0,2","3":"10,0;10,1;10,2;9,2|9,3;9,4;10,3;10,4|9,5;9,6;10,5;10,6|7,0;8,0;9,0;9,1|6,6;7,6;8,6;8,5|6,0;6,1;7,1;7,2|6,2;6,3;7,3;7,4|6,4|4,1;4,2;4,3;5,1|3,6;4,6;5,6;5,5|3,0;3,1;4,0;5,0|3,2;3,3;3,4;4,4|0,5;1,5;2,5;2,6|1,0;1,1;1,2;2,0|0,2;0,3;1,3;1,4|0,6;1,6|0,0;0,1|0,4","4":"10,4;10,5;10,6;9,5|7,2;8,2;9,2;10,2|7,0;8,0;9,0;10,0|7,3;8,3;9,3;10,3|7,1;8,1;9,1;10,1|7,5;8,5;8,6;9,6|9,4|5,5;5,6;6,6;7,6|4,0;4,1;5,0;6,0|4,3;5,3;6,3;5,2|2,5;3,5;4,5;4,6|1,2;2,2;3,2;3,1|0,0;1,0;2,0;3,0|0,6;1,6;2,6;3,6|1,3;1,4;1,5;2,3|0,1;0,2;1,1;2,1|0,3;0,4;0,5","5":"10,2;10,3;10,4;9,2|9,4;9,5;10,5;10,6|8,0;9,0;10,0;10,1|7,2;7,3;8,3;9,3|6,6;7,6;8,6;9,6|8,1;9,1|8,5|5,4;6,4;7,4;6,3|5,1;6,0;6,1;7,0|4,3;5,2;5,3;6,2|3,5;4,5;4,6;5,6|2,0;3,0;4,0;5,0|1,5;1,6;2,6;3,6|3,2;3,3;3,4|1,0;1,1;1,2;1,3|0,3;0,4;0,5;1,4|0,0;0,1;0,2|0,6","6":"10,4;10,5;10,6;9,5|10,1;10,2;10,3;9,1|8,0;8,1;9,0;10,0|9,2;9,3;9,4;8,3|7,6;8,6;9,6;8,5|7,2;7,3;7,4;6,4|4,0;5,0;6,0;7,0|4,5;5,5;5,6;6,6|6,2;6,3|3,4;3,5;4,3;4,4|1,6;2,6;3,6;4,6|3,2;3,3;4,2|1,1;2,0;2,1;3,0|0,4;1,4;1,5;2,5|0,1;0,2;1,2;1,3|0,0;1,0|0,5;0,6|0,3","7":"7,4;8,4;9,4;10,4|10,0;10,1;10,2;10,3|7,5;8,5;9,5;10,5|7,6;8,6;9,6;10,6|7,1;8,1;9,1;9,0|6,2;7,2;8,2;9,2|9,3|6,0;6,1;7,0;8,0|6,4;6,5;6,6;5,6|3,2;4,2;5,2;4,3|3,6;4,5;4,6;5,5|4,0;4,1;5,0;5,1|5,4|1,0;2,0;3,0;3,1|3,3;3,4|0,5;1,5;1,6;2,6|0,0;0,1;1,1;1,2|0,2;0,3;1,3;1,4|0,4|0,6","8":"10,0;10,1;10,2;10,3|8,5;9,5;10,5;10,6|8,3;9,3;9,4;10,4|6,6;7,6;8,6;9,6|7,0;8,0;9,0;9,1|9,2|8,1|7,2;7,3;7,4;6,2|4,2;4,3;5,3;6,3|4,0;5,0;6,0;5,1|6,4|3,6;4,6;5,6;5,5|3,2;3,3;3,4;4,4|1,1;2,0;2,1;3,0|1,4;1,5;2,5;2,6|0,1;0,2;1,2;1,3|0,4;0,5;0,6;1,6|0,0;1,0|0,3","9":"9,0;9,1;10,0;10,1|10,2;10,3;10,4;10,5|8,6;9,6;10,6;9,5|7,3;8,3;9,3;9,4|9,2|6,2;7,1;7,2;8,1|6,0;6,1;7,0;8,0|8,5|5,3;6,3;6,4;7,4|4,6;5,6;6,6;7,6|3,0;4,0;5,0;5,1|4,2;4,3;4,4;3,4|1,5;2,5;2,6;3,6|3,2;3,3|0,1;1,1;2,1;2,0|0,4;0,5;1,3;1,4|0,2;0,3;1,2|0,6;1,6|0,0;1,0","A":"9,3;9,4;10,3;10,4|10,0;10,1;10,2;9,0|9,5;9,6;10,5;10,6|6,2;7,2;8,2;9,2|9,1|6,4;7,4;8,4;8,3|5,0;6,0;7,0;8,0|5,6;6,6;7,6;8,6|5,3;6,3;7,3|4,2;4,3;4,4;3,2|2,0;2,1;3,0;4,0|2,5;2,6;3,6;4,6|3,3;3,4|1,3;1,4;1,5;0,3|1,0;1,1;1,2;0,2|0,4;0,5;0,6;1,6|0,0;0,1","B":"8,3;9,3;10,3;10,2|7,6;8,6;9,6;10,6|8,0;9,0;10,0;10,1|8,5;9,5;10,5;10,4|9,1;9,2|9,4|7,2;7,3;7,4;6,2|4,0;5,0;6,0;7,0|4,6;5,6;6,6;5,5|4,2;4,3;5,3;6,3|6,4|3,2;3,3;3,4;4,4|1,5;2,5;2,6;3,6|1,0;1,1;2,0;3,0|0,1;0,2;1,2;1,3|0,3;0,4;0,5;1,4|0,6;1,6|0,0","C":"10,0;10,1;10,2;10,3|7,6;8,6;9,6;10,6|9,4;9,5;10,4;10,5|8,0;8,1;9,0;9,1|9,2;9,3|6,5;6,6;7,4;7,5|6,3;6,4;7,2;7,3|4,0;5,0;6,0;7,0|4,3;5,2;5,3;6,2|5,4;5,5;5,6;4,5|2,6;3,6;4,6;3,5|3,3;3,4;4,4|3,2;4,2|1,1;2,0;2,1;3,0|0,1;0,2;1,2;1,3|0,3;0,4;1,4;1,5|0,5;0,6;1,6|0,0;1,0","D":"8,3;9,3;10,3;10,4|7,6;8,6;9,6;10,6|10,0;10,1;10,2;9,1|8,5;9,5;10,5;9,4|6,0;7,0;8,0;9,0|9,2|7,2;7,3;7,4;6,4|4,4;5,3;5,4;6,3|4,2;4,3;5,2;6,2|3,6;4,6;5,6;6,6|2,0;3,0;4,0;5,0|3,2;3,3;3,4|0,5;1,5;2,5;2,6|1,0;1,1;1,2;1,3|0,2;0,3;0,4;1,4|0,6;1,6|0,0;0,1","E":"10,1;10,2;10,3;9,2|9,4;9,5;10,4;10,5|7,6;8,6;9,6;10,6|7,0;8,0;9,0;10,0|9,3|9,1|6,5;6,6;7,4;7,5|6,3;6,4;7,2;7,3|3,0;4,0;5,0;6,0|6,2|4,3;4,4;4,5;5,5|3,5;3,6;4,6;5,6|3,2;3,3;3,4;4,2|1,4;1,5;1,6;2,6|0,1;1,0;1,1;2,0|0,3;0,4;1,2;1,3|0,5;0,6|0,0|0,2","F":"10,0;10,1;10,2;10,3|9,2;9,3;9,4;10,4|8,6;9,6;10,6;10,5|6,5;7,5;8,5;9,5|7,0;8,0;9,0;9,1|8,2;8,3;8,4;7,2|4,6;5,6;6,6;7,6|6,3;6,4;7,3;7,4|3,0;4,0;5,0;6,0|6,2|4,3;4,4;4,5;5,5|3,2;3,3;3,4;4,2|0,6;1,6;2,6;3,6|3,5|1,0;1,1;1,2;2,0|0,2;0,3;1,3;1,4|0,4;0,5;1,5|0,0;0,1","G":"10,4;10,5;10,6;9,4|10,0;10,1;10,2;9,0|8,3;9,3;10,3;9,2|7,6;8,6;9,6;9,5|7,0;8,0;8,1;9,1|8,5|5,2;6,2;7,2;7,3|6,3;6,4;7,4|4,5;4,6;5,6;6,6|3,0;4,0;5,0;6,0|3,4;3,5;4,3;4,4|3,2;3,3;4,2|1,5;1,6;2,6;3,6|1,1;1,2;2,0;2,1|0,4;0,5;1,3;1,4|0,0;0,1;0,2;1,0|0,3|0,6","H":"7,3;8,3;9,3;10,3|10,4;10,5;10,6;9,6|7,0;8,0;9,0;10,0|7,2;8,2;9,2;10,2|9,1;10,1|6,4;7,4;8,4;9,4|9,5|5,6;6,6;7,6;8,6|4,3;4,4;5,3;6,3|3,0;4,0;5,0;6,0|6,2|2,2;3,2;4,2;3,3|1,6;2,6;3,6;4,6|1,4;1,5;2,4;3,4|0,1;1,0;1,1;2,0|0,2;1,2;1,3;2,3|0,3;0,4;0,5;0,6|0,0","I":"10,2;10,3;10,4;9,4|8,0;9,0;10,0;10,1|8,6;9,6;10,6;10,5|9,1;9,2;9,3|9,5|7,4;7,5;7,6;6,4|7,0;7,1;7,2;6,2|3,0;4,0;5,0;6,0|4,2;5,1;5,2;6,1|3,6;4,6;5,6;6,6|3,5;4,5;5,5;6,5|3,4;4,4;5,4|3,1;3,2;4,1|1,0;1,1;1,2;2,0|1,4;1,5;1,6;2,6|0,3;0,4;0,5;1,3|0,0;0,1;0,2|0,6","J":"7,6;8,6;9,6;10,6|10,2;10,3;10,4;9,3|8,0;9,0;10,0;10,1|8,5;9,5;10,5;9,4|8,1;9,1;9,2|7,2;7,3;7,4;8,3|5,0;5,1;6,0;7,0|6,2;6,3;6,4;5,3|3,6;4,6;5,6;6,6|3,1;4,1;4,2;5,2|3,4;4,4;5,4;4,3|1,0;2,0;3,0;4,0|3,2;3,3|1,4;1,5;1,6;2,6|0,3;0,4;1,2;1,3|0,0;0,1;0,2;1,1|0,5;0,6","K":"8,3;9,3;10,3;10,4|9,1;9,2;10,1;10,2|9,4;9,5;10,5;10,6|7,0;8,0;9,0;10,0|7,5;7,6;8,6;9,6|6,2;7,2;8,2;7,3|8,4|5,3;5,4;6,4;6,5|3,0;4,0;5,0;6,0|4,6;5,6;6,6;5,5|2,2;3,2;4,2;4,3|3,5;3,6;4,4;4,5|1,4;2,3;2,4;3,3|0,5;1,5;1,6;2,6|0,1;1,0;1,1;2,0|0,3;0,4;1,2;1,3|0,0|0,2|0,6","L":"9,0;9,1;10,0;10,1|10,4;10,5;10,6;9,5|9,2;9,3;10,2;10,3|7,5;7,6;8,6;9,6|9,4|5,0;6,0;7,0;8,0|6,4;6,5;7,3;7,4|5,2;6,2;7,2;6,3|4,6;5,6;6,6;5,5|4,2;4,3;5,3;5,4|2,4;3,4;4,4;4,5|1,0;2,0;3,0;4,0|1,1;1,2;2,2;3,2|1,4;1,5;2,5;3,5|0,3;1,3;2,3;3,3|0,6;1,6;2,6;3,6|0,0;0,1;0,2|0,4;0,5","M":"10,1;10,2;10,3;9,1|9,2;9,3;9,4;10,4|9,5;9,6;10,5;10,6|7,0;8,0;9,0;10,0|5,6;6,6;7,6;8,6|7,2;7,3;8,2;8,3|5,4;6,4;7,4;8,4|3,2;4,2;5,2;6,2|3,0;4,0;5,0;6,0|6,3|1,4;2,4;3,4;4,4|1,6;2,6;3,6;4,6|0,1;1,0;1,1;2,0|0,3;1,2;1,3;2,2|0,4;0,5;0,6;1,5|0,0|0,2","N":"10,3;10,4;10,5;9,4|10,0;10,1;10,2;9,1|8,6;9,6;10,6;9,5|7,2;8,2;9,2;9,3|6,0;7,0;8,0;9,0|7,3;7,4;8,3;8,4|4,6;5,6;6,6;7,6|4,2;5,2;6,2;6,3|6,4|3,4;4,3;4,4;5,3|2,0;3,0;4,0;5,0|1,2;2,2;2,3;3,3|1,5;1,6;2,6;3,6|0,3;1,3;1,4;2,4|0,0;0,1;1,0;1,1|0,4;0,5;0,6|0,2","O":"9,5;9,6;10,5;10,6|8,3;9,3;10,3;10,2|8,1;9,1;10,1;9,2|7,0;8,0;9,0;10,0|9,4;10,4|6,6;7,6;8,6;8,5|5,4;6,4;7,4;7,3|5,2;6,2;7,2;6,3|3,0;4,0;5,0;6,0|4,2;4,3;4,4;5,3|2,6;3,6;4,6;5,6|3,2;3,3;3,4|1,4;1,5;1,6;2,5|1,1;1,2;2,0;2,1|0,2;0,3;0,4;1,3|0,0;0,1;1,0|0,5;0,6","P":"7,6;8,6;9,6;10,6|8,2;9,2;10,2;10,3|8,4;9,4;10,4;10,5|8,0;9,0;10,0;10,1|7,4;7,5;8,5;9,5|6,3;7,3;8,3;9,3|9,1|4,0;5,0;6,0;7,0|6,2;7,2|6,4;6,5;6,6;5,6|4,2;4,3;4,4;5,3|5,5|2,5;2,6;3,6;4,6|1,0;1,1;2,0;3,0|3,2;3,3;3,4|0,1;0,2;1,2;1,3|0,4;0,5;1,4;1,5|0,6;1,6|0,0|0,3","Q":"10,3;10,4;10,5;9,4|8,1;9,1;10,1;10,0|8,6;9,6;10,6;9,5|8,3;9,2;9,3;10,2|6,0;7,0;8,0;9,0|8,4|5,6;6,6;7,6;7,5|6,2;7,2;7,3|5,2;5,3;5,4;6,4|2,0;3,0;4,0;5,0|2,5;2,6;3,6;4,6|4,2;4,3;4,4;3,3|3,4|3,2|1,0;1,1;1,2;2,1|1,3;1,4;1,5;0,4|0,5;0,6;1,6|0,0;0,1;0,2;0,3","R":"9,0;9,1;10,0;10,1|10,3;10,4;10,5;9,3|7,6;8,6;9,6;10,6|7,2;8,2;9,2;10,2|7,3;8,3;8,4;9,4|9,5|5,0;6,0;7,0;8,0|6,4;6,5;6,6;7,5|4,2;4,3;5,2;6,2|2,6;3,6;4,6;5,6|5,5|3,2;3,3;3,4;4,4|1,0;2,0;3,0;4,0|1,4;1,5;1,6;2,5|0,0;0,1;1,1;1,2|0,2;0,3;0,4;1,3|0,5;0,6","S":"8,6;9,6;10,6;10,5|10,2;10,3;10,4;9,4|8,0;9,0;10,0;10,1|9,1;9,2;9,3|8,5;9,5|7,0;7,1;7,2;7,3|6,2;6,3;6,4;7,4|5,5;5,6;6,6;7,6|5,0;5,1;6,0;6,1|4,2;4,3;4,4;4,5|2,0;2,1;3,0;4,0|1,6;2,6;3,6;4,6|3,2;3,3;3,4;3,5|1,1;1,2;1,3;1,4|0,3;0,4;0,5;1,5|0,0;0,1;0,2;1,0|0,6","T":"10,0;10,1;10,2;9,0|10,4;10,5;10,6;9,5|9,1;9,2;9,3;10,3|7,4;8,4;9,4;8,5|6,6;7,6;8,6;9,6|8,0;8,1;8,2;7,2|4,5;5,5;6,5;7,5|4,0;5,0;6,0;7,0|5,2;6,1;6,2;7,1|3,4;4,4;5,4;6,4|3,0;3,1;4,1;5,1|3,5;3,6;4,6;5,6|3,2;4,2|0,1;1,0;1,1;2,0|1,4;1,5;1,6;2,6|0,3;0,4;1,2;1,3|0,5;0,6|0,2|0,0","U":"10,4;10,5;10,6;9,4|8,1;9,1;10,1;10,0|8,3;9,3;10,3;10,2|8,5;8,6;9,5;9,6|6,0;7,0;8,0;9,0|9,2|5,4;6,4;7,4;7,3|5,2;6,2;7,2;6,3|4,6;5,6;6,6;7,6|4,2;4,3;4,4;5,3|2,0;3,0;4,0;5,0|1,1;1,2;2,2;3,2|1,4;1,5;2,4;3,4|0,3;1,3;2,3;3,3|0,6;1,6;2,6;3,6|0,0;0,1;0,2;1,0|0,4;0,5","V":"10,3;10,4;10,5;9,4|9,1;9,2;10,1;10,2|8,5;9,5;9,6;10,6|8,0;8,1;9,0;10,0|7,3;8,3;9,3;8,4|6,6;7,6;8,6;7,5|8,2|4,0;5,0;6,0;7,0|7,1|4,2;5,2;6,2;6,3|4,4;5,4;6,4;5,3|2,6;3,6;4,6;5,6|3,2;3,3;3,4;4,3|1,0;1,1;2,0;3,0|0,5;1,4;1,5;2,4|0,1;0,2;1,2;2,2|0,3;0,4;1,3;2,3|0,6;1,6|0,0","W":"10,0;10,1;10,2;9,0|7,6;8,6;9,6;10,6|9,4;9,5;10,4;10,5|9,1;9,2;9,3;10,3|5,4;6,4;7,4;8,4|5,0;6,0;7,0;8,0|5,2;6,2;7,2;8,2|3,6;4,6;5,6;6,6|2,3;3,3;4,3;4,2|1,0;2,0;3,0;4,0|1,4;2,4;3,4;4,4|1,1;1,2;2,2;3,2|0,5;1,5;1,6;2,6|0,1;0,2;0,3;1,3|0,0|0,6|0,4","X":"10,3;10,4;10,5;9,3|7,6;8,6;9,6;10,6|7,0;8,0;9,0;10,0|9,1;9,2;10,1;10,2|7,3;8,3;8,4;9,4|9,5|7,2;8,2|7,4|5,4;5,5;6,5;6,6|5,1;5,2;6,0;6,1|6,3|2,6;3,6;4,6;5,6|2,0;3,0;4,0;5,0|3,3;3,4;4,2;4,3|4,5|4,1|1,1;1,2;2,2;3,2|0,5;1,4;1,5;2,4|0,2;0,3;1,3;2,3|0,0;0,1;1,0|0,6;1,6|0,4","Y":"10,4;10,5;10,6;9,5|9,3;9,4;10,2;10,3|9,0;9,1;10,0;10,1|6,2;7,2;8,2;9,2|7,5;8,5;8,6;9,6|7,0;7,1;8,0;8,1|6,4;6,5;7,4;8,4|4,6;5,6;6,6;7,6|4,0;5,0;6,0;6,1|3,3;4,2;4,3;5,2|4,5;5,4;5,5|4,1;5,1|1,4;2,4;3,4;2,3|1,0;1,1;2,0;3,0|1,5;1,6;2,6;3,6|0,2;1,2;2,2;3,2|0,3;0,4;0,5;1,3|0,0;0,1|0,6","Z":"9,1;9,2;10,1;10,2|10,4;10,5;10,6;9,4|7,0;8,0;9,0;10,0|9,3;10,3|7,6;8,6;9,6;9,5|6,5;6,6;7,4;7,5|6,3;6,4;7,2;7,3|5,1;5,2;6,0;6,1|3,1;4,0;4,1;5,0|5,4;5,5;5,6;4,5|3,3;3,4;4,2;4,3|1,6;2,6;3,6;4,6|1,0;1,1;2,0;3,0|3,2|0,5;0,6;1,4;1,5|0,1;0,2;1,2;1,3|0,3;0,4|0,0"," ":"10,2;10,3;10,4;10,5|9,4;9,5;9,6;10,6|7,1;8,1;9,1;10,1|7,0;8,0;9,0;10,0|6,2;7,2;8,2;9,2|7,4;8,3;8,4;9,3|7,5;7,6;8,5;8,6|5,2;5,3;6,3;7,3|4,1;5,1;6,1;6,0|6,4;6,5;6,6;5,5|3,3;4,3;4,4;5,4|2,0;3,0;4,0;5,0|3,6;4,6;5,6;4,5|1,2;2,2;3,2;4,2|2,3;2,4;3,4;3,5|1,0;1,1;2,1;3,1|1,5;1,6;2,5;2,6|0,1;0,2;0,3;1,3|0,4;0,5;0,6;1,4|0,0"};
+const BAND = {};
+for(const ch in BAND_ENC){
+  BAND[ch] = BAND_ENC[ch].split("|").map(pc =>
+    pc.split(";").map(rc => rc.split(",").map(Number)));
+}
+
+const COLORS = ["#3fd8e8","#ffd23f","#b06ae8","#5fdd6a","#f25f5c","#5c8df2","#f2a35c"];
+const BAND_W = 7, ROWS = 11;
+
+/* ---------- Assemble the wall from per-letter bands ---------- */
+function buildPlan(name){
+  const chars = (name || "").toUpperCase().split("").map(ch => BAND[ch] ? ch : " ");
+  if(!chars.length) chars.push(" ");
+  const cols = BAND_W * chars.length;
+  const rows = ROWS;
+
+  const filled = Array.from({length:rows},()=>Array(cols).fill(true));
+  const letterCells = [];
+  chars.forEach((ch,i)=>{
+    const glyph = FONT[ch];
+    for(let r=0;r<7;r++)for(let c=0;c<5;c++){
+      if(glyph[r][c] === "#"){
+        const gc = i*BAND_W + 1 + c;              // band layout: pad, 5 letter cols, pad
+        filled[2+r][gc] = false;                  // padTop = 2
+        letterCells.push([2+r, gc]);
+      }
+    }
+  });
+
+  // build each band's piece list (shifted into full-grid columns), keep bands
+  // separate so we can interleave them bottom-up like real simultaneous play
+  const bandPieces = chars.map((ch,i)=>{
+    return BAND[ch].map(cells=>{
+      const mapped = cells.map(([r,c])=>[r, c + i*BAND_W]);
+      const rs = mapped.map(p=>p[0]), cs = mapped.map(p=>p[1]);
+      return { cells:mapped, color: COLORS[(Math.random()*COLORS.length)|0],
+        minRow:Math.min(...rs), maxRow:Math.max(...rs),
+        minCol:Math.min(...cs), maxCol:Math.max(...cs) };
+    });
+  });
+
+  // interleave: repeatedly play whichever band's next piece lands deepest
+  const ptr = bandPieces.map(()=>0);
+  const order = [];
+  while(true){
+    let bi=-1, best=-1;
+    for(let b=0;b<bandPieces.length;b++){
+      if(ptr[b] >= bandPieces[b].length) continue;
+      const row = bandPieces[b][ptr[b]].maxRow + Math.random()*0.6;
+      if(row > best){ best=row; bi=b; }
+    }
+    if(bi<0) break;
+    order.push(bandPieces[bi][ptr[bi]++]);
+  }
+  return { grid:{rows, cols, filled, letterCells}, order };
+}
+
+/* ---------- Rendering: one piece at a time, slides in, ghost preview, hard drop ---------- */
+const canvas = document.getElementById("cv");
+const ctx = canvas.getContext("2d");
+const dpr = Math.min(window.devicePixelRatio||1, 2);
+const hudPieces = document.getElementById("hudPieces");
+const hudLines  = document.getElementById("hudLines");
+const hudScore  = document.getElementById("hudScore");
+
+let grid=null, order=[], cell=24, t0=0, running=false, doneAt=null, speed=2;
+let lineFlash = {}, completedLines = 0;   // rows fully covered -> flash time; score source
+const ROWS_PER_SEC = 26;
+const DROP_MULT = 3;   // once lined up & rotated, the drop is a fast hard-drop
+const SKY = 7;         // empty rows of "sky" above the wall for pieces to fall through
+const HOVER_ROW = 1 - SKY;   // grid row where a piece hovers (up in the sky) before dropping
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Sound: tiny synth via Web Audio (no files, self-contained).
+   Unlocked on the first user gesture so browsers allow playback. ---------- */
+let audioCtx = null, audioReady = false;
+function unlockAudio(){
+  audioReady = true;
+  if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ audioCtx=null; } }
+  if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+}
+function tone(opts){
+  if(!audioReady || !audioCtx) return;
+  const { freq=440, to=null, type="square", dur=0.06, gain=0.12, delay=0 } = opts;
+  const t = audioCtx.currentTime + delay;
+  const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(freq, t);
+  if(to) o.frequency.exponentialRampToValueAtTime(Math.max(1,to), t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(gain, t + 0.006);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(audioCtx.destination);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+function noiseThud(gain){
+  if(!audioReady || !audioCtx) return;
+  const dur = 0.09, t = audioCtx.currentTime;
+  const n = audioCtx.createBufferSource();
+  const buf = audioCtx.createBuffer(1, (audioCtx.sampleRate*dur)|0, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i] = (Math.random()*2-1) * (1 - i/d.length);
+  n.buffer = buf;
+  const lp = audioCtx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=380;
+  const g = audioCtx.createGain();
+  g.gain.setValueAtTime(gain, t);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  n.connect(lp).connect(g).connect(audioCtx.destination);
+  n.start(t); n.stop(t + dur);
+}
+const playFlip   = ()=> tone({ freq:640, to:820, type:"square",   dur:0.045, gain:0.10 }); // quick click
+const playFall   = ()=> tone({ freq:300, to:150, type:"triangle", dur:0.11,  gain:0.06 }); // soft downward whoosh
+const playSettle = ()=>{ tone({ freq:150, to:70, type:"sine", dur:0.10, gain:0.14 }); noiseThud(0.10); }; // low thunk
+const playLine   = ()=>{ tone({ freq:660, type:"square", dur:0.09, gain:0.10 });                          // bright two-note chime
+                         tone({ freq:990, type:"square", dur:0.12, gain:0.10, delay:0.09 }); };
+
+function sizeCanvas(){
+  const totalRows = grid.rows + SKY;                 // wall + sky above it
+  const maxW = Math.min(document.body.clientWidth - 34, 980);
+  const maxH = Math.max(320, window.innerHeight*0.74);
+  cell = Math.max(9, Math.floor(Math.min(maxW/grid.cols, maxH/totalRows)));
+  canvas.width  = grid.cols*cell*dpr;
+  canvas.height = totalRows*cell*dpr;
+  canvas.style.width  = grid.cols*cell + "px";
+  canvas.style.height = totalRows*cell + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+/* A piece is worth rotating only if a 90 turn actually changes its shape.
+   O-squares and single blocks map onto themselves, so rotating them is
+   meaningless - those never rotate. */
+function isRotSym(cells){
+  let minR=Infinity,maxR=-Infinity,minC=Infinity,maxC=-Infinity;
+  for(const [r,c] of cells){ if(r<minR)minR=r; if(r>maxR)maxR=r; if(c<minC)minC=c; if(c>maxC)maxC=c; }
+  if((maxR-minR) !== (maxC-minC)) return false;        // non-square bbox can't be 90-symmetric
+  const set = new Set(cells.map(([r,c])=>r+","+c));
+  const CX = minC+maxC+1, CY = minR+maxR+1;            // 2x the piece centre
+  for(const [r,c] of cells){
+    const rx = (2*c+1)-CX, ry = (2*r+1)-CY;
+    const nX = -ry+CX, nY = rx+CY;                      // rotate cell centre 90 deg
+    const nc = (nX-1)/2, nr = (nY-1)/2;
+    if(!Number.isInteger(nc) || !Number.isInteger(nr) || !set.has(nr+","+nc)) return false;
+  }
+  return true;
+}
+
+function scheduleAnim(){
+  const v = ROWS_PER_SEC * speed / 1000;
+  let t = 350;
+  for(const p of order){
+    const h = p.maxRow - p.minRow + 1;
+    // pieces fall straight down in their own columns (no drift) for realism.
+    // only some pieces rotate, and mostly by a single quarter-turn; but pieces
+    // that look identical after a 90 turn (squares, singles) never rotate
+    const rr = Math.random();
+    p.turns   = isRotSym(p.cells) ? 0 : (rr < 0.6 ? 0 : (rr < 0.88 ? 1 : 2));
+    p.turnDir = Math.random() < 0.5 ? -1 : 1;
+    // quick rotation, but with a clear gap between turns: the flip itself is
+    // snappy (fast relative to the fall), then it waits before the next press.
+    p.turnMs = 90  / speed;                 // fast, snappy quarter-turn
+    p.holdMs = 300 / speed;                 // gap between/after presses
+    p.leadMs = 110 / speed;                 // beat before the first press
+    p.rotDur = p.turns > 0 ? (p.leadMs + p.turns*(p.turnMs + p.holdMs)) : 0;
+    // every piece spawns at the top-centre and slides left/right to its column
+    p.moveOff = (grid.cols/2) - (p.minCol + p.maxCol + 1)/2;   // columns from centre
+    p.moveDur = Math.min(80 + 26*Math.abs(p.moveOff), 380) / speed;
+    p.hangDur = p.moveDur + p.rotDur;       // top phase: slide across, then rotate
+    p.fallDur = (p.minRow - HOVER_ROW) / (v * DROP_MULT);  // hard-drop from the sky to its rest
+    p.start = t;
+    p.landAt = undefined;
+    p.playedFall = false;
+    p.turnsPlayed = 0;
+    t += p.hangDur + p.fallDur + 70/speed;
+  }
+  return t;
+}
+
+const easeOut   = x => 1 - Math.pow(1-x, 3);
+const easeInOut = x => x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x+2, 3)/2;
+
+function drawBlock(x, y, color, flash){
+  const s = cell, b = Math.max(2, s*0.14);
+  ctx.fillStyle = color; ctx.fillRect(x, y, s, s);
+  ctx.fillStyle = "rgba(255,255,255,.35)"; ctx.fillRect(x, y, s, b); ctx.fillRect(x, y, b, s);
+  ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(x, y+s-b, s, b); ctx.fillRect(x+s-b, y, b, s);
+  ctx.fillStyle = "rgba(0,0,0,.12)"; ctx.fillRect(x+b, y+b, s-2*b, s-2*b);
+  if(flash>0){ ctx.fillStyle = "rgba(255,255,255,"+(0.6*flash)+")"; ctx.fillRect(x, y, s, s); }
+}
+
+function drawFrame(now){
+  requestAnimationFrame(drawFrame);
+  if(!grid) return;
+  const t = running ? (now - t0) : Infinity;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const totalRows = grid.rows + SKY;
+  ctx.strokeStyle = "rgba(255,255,255,.04)"; ctx.lineWidth = 1; ctx.beginPath();
+  for(let c=1;c<grid.cols;c++){ctx.moveTo(c*cell,0);ctx.lineTo(c*cell,totalRows*cell);}
+  for(let r=1;r<totalRows;r++){ctx.moveTo(0,r*cell);ctx.lineTo(grid.cols*cell,r*cell);}
+  ctx.stroke();
+
+  const v = ROWS_PER_SEC * speed / 1000;
+  const OY = SKY * cell;                          // pixel offset: wall sits below the sky
+  let landedCount = 0, allLanded = true;
+  const rowHave = new Array(grid.rows).fill(0);   // landed cells per row this frame
+
+  for(const p of order){
+    if(t < p.start){ allLanded = false; continue; }
+    const local = t - p.start;
+    const h = p.maxRow - p.minRow + 1;
+    if(local >= p.hangDur + p.fallDur){
+      landedCount++;
+      if(p.landAt === undefined){ p.landAt = now; playSettle(); }
+      const flash = Math.max(0, 1-(now-p.landAt)/150);
+      for(const [r,c] of p.cells){ drawBlock(c*cell, r*cell + OY, p.color, flash); rowHave[r]++; }
+    }else{
+      allLanded = false;
+      // vertical: hover up in the SKY through move + rotate, then hard-drop down
+      let D;
+      if(local < p.hangDur) D = HOVER_ROW;                                              // up in the sky
+      else D = Math.min(p.minRow, HOVER_ROW + (local - p.hangDur) * v * DROP_MULT);      // fast drop in
+      const dy = (D - p.minRow) * cell;
+      // horizontal: spawn centred, then slide left/right to the target column
+      let xOff = 0;
+      if(local < p.moveDur) xOff = p.moveOff * (1 - easeInOut(local / p.moveDur));
+      const dx = xOff * cell;
+      // fire the fall sound once, the moment the piece leaves the top and drops
+      if(local >= p.hangDur && !p.playedFall){ p.playedFall = true; if(p.fallDur > 30) playFall(); }
+      // rotation happens AFTER arriving at the column: hold the spawn orientation
+      // while sliding, then snap upright in place
+      let angle = 0;
+      if(p.turns > 0){
+        if(local < p.moveDur){
+          angle = p.turns * (Math.PI/2) * p.turnDir;                     // spawn orientation, sliding
+        } else if(local < p.hangDur){
+          const rl = local - p.moveDur;                                  // time within rotate phase
+          let remaining = p.turns, started = 0;
+          for(let k=0;k<p.turns;k++){
+            const sStart = p.leadMs + k*(p.turnMs + p.holdMs);
+            if(rl >= sStart) started++;
+            if(rl >= sStart + p.turnMs){ remaining = p.turns-(k+1); }     // this turn done
+            else if(rl >= sStart){                                        // mid-turn
+              remaining = (p.turns - k) - easeInOut((rl - sStart)/p.turnMs);
+              break;
+            } else break;                                                 // waiting to press
+          }
+          while(p.turnsPlayed < started){ p.turnsPlayed++; playFlip(); }  // one click per press
+          angle = remaining * (Math.PI/2) * p.turnDir;
+        }
+      }
+      const cx = ((p.minCol + p.maxCol + 1)/2)*cell + dx;
+      const cy = ((p.minRow + p.maxRow + 1)/2)*cell + dy + OY;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(angle);
+      for(const [r,c] of p.cells){
+        const relX = (c + 0.5 - (p.minCol + p.maxCol + 1)/2)*cell;
+        const relY = (r + 0.5 - (p.minRow + p.maxRow + 1)/2)*cell;
+        drawBlock(relX - cell/2, relY - cell/2, p.color, 0);
+      }
+      ctx.restore();
+    }
+  }
+
+  // a row fully covered by blocks is a completed line (only gap-free rows can
+  // reach this); flash it like a Tetris line clear and award points for it
+  for(let r=0;r<grid.rows;r++){
+    if(rowHave[r] === grid.cols && lineFlash[r] === undefined){
+      lineFlash[r] = now; completedLines++; playLine();
+    }
+  }
+  for(const rk in lineFlash){
+    const r = +rk, age = now - lineFlash[rk];
+    const burst = Math.max(0, 1 - age/500);             // bright flash on completion
+    const glow  = 0.10 + 0.06*Math.sin(now/500 + r);    // gentle steady highlight after
+    ctx.fillStyle = "rgba(255,255,255,"+(0.55*burst)+")";
+    ctx.fillRect(0, r*cell + OY, grid.cols*cell, cell);
+    ctx.fillStyle = "rgba(255,210,63,"+glow+")";
+    ctx.fillRect(0, r*cell + OY, grid.cols*cell, cell);
+  }
+
+  hudPieces.textContent = landedCount + "/" + order.length;
+  hudLines.textContent  = completedLines;
+  hudScore.textContent  = completedLines * 100;         // points only for completed lines
+
+  if(allLanded && order.length){
+    if(doneAt===null) doneAt = now;
+    const pulse = 0.5 + 0.5*Math.sin((now-doneAt)/450);
+    ctx.save();
+    ctx.shadowColor = "#ffd23f"; ctx.shadowBlur = 6 + 10*pulse;
+    ctx.fillStyle = "rgba(255,210,63,"+(0.10+0.14*pulse)+")";
+    for(const [r,c] of grid.letterCells) ctx.fillRect(c*cell+1, r*cell+1 + OY, cell-2, cell-2);
+    ctx.restore();
+  }
+}
+
+function start(name){
+  speed = parseFloat(document.getElementById("speedSel").value);
+  const plan = buildPlan(name || "CLAUDE");
+  grid = plan.grid; order = plan.order;
+  sizeCanvas(); scheduleAnim(); doneAt = null;
+  lineFlash = {}; completedLines = 0;
+  if(reduceMotion) order.forEach(p=>{ p.start = -1e9; p.hangDur = 0; p.fallDur = 0; });
+  t0 = performance.now(); running = true;
+}
+
+document.getElementById("dropBtn").addEventListener("click",()=>{ unlockAudio(); start(document.getElementById("nameInput").value.trim()); });
+document.getElementById("nameInput").addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ unlockAudio(); start(e.target.value.trim()); } });
+window.addEventListener("resize",()=>{ if(grid) sizeCanvas(); });
+
+start("CLAUDE");
+requestAnimationFrame(drawFrame);
+</script>
+</body>
+</html>

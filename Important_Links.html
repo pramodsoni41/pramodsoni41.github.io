@@ -36,6 +36,16 @@
     .label-models  { background: #ede9fe; color: #6d28d9; }
     .label-standards { background: #fef9c3; color: #92400e; }
     .label-content { background: #fce7f3; color: #9d174d; }
+    .label-fun     { background: #ffedd5; color: #c2410c; }
+
+    .tetris-frame {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      background: #101418;
+      display: block;
+      min-height: 520px;
+    }
 
     .link-item {
       display: flex;
@@ -114,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <h1>Important Links</h1>
     <p>Department of Civil Engineering &nbsp;&bull;&nbsp; IIT (BHU) Varanasi</p>
     <div class="stat-row">
-      <div><div class="n">5</div><div class="l">Categories</div></div>
+      <div><div class="n">6</div><div class="l">Categories</div></div>
       <div><div class="n">20+</div><div class="l">Curated Resources</div></div>
       <div><div class="n">Free</div><div class="l">Open Access</div></div>
     </div>
@@ -396,6 +406,22 @@ document.addEventListener('DOMContentLoaded', function(){
       </div>
       <div class="link-arrow">&#8599;</div>
     </div>
+  </section>
+
+  <!-- Entertainment -->
+  <section class="card">
+    <h2>Entertainment</h2>
+    <span class="section-label-link label-fun">Just for Fun</span>
+    <p style="font-size:.88rem; color:var(--muted); margin-bottom:16px;">
+      Type any name (A–Z, 0–9, up to 10 characters) and watch Tetris blocks fall to reveal it.
+    </p>
+    <iframe
+      src="tetris-name.html"
+      class="tetris-frame"
+      title="Tetris Name Reveal"
+      scrolling="no"
+      loading="lazy">
+    </iframe>
   </section>
 
 </main>
