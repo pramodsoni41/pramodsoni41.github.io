@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Cavitation Run | Dr. Pramod Soni</title>
+  <meta name="description" content="Arcade game on vapour pressure and cavitation: keep the throat pressure above the vapour pressure as the pipe narrows. CE-211 Properties of Fluids."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero{background:linear-gradient(135deg,#0e7490 0%,#06b6d4 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .game-hero h1{margin:0 0 6px;font-size:1.8rem;color:#fff}
+    .game-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .game-hero p{color:rgba(255,255,255,.9);margin:4px 0 0;max-width:720px}
+    canvas#stage{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#e0f2fe;cursor:pointer}
+    .hud{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0;font-size:.95rem}
+    .hud b{color:#0e7490;font-variant-numeric:tabular-nums}
+    .controls-note{font-size:.85rem;color:var(--muted);margin-top:6px}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto}
+    .ctrlrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+    .ctrlrow label{font-weight:600;font-size:.9rem}
+    input[type=range]{accent-color:#0e7490}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+  <div class="game-hero">
+    <span class="badge">CE-211 · Vapour Pressure &amp; Cavitation</span>
+    <h1>&#128167; Cavitation Run</h1>
+    <p>Drive the flow through a narrowing pipe. Squeeze through a throat and continuity speeds the liquid up, so
+       Bernoulli drops the pressure. Let the throat pressure fall to the <strong>vapour pressure</strong> and the
+       liquid boils — <strong>cavitation</strong> — and your pump takes damage. Go fast for score, throttle down for the throats.</p>
+  </div>
+
+  <div class="ctrlrow">
+    <label>Water temperature: <b id="tVal" style="color:#0e7490">20 °C</b> &nbsp;(sets vapour pressure P<sub>v</sub>)</label>
+    <input type="range" id="temp" min="10" max="90" step="5" value="20">
+    <span id="pvVal" class="controls-note"></span>
+  </div>
+
+  <canvas id="stage" width="640" height="300" tabindex="0"></canvas>
+  <div class="hud">
+    <span>Distance <b id="hDist">0</b> m</span>
+    <span>Throat p<sub>abs</sub> <b id="hP">—</b> kPa</span>
+    <span>Margin over P<sub>v</sub> <b id="hMargin">—</b> kPa</span>
+    <span>Pump health <b id="hHealth">100</b>%</span>
+    <span>Best <b id="hBest">0</b> m</span>
+  </div>
+  <p class="controls-note">▲ / ▼ arrows (or drag mouse up/down on the canvas) throttle the flow. Faster flow = more distance per second, but a bigger pressure drop in the throats. Click the canvas to start / restart.</p>
+
+  <section class="card">
+    <h2>The physics behind the game</h2>
+    <p class="eqn">V₂ = V₁·(A₁/A₂) &nbsp;•&nbsp; p₂ = p₁ + ½ρ(V₁² − V₂²) &nbsp;•&nbsp; cavitation when p₂(abs) ≤ P<sub>v</sub></p>
+    <p>As the pipe narrows (area A₂ falls) continuity accelerates the flow and Bernoulli converts that kinetic energy into
+       a pressure drop. Vapour pressure rises steeply with temperature (0.6 kPa at 0 °C → 101.3 kPa at 100 °C), so hot
+       water cavitates far more easily. Engineers keep the local pressure above P<sub>v</sub> everywhere to protect pumps,
+       turbine runners and propellers. Values are illustrative teaching approximations.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// vapour pressure of water (kPa) vs T(°C), interpolated from the module table
+const PV_T=[[0,.6],[20,2.5],[40,7.5],[60,19.9],[80,47.7],[100,101.3]];
+function pvAt(T){for(let i=0;i<PV_T.length-1;i++){const[a,pa]=PV_T[i],[b,pb]=PV_T[i+1];if(T<=b){return pa+(pb-pa)*(T-a)/(b-a);}}return 101.3;}
+
+const RHO=998, PATM=101.3, P1=200; // supply gauge pressure kPa
+const cv=document.getElementById('stage'),ctx=cv.getContext('2d');
+const W=cv.width,H=cv.height,AX=H*0.5;
+let V=3.0, dist=0, health=100, running=false, over=false, scroll=0, best=0, Pv=2.5;
+let profile=[]; // scrolling beta (throat/pipe area ratio) samples
+
+function genProfile(){ // build a long scrolling ribbon of area ratios
+  profile=[]; let b=1;
+  for(let i=0;i<400;i++){ if(i%1===0){ b += (Math.random()-0.5)*0.18; b=Math.max(0.28,Math.min(1,b)); } profile.push(b); }
+}
+function betaAt(px){ const idx=Math.floor((scroll+px)/8)%profile.length; return profile[(idx+profile.length)%profile.length]; }
+
+function reset(){ V=3; dist=0; health=100; over=false; scroll=0; genProfile(); running=true; cv.focus(); }
+function computeThroat(){
+  const beta=betaAt(W*0.32);               // area ratio at the player's position
+  const V2=V/beta;                          // continuity: V2 = V*(A1/A2)=V/beta
+  const p2=P1 + 0.5*RHO*(V*V - V2*V2)/1000; // gauge kPa
+  return {beta, V2, p2abs:p2+PATM};
+}
+
+function draw(){
+  requestAnimationFrame(draw);
+  Pv=pvAt(+document.getElementById('temp').value);
+  ctx.clearRect(0,0,W,H);
+  // background water
+  ctx.fillStyle='#e0f2fe'; ctx.fillRect(0,0,W,H);
+
+  if(running){ scroll += V*0.9; dist += V*0.02; }
+  const t=computeThroat();
+
+  // pipe walls from scrolling profile
+  ctx.fillStyle='#7dd3fc';
+  ctx.beginPath(); ctx.moveTo(0,AX-halfPipe(0));
+  for(let x=0;x<=W;x+=6) ctx.lineTo(x,AX-halfPipe(x));
+  for(let x=W;x>=0;x-=6) ctx.lineTo(x,AX+halfPipe(x));
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='#0369a1'; ctx.lineWidth=2; ctx.stroke();
+
+  // flow particles
+  ctx.fillStyle='#0e7490';
+  for(let i=0;i<60;i++){ const x=((i*47+scroll*1.4)%W); const hp=halfPipe(x)*0.7; const y=AX+Math.sin(i*1.7)*hp; ctx.fillRect(x,y,3,3); }
+
+  // player marker (pump position)
+  const px=W*0.32;
+  ctx.fillStyle= t.p2abs<=Pv ? '#dc2626' : '#0f766e';
+  ctx.beginPath(); ctx.arc(px,AX,7,0,7); ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=2; ctx.stroke();
+
+  // cavitation bubbles + damage
+  if(running && t.p2abs<=Pv){
+    health -= 0.6;
+    ctx.fillStyle='rgba(255,255,255,.95)';
+    for(let i=0;i<14;i++){ const bx=px+(Math.random()*50), by=AX+(Math.random()*halfPipe(px)*1.6-halfPipe(px)*0.8); ctx.beginPath(); ctx.arc(bx,by,1.5+Math.random()*2,0,7); ctx.fill(); }
+    ctx.fillStyle='#b91c1c'; ctx.font='bold 13px Inter'; ctx.fillText('CAVITATION',px+10,AX-halfPipe(px)-8);
+    if(health<=0){ running=false; over=true; best=Math.max(best,Math.round(dist)); }
+  }
+
+  // pressure margin gauge (right side)
+  const margin=t.p2abs-Pv;
+  const gx=W-30, gTop=20, gH=H-40;
+  ctx.fillStyle='#cbd5e1'; ctx.fillRect(gx,gTop,16,gH);
+  const frac=Math.max(0,Math.min(1,margin/120));
+  ctx.fillStyle= margin<=0?'#dc2626':(margin<20?'#f59e0b':'#10b981');
+  ctx.fillRect(gx,gTop+gH*(1-frac),16,gH*frac);
+  ctx.strokeStyle='#334155'; ctx.strokeRect(gx,gTop,16,gH);
+
+  // HUD text
+  document.getElementById('hDist').textContent=Math.round(dist);
+  document.getElementById('hP').textContent=t.p2abs.toFixed(0);
+  document.getElementById('hMargin').textContent=margin.toFixed(0);
+  document.getElementById('hHealth').textContent=Math.max(0,Math.round(health));
+  document.getElementById('hBest').textContent=best;
+  document.getElementById('tVal').textContent=(+document.getElementById('temp').value)+' °C';
+  document.getElementById('pvVal').textContent='P_v = '+Pv.toFixed(1)+' kPa';
+
+  if(!running){
+    ctx.fillStyle='rgba(15,23,42,.72)'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fff'; ctx.textAlign='center';
+    ctx.font='bold 22px Inter';
+    ctx.fillText(over?'Pump destroyed by cavitation':'CAVITATION RUN',W/2,AX-16);
+    ctx.font='15px Inter';
+    ctx.fillText(over?('Distance: '+Math.round(dist)+' m — click to retry'):'Click to start · ▲▼ throttle flow',W/2,AX+14);
+    ctx.textAlign='left';
+  }
+  function halfPipe(x){ return 56*Math.sqrt(betaAt(x)); }  // pipe radius ∝ sqrt(area)
+}
+requestAnimationFrame(draw);
+
+// controls
+cv.addEventListener('click',()=>{ if(!running) reset(); });
+window.addEventListener('keydown',e=>{
+  if(e.key==='ArrowUp'){ V=Math.min(8,V+0.5); e.preventDefault(); }
+  if(e.key==='ArrowDown'){ V=Math.max(1,V-0.5); e.preventDefault(); }
+});
+let dragY=null;
+cv.addEventListener('mousedown',e=>{dragY=e.clientY;});
+window.addEventListener('mouseup',()=>{dragY=null;});
+window.addEventListener('mousemove',e=>{ if(dragY!=null){ const dy=dragY-e.clientY; V=Math.max(1,Math.min(8,V+dy*0.01)); dragY=e.clientY; } });
+document.getElementById('temp').addEventListener('input',()=>{Pv=pvAt(+document.getElementById('temp').value);});
+</script>
+</body>
+</html>
