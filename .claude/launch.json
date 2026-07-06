@@ -6,12 +6,6 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3737"],
       "port": 3737
-    },
-    {
-      "name": "games-check",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4758"],
-      "port": 4758
     }
   ]
 }
