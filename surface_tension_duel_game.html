@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Droplet · Bubble · Jet Duel | Dr. Pramod Soni</title>
+  <meta name="description" content="Puzzle game on surface tension: predict which of a droplet, bubble or jet has the higher internal pressure. CE-211 Properties of Fluids."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero{background:linear-gradient(135deg,#be185d 0%,#ec4899 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .game-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .game-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .game-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:720px}
+    .hud{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0;font-size:.95rem}
+    .hud b{color:#be185d;font-variant-numeric:tabular-nums}
+    .arena{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px;margin:8px auto}
+    .contender{border:2px solid var(--line);border-radius:16px;background:#f8fafc;padding:18px;text-align:center;cursor:pointer;transition:.12s}
+    .contender:hover{border-color:#ec4899;transform:translateY(-2px)}
+    .contender.win{border-color:#059669;background:#ecfdf5}
+    .contender.lose{border-color:#dc2626;background:#fef2f2}
+    .contender .emoji{font-size:2.6rem}
+    .contender h3{margin:4px 0}
+    .contender .params{color:var(--muted);font-size:.9rem}
+    .contender .reveal{font-weight:800;font-size:1.15rem;margin-top:8px;min-height:1.4em;color:#be185d}
+    .vs{text-align:center;font-weight:800;color:var(--muted);margin:4px}
+    .feedback{text-align:center;font-weight:700;min-height:1.6em;margin:12px 0}
+    .feedback.ok{color:#059669}.feedback.no{color:#dc2626}
+    .btn{padding:10px 22px;border:none;border-radius:10px;background:#be185d;color:#fff;font:inherit;font-weight:700;cursor:pointer;display:block;margin:6px auto}
+    .btn:hover{background:#9d174d}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:center}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+  <div class="game-hero">
+    <span class="badge">CE-211 · Surface Tension</span>
+    <h1>&#128167; Droplet · Bubble · Jet Duel</h1>
+    <p>Two contenders, each a droplet, soap bubble or liquid jet with its own radius and surface tension. Tap the one with
+       the <strong>higher internal (excess) pressure</strong>. Remember: a bubble has two surfaces, a jet only a curved one.</p>
+  </div>
+
+  <div class="hud">
+    <span>Score <b id="hScore">0</b></span>
+    <span>Streak <b id="hStreak" style="color:#d97706">0</b></span>
+    <span>Round <b id="hRound">1</b>/10</span>
+  </div>
+
+  <p class="eqn">droplet p = 2σ/r &nbsp;·&nbsp; soap bubble p = 4σ/r &nbsp;·&nbsp; liquid jet p = σ/r</p>
+
+  <div class="arena">
+    <div class="contender" id="cA" data-side="A">
+      <div class="emoji" id="eA">💧</div><h3 id="tA">—</h3><div class="params" id="pA"></div><div class="reveal" id="rA"></div>
+    </div>
+    <div class="contender" id="cB" data-side="B">
+      <div class="emoji" id="eB">🫧</div><h3 id="tB">—</h3><div class="params" id="pB"></div><div class="reveal" id="rB"></div>
+    </div>
+  </div>
+
+  <div class="feedback" id="fb"></div>
+  <button class="btn" id="nextBtn" style="display:none">Next duel →</button>
+
+  <section class="card">
+    <h2>Why the factors differ</h2>
+    <p>Balancing the bursting pressure force against the surface-tension pull around the cut gives the excess pressure.
+       A <strong>droplet</strong> has one surface in tension → p = 2σ/r. A <strong>soap bubble</strong> has two surfaces
+       (inner and outer) → p = 4σ/r, twice the droplet for the same r and σ. A <strong>liquid jet</strong> is curved in
+       only one direction → p = σ/r. In every case the pressure rises as the radius shrinks, so the tiniest droplets carry
+       surprisingly high internal pressures.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+const KINDS=[
+  {k:'Droplet',e:'💧',f:2},
+  {k:'Soap bubble',e:'🫧',f:4},
+  {k:'Liquid jet',e:'🌊',f:1},
+];
+let score=0,streak=0,round=1,answered=false,A=null,B=null;
+const ROUNDS=10;
+
+function mk(){
+  const kind=KINDS[(Math.random()*KINDS.length)|0];
+  const r=(0.5+Math.random()*3.5);              // mm
+  const sig=[0.073,0.051,0.029,0.063,0.022][(Math.random()*5)|0]; // N/m
+  const p=kind.f*sig/(r/1000);                  // Pa
+  return {kind,r,sig,p};
+}
+function press(x){return x>=1000?(x/1000).toFixed(2)+' kPa':x.toFixed(0)+' Pa';}
+function load(){
+  answered=false;
+  do{ A=mk(); B=mk(); }while(Math.abs(A.p-B.p)/Math.max(A.p,B.p)<0.06); // avoid near-ties
+  document.getElementById('eA').textContent=A.kind.e; document.getElementById('tA').textContent=A.kind.k;
+  document.getElementById('pA').textContent='r = '+A.r.toFixed(2)+' mm · σ = '+A.sig.toFixed(3)+' N/m';
+  document.getElementById('eB').textContent=B.kind.e; document.getElementById('tB').textContent=B.kind.k;
+  document.getElementById('pB').textContent='r = '+B.r.toFixed(2)+' mm · σ = '+B.sig.toFixed(3)+' N/m';
+  document.getElementById('rA').textContent=''; document.getElementById('rB').textContent='';
+  document.getElementById('cA').className='contender'; document.getElementById('cB').className='contender';
+  document.getElementById('fb').textContent=''; document.getElementById('fb').className='feedback';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('hRound').textContent=round+'/'+ROUNDS;
+}
+function choose(side){
+  if(answered) return; answered=true;
+  document.getElementById('rA').textContent=press(A.p);
+  document.getElementById('rB').textContent=press(B.p);
+  const winner = A.p>B.p?'A':'B';
+  document.getElementById('cA').classList.add(winner==='A'?'win':'lose');
+  document.getElementById('cB').classList.add(winner==='B'?'win':'lose');
+  const fb=document.getElementById('fb');
+  if(side===winner){ score+=100+streak*20; streak++; fb.textContent='✅ Correct — higher p = '+press(Math[winner==='A'?'max':'max'](A.p,B.p)); fb.className='feedback ok'; }
+  else{ streak=0; fb.textContent='❌ The '+(winner==='A'?A.kind.k:B.kind.k)+' had the higher pressure.'; fb.className='feedback no'; }
+  document.getElementById('hScore').textContent=score;
+  document.getElementById('hStreak').textContent=streak;
+  document.getElementById('nextBtn').style.display='block';
+}
+document.getElementById('cA').addEventListener('click',()=>choose('A'));
+document.getElementById('cB').addEventListener('click',()=>choose('B'));
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  round++;
+  if(round>ROUNDS){
+    document.querySelector('.arena').innerHTML='<div class="contender" style="grid-column:1/3;cursor:default"><div class="emoji">🏁</div><h3>Finished!</h3><div class="params">Final score: <b>'+score+'</b></div></div>';
+    const b=document.getElementById('nextBtn'); b.textContent='Play again'; b.onclick=()=>location.reload();
+    document.getElementById('fb').textContent=''; return;
+  }
+  load();
+});
+load();
+</script>
+</body>
+</html>

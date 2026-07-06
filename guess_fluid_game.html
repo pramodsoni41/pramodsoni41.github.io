@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Guess the Fluid | Dr. Pramod Soni</title>
+  <meta name="description" content="Deduction game on fluid property tables: identify the mystery fluid from density, viscosity, surface tension and specific gravity clues. CE-211 Properties of Fluids."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero{background:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .game-hero h1{margin:0 0 6px;font-size:1.8rem;color:#fff}
+    .game-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .game-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:720px}
+    .hud{display:flex;gap:22px;flex-wrap:wrap;margin:12px 0;font-size:.95rem}
+    .hud b{color:#0f766e;font-variant-numeric:tabular-nums}
+    .picker{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+    .picker button{padding:8px 14px;border:1px solid var(--line);background:#fff;border-radius:9px;font:inherit;cursor:pointer;font-size:.9rem}
+    .picker button:hover:not(:disabled){border-color:#14b8a6;background:#f0fdfa}
+    .picker button:disabled{opacity:.4;cursor:not-allowed}
+    table.guesses{width:100%;border-collapse:collapse;margin-top:10px;font-size:.86rem}
+    table.guesses th,table.guesses td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:center}
+    table.guesses th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.03em}
+    table.guesses td:first-child{text-align:left;font-weight:600}
+    .cell{border-radius:6px;padding:3px 6px;font-variant-numeric:tabular-nums}
+    .hit{background:#dcfce7;color:#065f46;font-weight:700}
+    .up{background:#e0f2fe;color:#075985}
+    .down{background:#fef3c7;color:#92400e}
+    .feedback{text-align:center;font-weight:700;min-height:1.6em;margin:12px 0}
+    .feedback.ok{color:#059669}.feedback.no{color:#dc2626}
+    .btn{padding:10px 22px;border:none;border-radius:10px;background:#0f766e;color:#fff;font:inherit;font-weight:700;cursor:pointer;display:block;margin:6px auto}
+    .btn:hover{background:#115e59}
+    .legend{font-size:.82rem;color:var(--muted);margin-top:6px}
+    .legend span{padding:2px 7px;border-radius:5px;margin-right:6px}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+  <div class="game-hero">
+    <span class="badge">CE-211 · Fluid Property Tables</span>
+    <h1>&#128269; Guess the Fluid</h1>
+    <p>A mystery fluid is hiding. Each guess reveals whether the target's density, viscosity, surface tension and
+       specific gravity are <strong>higher</strong>, <strong>lower</strong> or a <strong>match</strong>. Deduce it in
+       six tries — a Wordle for the property tables.</p>
+  </div>
+
+  <div class="hud">
+    <span>Guesses left <b id="hLeft">6</b></span>
+    <span>Solved <b id="hWins">0</b></span>
+  </div>
+
+  <div class="picker" id="picker"></div>
+  <div class="legend">
+    <span class="hit">match</span><span class="up">▲ target is higher</span><span class="down">▼ target is lower</span>
+  </div>
+
+  <table class="guesses">
+    <thead><tr><th>Guess</th><th>ρ (kg/m³)</th><th>μ (Pa·s)</th><th>σ (N/m)</th><th>S</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="feedback" id="fb"></div>
+  <button class="btn" id="againBtn" style="display:none">New mystery fluid</button>
+
+  <section class="card">
+    <h2>Reference values (20 °C)</h2>
+    <p class="legend" style="font-size:.9rem;line-height:1.9">
+      Water ρ998, μ1.0×10⁻³, σ0.073, S1.00 · Mercury ρ13550, μ1.6×10⁻³, σ0.51, S13.55 ·
+      Glycerine ρ1260, μ1.50, σ0.063, S1.26 · Kerosene ρ800, μ1.9×10⁻³, σ0.026, S0.80 ·
+      Benzene ρ879, μ6.5×10⁻⁴, σ0.029, S0.88 · Castor oil ρ960, μ0.98, σ0.039, S0.96 ·
+      Ethyl alcohol ρ789, μ1.2×10⁻³, σ0.022, S0.79 · Carbon tetrachloride ρ1594, μ9.7×10⁻⁴, σ0.027, S1.59.
+      These come straight from the CE-211 Module 1 tables (Modi &amp; Seth).</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+const FLUIDS=[
+  {n:'Water',rho:998,mu:1.0e-3,sig:0.073,S:1.00},
+  {n:'Mercury',rho:13550,mu:1.6e-3,sig:0.51,S:13.55},
+  {n:'Glycerine',rho:1260,mu:1.50,sig:0.063,S:1.26},
+  {n:'Kerosene',rho:800,mu:1.9e-3,sig:0.026,S:0.80},
+  {n:'Benzene',rho:879,mu:6.5e-4,sig:0.029,S:0.88},
+  {n:'Castor oil',rho:960,mu:0.98,sig:0.039,S:0.96},
+  {n:'Ethyl alcohol',rho:789,mu:1.2e-3,sig:0.022,S:0.79},
+  {n:'Carbon tetrachloride',rho:1594,mu:9.7e-4,sig:0.027,S:1.59},
+];
+let target=null,left=6,wins=+(localStorage.getItem('gtf_wins')||0),done=false;
+
+function fmtMu(m){return m>=0.01?m.toFixed(2):m.toExponential(1);}
+function cellCmp(guessV,targV){
+  if(Math.abs(guessV-targV)<1e-9) return ['hit','●'];
+  return targV>guessV?['up','▲']:['down','▼'];
+}
+function newGame(){
+  target=FLUIDS[(Math.random()*FLUIDS.length)|0]; left=6; done=false;
+  document.getElementById('rows').innerHTML='';
+  document.getElementById('fb').textContent=''; document.getElementById('fb').className='feedback';
+  document.getElementById('againBtn').style.display='none';
+  document.getElementById('hLeft').textContent=left;
+  document.getElementById('hWins').textContent=wins;
+  buildPicker();
+}
+function buildPicker(){
+  const p=document.getElementById('picker'); p.innerHTML='';
+  FLUIDS.forEach(f=>{ const b=document.createElement('button'); b.textContent=f.n; b.onclick=()=>guess(f); p.appendChild(b); });
+}
+function guess(f){
+  if(done) return;
+  const cR=cellCmp(f.rho,target.rho), cM=cellCmp(f.mu,target.mu), cS=cellCmp(f.sig,target.sig), cG=cellCmp(f.S,target.S);
+  const tr=document.createElement('tr');
+  tr.innerHTML='<td>'+f.n+'</td>'+
+    '<td><span class="cell '+cR[0]+'">'+f.rho+' '+cR[1]+'</span></td>'+
+    '<td><span class="cell '+cM[0]+'">'+fmtMu(f.mu)+' '+cM[1]+'</span></td>'+
+    '<td><span class="cell '+cS[0]+'">'+f.sig.toFixed(3)+' '+cS[1]+'</span></td>'+
+    '<td><span class="cell '+cG[0]+'">'+f.S.toFixed(2)+' '+cG[1]+'</span></td>';
+  document.getElementById('rows').appendChild(tr);
+  // disable that fluid
+  [...document.querySelectorAll('#picker button')].forEach(b=>{ if(b.textContent===f.n) b.disabled=true; });
+  const fb=document.getElementById('fb');
+  if(f.n===target.n){
+    done=true; wins++; localStorage.setItem('gtf_wins',wins);
+    fb.textContent='✅ Solved! It was '+target.n+'.'; fb.className='feedback ok';
+    finish();
+  }else{
+    left--; document.getElementById('hLeft').textContent=left;
+    if(left<=0){ done=true; fb.textContent='❌ Out of guesses — it was '+target.n+'.'; fb.className='feedback no'; finish(); }
+  }
+  document.getElementById('hWins').textContent=wins;
+}
+function finish(){
+  document.getElementById('againBtn').style.display='block';
+  [...document.querySelectorAll('#picker button')].forEach(b=>b.disabled=true);
+}
+document.getElementById('againBtn').addEventListener('click',newGame);
+newGame();
+</script>
+</body>
+</html>

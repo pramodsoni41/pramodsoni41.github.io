@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Capillary Climb | Dr. Pramod Soni</title>
+  <meta name="description" content="Puzzle game on capillarity: tune tube bore, liquid and contact angle to hit a target rise or depression. CE-211 Properties of Fluids."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .game-hero{background:linear-gradient(135deg,#1d4ed8 0%,#3b82f6 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .game-hero h1{margin:0 0 6px;font-size:1.8rem;color:#fff}
+    .game-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .game-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:720px}
+    .sim{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+    @media(max-width:720px){.sim{grid-template-columns:1fr}}
+    .ctrl{margin-bottom:15px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.9rem;margin-bottom:6px}
+    .ctrl label .val{color:#1d4ed8;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#1d4ed8}
+    select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;font:inherit;background:#f8fafc}
+    canvas#stage{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:12px;background:#f8fafc}
+    .hud{display:flex;gap:20px;flex-wrap:wrap;margin:12px 0;font-size:.95rem}
+    .hud b{color:#1d4ed8;font-variant-numeric:tabular-nums}
+    .btn{padding:10px 22px;border:none;border-radius:10px;background:#1d4ed8;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    .btn:hover{background:#1e40af}
+    .feedback{font-weight:700;min-height:1.6em;margin:10px 0}
+    .feedback.ok{color:#059669}.feedback.no{color:#b45309}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="Important_Links.html">&#8592; Back to Important Links</a></p>
+  <div class="game-hero">
+    <span class="badge">CE-211 · Capillarity</span>
+    <h1>&#127871; Capillary Climb</h1>
+    <p>A narrow tube dips into liquid. Adhesion pulls wetting liquids up; cohesion pushes mercury down. Tune the tube bore
+       and liquid so the meniscus lands exactly on the <strong>target line</strong>. Narrower tube = bigger effect (h ∝ 1/r).</p>
+  </div>
+
+  <div class="hud">
+    <span>Target <b id="hTarget">—</b> mm</span>
+    <span>Your h <b id="hNow">—</b> mm</span>
+    <span>Score <b id="hScore">0</b></span>
+    <span>Round <b id="hRound">1</b>/8</span>
+  </div>
+
+  <section class="card">
+    <div class="sim">
+      <div>
+        <div class="ctrl">
+          <label>Tube diameter <span class="val"><span id="vD">1.0</span> mm</span></label>
+          <input type="range" id="dia" min="0.2" max="8" step="0.1" value="1.0">
+        </div>
+        <div class="ctrl">
+          <label>Liquid</label>
+          <select id="liquid">
+            <option value="water">Water (wets glass, θ≈0°)</option>
+            <option value="alcohol">Ethyl alcohol (θ≈0°)</option>
+            <option value="benzene">Benzene (θ≈0°)</option>
+            <option value="mercury">Mercury (θ≈130°, depresses)</option>
+          </select>
+        </div>
+        <div class="ctrl">
+          <label>Contact angle θ <span class="val"><span id="vTh">0</span>°</span></label>
+          <input type="range" id="theta" min="0" max="150" step="5" value="0">
+          <div style="font-size:.78rem;color:var(--muted);margin-top:4px">θ &lt; 90° rises · θ &gt; 90° depresses</div>
+        </div>
+        <button class="btn" id="submitBtn">Lock it in</button>
+        <div class="feedback" id="fb"></div>
+        <button class="btn" id="nextBtn" style="display:none;background:#0f766e">Next round →</button>
+      </div>
+      <div>
+        <canvas id="stage" width="440" height="340"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>The physics behind the game</h2>
+    <p class="eqn">h = 2σ·cosθ / (w·r) &nbsp; (w = ρg, the specific weight)</p>
+    <p>Balancing the upward vertical pull of surface tension around the contact circle against the weight of the raised
+       column gives the capillary rise. For water in glass θ ≈ 0 so cosθ ≈ 1 and it rises; for mercury θ ≈ 130° so cosθ &lt; 0
+       and it is depressed. Because h ∝ 1/r, a 1 mm tube lifts water ~30 mm while a 0.1 mm tube would lift ~300 mm. Above
+       6 mm diameter the effect is negligible — which is why manometer tubes are made ≥ 6 mm. Values are illustrative.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+const G=9.81;
+const LIQ={
+  water:{sig:0.0736,rho:998,th:0,col:'#3b82f6'},
+  alcohol:{sig:0.0223,rho:789,th:0,col:'#22c55e'},
+  benzene:{sig:0.0289,rho:879,th:0,col:'#a16207'},
+  mercury:{sig:0.51,rho:13550,th:130,col:'#6b7280'}
+};
+const els={dia:document.getElementById('dia'),liquid:document.getElementById('liquid'),theta:document.getElementById('theta')};
+let target=0,score=0,round=1,answered=false;
+
+function calcH(){
+  const L=LIQ[els.liquid.value];
+  const d=+els.dia.value, r=d/2/1000;
+  const th=+els.theta.value*Math.PI/180;
+  const w=L.rho*G;
+  return 2*L.sig*Math.cos(th)/(w*r)*1000; // mm
+}
+function newRound(){
+  answered=false;
+  // pick a random reachable target (rise or depression)
+  const rise = Math.random()<0.7;
+  target = rise ? (8+Math.random()*40) : -(2+Math.random()*8);
+  target = Math.round(target*10)/10;
+  document.getElementById('hTarget').textContent=target.toFixed(1);
+  document.getElementById('hRound').textContent=round+'/8';
+  document.getElementById('fb').textContent='';
+  document.getElementById('nextBtn').style.display='none';
+  document.getElementById('submitBtn').style.display='inline-block';
+  draw();
+}
+function draw(){
+  const L=LIQ[els.liquid.value];
+  const h=calcH();
+  document.getElementById('vD').textContent=(+els.dia.value).toFixed(1);
+  document.getElementById('vTh').textContent=els.theta.value;
+  document.getElementById('hNow').textContent=h.toFixed(1);
+
+  const cv=document.getElementById('stage'),ctx=cv.getContext('2d');
+  const W=cv.width,H=cv.height, baseY=H*0.6, scale=2.2; // px per mm
+  ctx.clearRect(0,0,W,H);
+  // reservoir
+  ctx.fillStyle=L.col+'55'; ctx.fillRect(0,baseY,W,H-baseY);
+  ctx.strokeStyle='#94a3b8'; ctx.beginPath(); ctx.moveTo(0,baseY); ctx.lineTo(W,baseY); ctx.stroke();
+  // tube
+  const d=+els.dia.value, tubePx=Math.max(10,d*scale*2.4), cx=W*0.5;
+  ctx.strokeStyle='#64748b'; ctx.lineWidth=2;
+  ctx.strokeRect(cx-tubePx/2, 20, tubePx, H-40);
+  // liquid column in tube
+  const colTop=baseY - h*scale;
+  ctx.fillStyle=L.col;
+  ctx.fillRect(cx-tubePx/2+2, Math.min(colTop,baseY), tubePx-4, Math.abs(baseY-Math.min(colTop,baseY))|| (h<0?0:0));
+  if(h>=0){ ctx.fillRect(cx-tubePx/2+2, colTop, tubePx-4, baseY-colTop); }
+  else { ctx.fillStyle='#e2e8f0'; ctx.fillRect(cx-tubePx/2+2, baseY, tubePx-4, -h*scale); } // depression: empty above liquid
+  // target line
+  const ty=baseY - target*scale;
+  ctx.strokeStyle='#dc2626'; ctx.setLineDash([6,4]); ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(cx-tubePx/2-40,ty); ctx.lineTo(cx+tubePx/2+40,ty); ctx.stroke();
+  ctx.setLineDash([]); ctx.fillStyle='#dc2626'; ctx.font='11px Inter';
+  ctx.fillText('target '+target.toFixed(1)+' mm',cx+tubePx/2+6,ty-3);
+  // current meniscus marker
+  ctx.strokeStyle='#0f766e'; ctx.beginPath(); ctx.moveTo(cx-tubePx/2, colTop); ctx.lineTo(cx+tubePx/2, colTop); ctx.stroke();
+}
+Object.values(els).forEach(e=>e.addEventListener('input',()=>{
+  if(e===els.liquid){ els.theta.value=LIQ[els.liquid.value].th; }
+  draw();
+}));
+document.getElementById('submitBtn').addEventListener('click',()=>{
+  if(answered) return; answered=true;
+  const h=calcH(), err=Math.abs(h-target);
+  const fb=document.getElementById('fb');
+  let pts=0;
+  if(err<=0.5){ pts=100; fb.textContent='🎯 Bullseye! +100'; fb.className='feedback ok'; }
+  else if(err<=2){ pts=60; fb.textContent='✅ Close (Δ '+err.toFixed(1)+' mm) +60'; fb.className='feedback ok'; }
+  else if(err<=5){ pts=25; fb.textContent='➖ Near (Δ '+err.toFixed(1)+' mm) +25'; fb.className='feedback no'; }
+  else{ fb.textContent='❌ Off by '+err.toFixed(1)+' mm'; fb.className='feedback no'; }
+  score+=pts; document.getElementById('hScore').textContent=score;
+  document.getElementById('submitBtn').style.display='none';
+  document.getElementById('nextBtn').style.display='inline-block';
+});
+document.getElementById('nextBtn').addEventListener('click',()=>{
+  round++;
+  if(round>8){
+    document.getElementById('fb').innerHTML='🏁 Finished! Final score <b>'+score+'</b>';
+    document.getElementById('fb').className='feedback ok';
+    const b=document.getElementById('nextBtn'); b.textContent='Play again'; b.onclick=()=>location.reload();
+    return;
+  }
+  newRound();
+});
+els.theta.value=LIQ[els.liquid.value].th;
+newRound();
+</script>
+</body>
+</html>
