@@ -6,12 +6,6 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "3737"],
       "port": 3737
-    },
-    {
-      "name": "lab2-check",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4760"],
-      "port": 4760
     }
   ]
 }
