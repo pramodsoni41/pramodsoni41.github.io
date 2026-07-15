@@ -227,10 +227,14 @@ function refresh(){
 ['valve','temp'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ reading=null; collectDone=false; document.getElementById('oCollect').textContent='not started'; refresh(); }));
 
 // ---------------- timed collection ----------------
+let collectStart=0;
 document.getElementById('collectBtn').addEventListener('click',()=>{
   if(collecting) return;
   collecting=true; collectT=0; collectVol=0; collectDone=false; reading=null;
+  collectStart=performance.now();
   document.getElementById('recBtn').disabled=true;
+  // finish on wall-clock so throttled/background tabs still complete the run
+  setTimeout(()=>{ if(collecting){ collecting=false; collectDone=true; finishCollection(); } },1650);
 });
 
 function finishCollection(){
