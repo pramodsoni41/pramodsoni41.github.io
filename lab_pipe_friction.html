@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 2: Energy Losses in Pipes | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: measure head loss due to friction in a pipe, determine the Darcy-Weisbach friction factor across laminar, transitional and turbulent regimes, and plot f vs Re."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#f0f9ff,#f8fafc)}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 10px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.85rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.9rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:10px 18px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .status{padding:8px 12px;border-radius:10px;font-weight:700;font-size:.84rem;text-align:center;margin-top:8px}
+    .status.laminar{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .status.transitional{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+    .status.turbulent{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.83rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:6px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.74rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.92rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.82rem}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 2</span>
+    <h1>&#128295; Energy Losses in Pipes</h1>
+    <p>A virtual re-creation of the pipe-friction experiment. Run the low-flow part on the water manometers and the
+       high-flow part on the differential pressure gauge, measure discharge by timed collection, and determine the
+       Darcy&ndash;Weisbach friction factor across laminar, transitional and turbulent regimes.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objective</h2>
+    <p>To investigate head loss due to friction in a pipe, and to determine the associated friction factor under a range
+       of flow rates and flow regimes — laminar, transitional, and turbulent.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>Applying the energy equation to a horizontal pipe of uniform section, the head loss between two tappings is
+       proportional to the measured pressure difference. The Darcy&ndash;Weisbach equation relates it to the flow:</p>
+    <p class="eqn">h<sub>L</sub> = f·(L/D)·(v²/2g) &nbsp;•&nbsp; laminar: f = 64/Re &nbsp;•&nbsp;
+       turbulent (smooth, Blasius): f = 0.316/Re<sup>0.25</sup> &nbsp;•&nbsp; Re = vD/ν &nbsp;•&nbsp; v = Q/A
+       &nbsp;•&nbsp; 1 bar ≡ 10.2 m water</p>
+    <p>For laminar flow (Re &lt; ~2300) f depends only on Re; for turbulent flow it depends on Re and pipe roughness
+       (Moody chart). In the transitional band (~2300–4000) no reliable formula exists. Viscosity ν falls as the water
+       warms, so <em>temperature changes Re at the same flow rate</em> — sometimes enough to change the regime.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Hydraulics bench; pipe-friction apparatus (vertical test pipe with two pressure tappings, constant-head tank,
+       flow-control valve, air-bleed valve); water manometers (low flows) and differential pressure gauge (high flows);
+       stopwatch, measuring cylinder, thermometer.
+       <span class="pill">Test pipe: L = 0.50 m, D = 3.0 mm (smooth)</span></p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="620" height="330"></canvas>
+        <div class="status laminar" id="regimeChip">—</div>
+      </div>
+      <div>
+        <div class="mode-tabs">
+          <button id="tabLow" class="active">Low flow · manometers</button>
+          <button id="tabHigh">High flow · pressure gauge</button>
+        </div>
+        <div class="ctrl">
+          <label>Flow-control valve <span class="val"><span id="vValve">40</span>%</span></label>
+          <input type="range" id="valve" min="5" max="100" step="1" value="40">
+        </div>
+        <div class="ctrl">
+          <label>Water temperature <span class="val"><span id="vT">20</span> °C</span></label>
+          <input type="range" id="temp" min="10" max="40" step="1" value="20">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">ν changes with temperature — watch Re at the same valve setting.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span id="lblHead">Manometer difference h<sub>L</sub></span><b id="oHL">—</b></div>
+          <div class="row"><span>Timed collection</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Discharge Q</span><b id="oQ">—</b></div>
+          <div class="row"><span>Velocity v</span><b id="oV">—</b></div>
+          <div class="row"><span>Reynolds number Re</span><b id="oRe">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Timed collection (10 s)</button>
+          <button class="btn" id="recBtn" disabled>Record reading</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">L = 0.50 m, D = 3.0 mm, A = 7.07×10⁻⁶ m². Take ~8 low-flow readings
+       (lowest h<sub>L</sub> ≈ 30 mm) and ~10 high-flow readings at increasing valve openings.
+       f<sub>exp</sub> = h<sub>L</sub>·2gD/(L·v²); f<sub>th</sub> = 64/Re (laminar) or 0.316/Re<sup>0.25</sup> (turbulent).</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Part</th><th>T (°C)</th><th>Vol (mL)</th><th>t (s)</th><th>Q (mL/s)</th><th>v (m/s)</th>
+        <th>h<sub>L</sub> (mm)</th><th>Re</th><th>f<sub>exp</sub></th><th>f<sub>th</sub></th><th>Regime</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="12" style="color:var(--muted)">No observations yet — run a timed collection, then press “Record reading”.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Friction factor vs Reynolds number (log–log)</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Your recorded points plotted against the laminar line f = 64/Re and
+       the Blasius smooth-pipe curve — the same graph your report asks for. The shaded band is the transitional zone.</p>
+    <canvas id="chart" width="620" height="360"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Report Questions &amp; Precautions</h2>
+    <details class="qa"><summary>What is the critical Reynolds number in this experiment?</summary>
+      <p>The transition from laminar to turbulent flow occurs around Re ≈ 2300 for pipe flow. On the f–Re plot it shows
+         as the departure of the data from the 64/Re line; fully turbulent behaviour is established beyond Re ≈ 4000.</p></details>
+    <details class="qa"><summary>How does head loss depend on velocity in each regime?</summary>
+      <p>Laminar: f = 64/Re makes h<sub>L</sub> ∝ v (linear). Turbulent (Blasius): f ∝ Re<sup>−0.25</sup> makes
+         h<sub>L</sub> ∝ v<sup>1.75</sup>; for fully rough pipes it approaches v². A log-log plot of h<sub>L</sub> vs v
+         reveals these slopes directly.</p></details>
+    <details class="qa"><summary>What is the significance of temperature to the head loss?</summary>
+      <p>Viscosity drops sharply as water warms (ν ≈ 1.31×10⁻⁶ m²/s at 10 °C → 0.66×10⁻⁶ at 40 °C), raising Re at the
+         same discharge. In the laminar range this lowers f and thus h<sub>L</sub>; it can also push the flow across the
+         transition. Always record the water temperature.</p></details>
+    <details class="qa"><summary>Why might results disagree with the Moody diagram?</summary>
+      <p>Experimental errors in timed collection and manometer reading, entrapped air, temperature drift, entrance/exit
+         development lengths, and the finite spacing of tappings all scatter f. Aging, scaling, corrosion and biological
+         growth roughen real pipes over time, moving them off the smooth-pipe curve.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> purge all air from the manometer and gauge connections
+       before reading; take the zero-flow gauge reading; keep the collection time long enough for an accurate volume;
+       measure water temperature with every set.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ---------------- model ----------------
+const G=9.81, L=0.5, D=0.003, A=Math.PI/4*D*D;
+const NU=[[10,1.307e-6],[20,1.004e-6],[30,0.801e-6],[40,0.658e-6]];
+function nuAt(T){for(let i=0;i<NU.length-1;i++){const[a,na]=NU[i],[b,nb]=NU[i+1];if(T<=b)return na+(nb-na)*(T-a)/(b-a);}return NU[NU.length-1][1];}
+
+let mode='low';               // 'low' | 'high'
+let obs=[], reading=null, collecting=false, collectT=0, collectVol=0, collectDone=false;
+
+function trueState(){
+  const valve=+document.getElementById('valve').value/100;
+  const T=+document.getElementById('temp').value;
+  const v = mode==='low' ? 0.10+valve*0.85 : 0.9+valve*3.6;   // m/s
+  const nu=nuAt(T), Re=v*D/nu;
+  const f = Re<2300 ? 64/Re : 0.316/Math.pow(Re,0.25);
+  const hL = f*(L/D)*v*v/(2*G);                                 // m of water
+  const regime = Re<2300?'laminar':Re<4000?'transitional':'turbulent';
+  return {valve,T,v,nu,Re,f,hL,Q:v*A,regime};
+}
+// noisy instrument reading, frozen per (mode,valve,T) so it doesn't flicker
+let noiseSeed=0;
+function noiseFor(k,amp){ // deterministic pseudo-noise per setting
+  const s=Math.sin((k+noiseSeed)*127.1)*43758.5453;
+  return 1+((s-Math.floor(s))*2-1)*amp;
+}
+function measuredHL(st){
+  const k=st.valve*997+st.T*13+(mode==='low'?0:500);
+  return st.hL*noiseFor(k,0.03);
+}
+
+function refresh(){
+  const st=trueState();
+  document.getElementById('vValve').textContent=Math.round(st.valve*100);
+  document.getElementById('vT').textContent=st.T;
+  const hLm=measuredHL(st);
+  document.getElementById('lblHead').innerHTML= mode==='low'?'Manometer difference h<sub>L</sub>':'Pressure gauge Δp';
+  document.getElementById('oHL').textContent= mode==='low'? (hLm*1000).toFixed(0)+' mm' : (hLm/10.2).toFixed(3)+' bar';
+  const chip=document.getElementById('regimeChip');
+  chip.className='status '+st.regime;
+  chip.textContent=st.regime.charAt(0).toUpperCase()+st.regime.slice(1)+' — Re ≈ '+Math.round(st.Re)+
+    (st.regime==='transitional'?' (no reliable f formula here)':'');
+  if(reading){
+    document.getElementById('oQ').textContent=(reading.Q*1e6).toFixed(2)+' mL/s';
+    document.getElementById('oV').textContent=reading.v.toFixed(3)+' m/s';
+    document.getElementById('oRe').textContent=Math.round(reading.Re);
+  }else{
+    document.getElementById('oQ').textContent='—';
+    document.getElementById('oV').textContent='—';
+    document.getElementById('oRe').textContent='—';
+  }
+  document.getElementById('recBtn').disabled = !reading;
+}
+['valve','temp'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ reading=null; collectDone=false; document.getElementById('oCollect').textContent='not started'; refresh(); }));
+
+// ---------------- timed collection ----------------
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectT=0; collectVol=0; collectDone=false; reading=null;
+  document.getElementById('recBtn').disabled=true;
+});
+
+function finishCollection(){
+  const st=trueState();
+  const volNoise=noiseFor(st.valve*571+st.T*7,0.02);
+  const vol=st.Q*10*volNoise;               // m³ collected in 10 s
+  const Q=vol/10, v=Q/A, Re=v*D/st.nu;
+  const hL=measuredHL(st);
+  const fExp=hL*2*G*D/(L*v*v);
+  const regime=Re<2300?'laminar':Re<4000?'transitional':'turbulent';
+  const fTh= regime==='laminar'?64/Re : regime==='turbulent'?0.316/Math.pow(Re,0.25) : null;
+  reading={part:mode==='low'?'Low':'High',T:st.T,vol:vol*1e6,t:10,Q,v,Re,hL,fExp,fTh,regime};
+  document.getElementById('oCollect').textContent=(vol*1e6).toFixed(0)+' mL in 10.0 s';
+  refresh();
+}
+
+// ---------------- record / table / chart ----------------
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="12" style="color:var(--muted)">No observations yet — run a timed collection, then press “Record reading”.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.part+'</td><td>'+o.T+'</td><td>'+o.vol.toFixed(0)+'</td><td>'+o.t.toFixed(1)+
+    '</td><td>'+(o.Q*1e6).toFixed(2)+'</td><td>'+o.v.toFixed(3)+'</td><td>'+(o.hL*1000).toFixed(0)+'</td><td>'+Math.round(o.Re)+
+    '</td><td>'+o.fExp.toFixed(4)+'</td><td>'+(o.fTh?o.fTh.toFixed(4):'—')+'</td><td>'+o.regime+'</td></tr>').join('');
+  drawChart();
+}
+document.getElementById('recBtn').addEventListener('click',()=>{ if(reading){ obs.push(reading); reading=null; collectDone=false; document.getElementById('oCollect').textContent='not started'; noiseSeed+=0.37; renderTable(); refresh(); } });
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+
+function setMode(m){
+  mode=m; reading=null; collectDone=false;
+  document.getElementById('tabLow').classList.toggle('active',m==='low');
+  document.getElementById('tabHigh').classList.toggle('active',m==='high');
+  document.getElementById('oCollect').textContent='not started';
+  refresh();
+}
+document.getElementById('tabLow').addEventListener('click',()=>setMode('low'));
+document.getElementById('tabHigh').addEventListener('click',()=>setMode('high'));
+
+// ---------------- rig animation ----------------
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  const st=trueState(); phase+=st.v*1.6;
+  rc.clearRect(0,0,RW,RH);
+
+  // bench base
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,RH-26,RW,26);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,RH-26,RW,26);
+  rc.fillStyle='#64748b'; rc.font='11px Inter'; rc.fillText('hydraulics bench',10,RH-9);
+
+  // head tank (low mode) / supply pipe (high)
+  if(mode==='low'){
+    rc.fillStyle='#bae6fd'; rc.fillRect(30,34,84,54);
+    rc.strokeStyle='#0369a1'; rc.strokeRect(30,34,84,54);
+    rc.fillStyle='#0369a1'; rc.font='10px Inter'; rc.fillText('constant head tank',22,28);
+    rc.strokeStyle='#64748b'; rc.lineWidth=1;
+    rc.beginPath(); rc.moveTo(30,44); rc.lineTo(114,44); rc.stroke(); // overflow line
+  }else{
+    rc.fillStyle='#475569'; rc.fillRect(30,44,84,14);
+    rc.fillStyle='#0369a1'; rc.font='10px Inter'; rc.fillText('bench supply (pump)',24,38);
+  }
+
+  // test pipe (horizontal representation)
+  const px1=140,px2=470,py=140,pr=9;
+  rc.fillStyle='#cbd5e1'; rc.fillRect(114,52,26,96); // downcomer
+  rc.fillStyle='#e0f2fe'; rc.fillRect(px1,py-pr,px2-px1,pr*2);
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(px1,py-pr,px2-px1,pr*2);
+  // tappings
+  const t1=px1+60,t2=px2-60;
+  rc.strokeStyle='#0284c7'; rc.lineWidth=2;
+  rc.beginPath(); rc.moveTo(t1,py-pr); rc.lineTo(t1,py-pr-14); rc.stroke();
+  rc.beginPath(); rc.moveTo(t2,py-pr); rc.lineTo(t2,py-pr-14); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('tapping 1',t1-22,py-pr-18); rc.fillText('tapping 2',t2-22,py-pr-18);
+  rc.fillText('test length L = 0.50 m · D = 3 mm',(t1+t2)/2-80,py+pr+16);
+
+  // flow particles in pipe
+  rc.fillStyle='#0ea5e9';
+  const n= mode==='low'?14:26;
+  for(let i=0;i<n;i++){
+    const x=px1+ ((i*37+phase*8)% (px2-px1-6));
+    const y=py-pr+3+(i%3)*(pr*2-6)/2;
+    rc.fillRect(x,y,5,2.5);
+  }
+
+  // instrument: manometers (low) or gauge (high)
+  const hLm=measuredHL(st);
+  if(mode==='low'){
+    const mx=250,mw=13,mb=py-pr-14,mtop=34;
+    // two tubes above tappings
+    [[t1,'#0284c7'],[t2,'#0369a1']].forEach(([x,col],i)=>{
+      rc.strokeStyle='#94a3b8'; rc.lineWidth=1.5;
+      rc.strokeRect(x-mw/2,mtop,mw,mb-mtop);
+      // column heights: tube1 higher than tube2 by hL (scaled 0.35 px/mm)
+      const base=70, diffPx=Math.min(90,hLm*1000*0.35);
+      const h1=base+diffPx/2, h2=base-diffPx/2;
+      const hh=i===0?h1:h2;
+      rc.fillStyle='#7dd3fc'; rc.fillRect(x-mw/2+1.5, mb-hh, mw-3, hh);
+      rc.strokeStyle=col; rc.beginPath(); rc.moveTo(x-mw/2-4,mb-hh); rc.lineTo(x+mw/2+4,mb-hh); rc.stroke();
+    });
+    rc.fillStyle='#0369a1'; rc.font='10px Inter';
+    rc.fillText('water manometers · Δh = '+(hLm*1000).toFixed(0)+' mm',(t1+t2)/2-70,44);
+  }else{
+    const gx=(t1+t2)/2, gy=70, gr=30;
+    rc.beginPath(); rc.arc(gx,gy,gr,0,7); rc.fillStyle='#fff'; rc.fill();
+    rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+    // needle: 0–0.6 bar sweep
+    const bar=hLm/10.2, ang=Math.PI*0.75+Math.min(1,bar/0.6)*Math.PI*1.5;
+    rc.strokeStyle='#dc2626'; rc.lineWidth=2;
+    rc.beginPath(); rc.moveTo(gx,gy); rc.lineTo(gx+Math.cos(ang)*(gr-7),gy+Math.sin(ang)*(gr-7)); rc.stroke();
+    rc.fillStyle='#334155'; rc.font='10px Inter';
+    rc.fillText('differential gauge',gx-42,gy+gr+12);
+    rc.fillText(bar.toFixed(3)+' bar',gx-18,gy+gr+24);
+    // connection lines to tappings
+    rc.strokeStyle='#94a3b8'; rc.lineWidth=1;
+    rc.beginPath(); rc.moveTo(t1,py-pr-14); rc.lineTo(gx-gr,gy); rc.stroke();
+    rc.beginPath(); rc.moveTo(t2,py-pr-14); rc.lineTo(gx+gr,gy); rc.stroke();
+  }
+
+  // control valve after test section
+  rc.fillStyle='#475569'; rc.fillRect(px2,py-4,26,8);
+  rc.beginPath(); rc.arc(px2+13,py-12,7,0,7); rc.fillStyle='#0284c7'; rc.fill();
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('valve '+Math.round(st.valve*100)+'%',px2-8,py+24);
+
+  // volumetric tank (right) with timed collection
+  const vx=520,vw=70,vb=RH-26,vh=120;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  if(collecting){
+    collectT+=1/60;
+    const fillFrac=Math.min(1,collectT/1.6);           // 10 s simulated in 1.6 s
+    collectVol=st.Q*10*fillFrac;
+    rc.fillStyle='#7dd3fc';
+    const fh=Math.min(vh-4, 10+fillFrac*(vh-20));
+    rc.fillRect(vx+2,vb-fh,vw-4,fh-2);
+    document.getElementById('oCollect').textContent='collecting… '+(collectT/1.6*10).toFixed(1)+' s';
+    if(collectT>=1.6){ collecting=false; collectDone=true; finishCollection(); }
+  }else{
+    rc.fillStyle= collectDone?'#7dd3fc':'#e0f2fe';
+    const fh= collectDone? Math.min(vh-4, 10+(vh-20)) : 12;
+    rc.fillRect(vx+2,vb-fh,vw-4,fh-2);
+  }
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('volumetric tank',vx-2,vb-vh-8);
+
+  // spout from valve to tank
+  rc.strokeStyle='#0ea5e9'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(px2+26,py); rc.lineTo(vx+vw/2,py); rc.lineTo(vx+vw/2,vb-vh-2); rc.stroke();
+}
+requestAnimationFrame(drawRig);
+
+// ---------------- f–Re log-log chart ----------------
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height;
+const REmin=200,REmax=30000,Fmin=0.015,Fmax=0.35;
+const M={l:56,r:16,t:16,b:40};
+function X(re){ return M.l+(Math.log10(re)-Math.log10(REmin))/(Math.log10(REmax)-Math.log10(REmin))*(CW-M.l-M.r); }
+function Y(f){ return CH-M.b-(Math.log10(f)-Math.log10(Fmin))/(Math.log10(Fmax)-Math.log10(Fmin))*(CH-M.t-M.b); }
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  // transitional band
+  cc.fillStyle='rgba(253,230,138,.35)';
+  cc.fillRect(X(2300),M.t,X(4000)-X(2300),CH-M.t-M.b);
+  // grid
+  cc.strokeStyle='#e2e8f0'; cc.lineWidth=1; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  [200,500,1000,2000,5000,10000,20000].forEach(re=>{ cc.beginPath(); cc.moveTo(X(re),M.t); cc.lineTo(X(re),CH-M.b); cc.stroke(); cc.fillText(re>=1000?(re/1000)+'k':re,X(re),CH-M.b+14); });
+  cc.textAlign='right';
+  [0.02,0.03,0.05,0.08,0.12,0.2,0.3].forEach(f=>{ cc.beginPath(); cc.moveTo(M.l,Y(f)); cc.lineTo(CW-M.r,Y(f)); cc.stroke(); cc.fillText(f,M.l-6,Y(f)+3); });
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('Reynolds number Re (log)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('friction factor f (log)',0,0); cc.restore();
+  // axes box
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // laminar line 64/Re
+  cc.strokeStyle='#059669'; cc.lineWidth=2; cc.beginPath();
+  let first=true;
+  for(let re=REmin;re<=2300;re*=1.06){ const f=64/re; if(f<Fmin||f>Fmax) continue; const x=X(re),y=Y(f); first?cc.moveTo(x,y):cc.lineTo(x,y); first=false; }
+  cc.stroke();
+  cc.fillStyle='#059669'; cc.font='10px Inter'; cc.fillText('f = 64/Re',X(600),Y(64/600)-10);
+  // Blasius
+  cc.strokeStyle='#1d4ed8'; cc.lineWidth=2; cc.beginPath(); first=true;
+  for(let re=3000;re<=REmax;re*=1.05){ const f=0.316/Math.pow(re,0.25); const x=X(re),y=Y(f); first?cc.moveTo(x,y):cc.lineTo(x,y); first=false; }
+  cc.stroke();
+  cc.fillStyle='#1d4ed8'; cc.fillText('Blasius 0.316/Re⁰·²⁵',X(11000),Y(0.316/Math.pow(11000,0.25))-10);
+  cc.fillStyle='#92400e'; cc.fillText('transition',X(3030),M.t+12);
+  // data points
+  const cols={laminar:'#059669',transitional:'#d97706',turbulent:'#1d4ed8'};
+  obs.forEach(o=>{
+    if(o.Re<REmin||o.Re>REmax||o.fExp<Fmin||o.fExp>Fmax) return;
+    cc.fillStyle=cols[o.regime];
+    cc.beginPath(); cc.arc(X(o.Re),Y(o.fExp),4.5,0,7); cc.fill();
+    cc.strokeStyle='#fff'; cc.lineWidth=1.5; cc.stroke();
+  });
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>
