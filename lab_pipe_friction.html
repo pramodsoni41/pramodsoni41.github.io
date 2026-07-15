@@ -272,9 +272,10 @@ document.getElementById('tabHigh').addEventListener('click',()=>setMode('high'))
 // ---------------- rig animation ----------------
 const rig=document.getElementById('rig'),rc=rig.getContext('2d');
 const RW=rig.width,RH=rig.height;
-let phase=0;
-function drawRig(){
+let phase=0, lastTs=0;
+function drawRig(ts){
   requestAnimationFrame(drawRig);
+  const dt = lastTs? Math.min(0.1,(ts-lastTs)/1000) : 1/60; lastTs=ts;
   const st=trueState(); phase+=st.v*1.6;
   rc.clearRect(0,0,RW,RH);
 
@@ -361,7 +362,7 @@ function drawRig(){
   const vx=520,vw=70,vb=RH-26,vh=120;
   rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
   if(collecting){
-    collectT+=1/60;
+    collectT+=dt;
     const fillFrac=Math.min(1,collectT/1.6);           // 10 s simulated in 1.6 s
     collectVol=st.Q*10*fillFrac;
     rc.fillStyle='#7dd3fc';
