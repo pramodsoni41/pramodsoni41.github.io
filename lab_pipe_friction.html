@@ -276,10 +276,9 @@ document.getElementById('tabHigh').addEventListener('click',()=>setMode('high'))
 // ---------------- rig animation ----------------
 const rig=document.getElementById('rig'),rc=rig.getContext('2d');
 const RW=rig.width,RH=rig.height;
-let phase=0, lastTs=0;
-function drawRig(ts){
+let phase=0;
+function drawRig(){
   requestAnimationFrame(drawRig);
-  const dt = lastTs? Math.min(0.1,(ts-lastTs)/1000) : 1/60; lastTs=ts;
   const st=trueState(); phase+=st.v*1.6;
   rc.clearRect(0,0,RW,RH);
 
@@ -366,14 +365,13 @@ function drawRig(ts){
   const vx=520,vw=70,vb=RH-26,vh=120;
   rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
   if(collecting){
-    collectT+=dt;
-    const fillFrac=Math.min(1,collectT/1.6);           // 10 s simulated in 1.6 s
+    collectT=(performance.now()-collectStart)/1000;    // wall-clock; 10 s simulated in 1.6 s
+    const fillFrac=Math.min(1,collectT/1.6);
     collectVol=st.Q*10*fillFrac;
     rc.fillStyle='#7dd3fc';
     const fh=Math.min(vh-4, 10+fillFrac*(vh-20));
     rc.fillRect(vx+2,vb-fh,vw-4,fh-2);
-    document.getElementById('oCollect').textContent='collecting… '+(collectT/1.6*10).toFixed(1)+' s';
-    if(collectT>=1.6){ collecting=false; collectDone=true; finishCollection(); }
+    document.getElementById('oCollect').textContent='collecting… '+(Math.min(collectT,1.6)/1.6*10).toFixed(1)+' s';
   }else{
     rc.fillStyle= collectDone?'#7dd3fc':'#e0f2fe';
     const fh= collectDone? Math.min(vh-4, 10+(vh-20)) : 12;
