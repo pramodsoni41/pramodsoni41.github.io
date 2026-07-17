@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 3: Flow Meters | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: compare a venturi meter, orifice plate and rotameter against timed volumetric collection, and measure the energy loss of each device."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#f0f9ff,#f8fafc)}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.9rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:10px 18px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.8rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    table.obs td small{color:var(--muted)}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 3</span>
+    <h1>&#128208; Operation Characteristics of Three Flow Meters</h1>
+    <p>A virtual re-creation of the flow-measurement apparatus: a <strong>venturi meter</strong>, <strong>orifice
+       plate</strong> and <strong>rotameter</strong> installed in series, read from an air-pressurised manometer bank.
+       Compare each meter against the catch-tank-and-stopwatch standard, and measure the energy loss each device —
+       plus the wide-angle diffuser and 90° bend — costs you.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objectives</h2>
+    <p>(1) Familiarise with common flow-measurement devices; (2) compare each meter with the standard timed volumetric
+       collection; (3) determine the energy loss incurred by each device; (4) determine the loss in a rapid enlargement
+       and a 90° elbow.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>For steady incompressible flow, Bernoulli's equation with a loss term between two tappings gives each meter's
+       working formula:</p>
+    <p class="eqn">Venturi: Q = A_B·√( 2g(h_A−h_B) / (1−(A_B/A_A)²) ) &nbsp;•&nbsp;
+       Orifice: Q = C·A_F·√( 2g(h_E−h_F) / (1−(A_F/A_E)²) ), C = 0.601 &nbsp;•&nbsp;
+       Rotameter: l ∝ Q (linear calibration)</p>
+    <p>The venturi accelerates the flow gradually, so its loss is small; the orifice plate is cheap but its abrupt
+       contraction and vortices cost a large loss (ΔH ≈ 0.83(h_E−h_F)); the rotameter's float rides in a tapered tube,
+       and the head loss across it (h_H−h_I) is <em>nearly constant ≈ 100 mm</em> regardless of discharge — which is
+       exactly why its scale is linear.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Hydraulics bench with volumetric tank &amp; stopwatch; flow-measurement apparatus with pressure tappings to an
+       air-pressurised manometer bank (tubes A–I); flow-control valve; hand pump for purging.</p>
+    <p>
+      <span class="pill">Venturi: A = 26 mm, throat B = 16 mm</span>
+      <span class="pill">Orifice: pipe E = 51.9 mm, C = 0.601, vena contracta F = 20 mm</span>
+      <span class="pill">Diffuser C→D: area 1:4</span>
+      <span class="pill">Bend G→H: 51.9 → 40 mm</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="360"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Apparatus flow-control valve <span class="val"><span id="vValve">40</span>%</span></label>
+          <input type="range" id="valve" min="5" max="100" step="1" value="40">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Open in steps so the rotameter rises ~10 mm per test, as the manual asks.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Rotameter reading l</span><b id="oRot">—</b></div>
+          <div class="row"><span>Venturi Δh (h_A−h_B)</span><b id="oVent">—</b></div>
+          <div class="row"><span>Orifice Δh (h_E−h_F)</span><b id="oOrif">—</b></div>
+          <div class="row"><span>Timed collection (5 L)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub> (standard)</span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Timed collection</button>
+          <button class="btn" id="recBtn" disabled>Record test</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Take ~10 tests at increasing valve openings. Q from each meter is
+       back-computed from the manometer readings using the theory equations; the error is relative to the bench timed
+       collection. ΔH columns are the measured energy losses (mm of water): venturi h_A−h_C, orifice 0.83(h_E−h_F),
+       rotameter h_H−h_I, diffuser and bend from the kinetic-head-corrected piezometric drops.</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>l (mm)</th><th>Vol (L)</th><th>t (s)</th><th>Q<sub>bench</sub><br>(L/s)</th>
+        <th>Q<sub>venturi</sub></th><th>Q<sub>orifice</sub></th><th>Q<sub>rotameter</sub></th>
+        <th>ΔH<sub>vent</sub></th><th>ΔH<sub>orif</sub></th><th>ΔH<sub>rot</sub></th><th>ΔH<sub>diff</sub></th><th>ΔH<sub>bend</sub></th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="13" style="color:var(--muted)">No tests yet — set the valve, run a timed collection, then press “Record test”.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Meter calibration vs the bench standard</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Each meter's computed discharge plotted against Q<sub>bench</sub>.
+       Points on the 1:1 line mean perfect agreement — see which meter tracks it best.</p>
+    <canvas id="chart" width="620" height="360"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Discussion &amp; Conclusions</h2>
+    <details class="qa"><summary>Which device would you recommend for flow measurement?</summary>
+      <p>The venturi is the most accurate (typically within ~2%, and even that bias comes from neglecting its discharge
+         coefficient C ≈ 0.98) and wastes the least energy — but it is long and expensive. The orifice plate is compact
+         and cheap and, once its C is known, also accurate — but it dissipates by far the most head. The rotameter reads
+         directly and linearly but is a fragile, vertical-only glass instrument of moderate accuracy. Choose by
+         constraint: accuracy &amp; low loss → venturi; cost &amp; retrofit → orifice; convenience → rotameter.</p></details>
+    <details class="qa"><summary>Advantages and disadvantages of each device</summary>
+      <p><strong>Venturi:</strong> + low permanent loss, accurate, no moving parts; − long, costly, fixed installation.
+         <strong>Orifice:</strong> + cheapest, fits between existing flanges, easily replaced; − large permanent head
+         loss, C sensitive to wear and installation. <strong>Rotameter:</strong> + direct linear reading, good
+         rangeability, cheap; − must be vertical, glass tube fragile, float sticks with dirty fluids, constant head
+         loss even at low flow.</p></details>
+    <details class="qa"><summary>Why must the rotameter have a slightly diverging (tapered) cross-section?</summary>
+      <p>The float rests where the upward drag equals its submerged weight — which requires a fixed velocity through the
+         annular gap around the float. To pass a larger discharge at that same gap velocity, the gap area must grow, so
+         the tube bore must increase with height. The taper makes the float's equilibrium height — and hence the scale
+         reading — approximately proportional to discharge.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> purge all air from the manometers and pressurise the bank
+       to a convenient level before starting; keep the purge valve closed during readings (levels creeping upward mean it
+       leaks); wait for steady flow before each timed collection; tap the manometers gently to dislodge trapped air.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81;
+const AA=Math.PI/4*0.026**2, AB=Math.PI/4*0.016**2;       // venturi
+const AE=Math.PI/4*0.0519**2, AF=Math.PI/4*0.020**2;      // orifice
+const AH=Math.PI/4*0.040**2;                               // bend outlet / rotameter bore
+const BV=1-(AB/AA)**2, BO=1-(AF/AE)**2;
+const ROT_K=0.0045;                                        // Q(L/s) = ROT_K * l(mm)
+
+let obs=[], reading=null, collecting=false, collectStart=0, collectDone=false, noiseSeed=0;
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return 1+((s-Math.floor(s))*2-1)*amp; }
+
+function trueState(){
+  const valve=+document.getElementById('valve').value/100;
+  const Q=(0.05+valve*0.40)/1000;                          // m³/s : 0.05–0.45 L/s
+  const KEA=(Q/AA)**2/(2*G), KEB=(Q/AB)**2/(2*G), KEE=(Q/AE)**2/(2*G), KEH=(Q/AH)**2/(2*G);
+  const dhv=(Q/(0.98*AB))**2*BV/(2*G);                     // real venturi has C≈0.98
+  const dho=(Q/(0.601*AF))**2*BO/(2*G);
+  const lossV=0.15*dhv, lossO=0.83*dho;
+  const lossD=0.8*((Q/AA)-(Q/(4*AA)))**2/(2*G);
+  const lossB=0.8*KEH, lossR=0.100;
+  const hA=0.380;
+  const hB=hA-dhv, hC=hA-lossV, hD=hC+KEA-lossD-KEA/16;
+  const hE=hD-0.002, hF=hE-dho, hG=hE-lossO;
+  const hH=hG+KEE-KEH-lossB, hI=hH-lossR;
+  const l=(Q*1000)/ROT_K;                                  // mm
+  return {Q,l,tubes:{A:hA,B:hB,C:hC,D:hD,E:hE,F:hF,G:hG,H:hH,I:hI},
+          lossV,lossO,lossD,lossB,lossR,dhv,dho};
+}
+// noisy manometer readings, frozen per valve setting
+function measured(st){
+  const k=+document.getElementById('valve').value;
+  const m={}; let i=0;
+  for(const t in st.tubes){ m[t]=st.tubes[t]+ (noiseFor(k*13+i*7,1)-1)*0.0015*2; i++; }
+  const lRead=st.l*noiseFor(k*29,0.012);
+  return {m,lRead};
+}
+
+function refresh(){
+  const st=trueState(), ms=measured(st);
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  document.getElementById('oRot').textContent=ms.lRead.toFixed(0)+' mm';
+  document.getElementById('oVent').textContent=((ms.m.A-ms.m.B)*1000).toFixed(0)+' mm';
+  document.getElementById('oOrif').textContent=((ms.m.E-ms.m.F)*1000).toFixed(0)+' mm';
+  if(!reading){ document.getElementById('oQ').textContent='—'; }
+  document.getElementById('recBtn').disabled=!reading;
+}
+document.getElementById('valve').addEventListener('input',()=>{ reading=null; collectDone=false; document.getElementById('oCollect').textContent='not started'; refresh(); });
+
+// ================= timed collection (bench standard) =================
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectDone=false; reading=null; collectStart=performance.now();
+  document.getElementById('recBtn').disabled=true;
+  setTimeout(()=>{ if(collecting){ collecting=false; collectDone=true; finishCollection(); } },1650);
+});
+function finishCollection(){
+  const st=trueState(), ms=measured(st);
+  const vol=5.0;                                           // litres collected
+  const tNoise=noiseFor(+document.getElementById('valve').value*571,0.015);
+  const t=vol/(st.Q*1000)*tNoise;
+  const Qb=vol/t/1000;                                     // m³/s
+  // back-computed meter discharges from the (noisy) readings
+  const Qv=AB*Math.sqrt(2*G*Math.max(0,ms.m.A-ms.m.B)/BV);
+  const Qo=0.601*AF*Math.sqrt(2*G*Math.max(0,ms.m.E-ms.m.F)/BO);
+  const Qr=ROT_K*ms.lRead/1000;
+  reading={l:ms.lRead, vol, t, Qb, Qv, Qo, Qr,
+    dHv:(ms.m.A-ms.m.C)*1000, dHo:0.83*(ms.m.E-ms.m.F)*1000, dHr:(ms.m.H-ms.m.I)*1000,
+    dHd:st.lossD*1000, dHb:st.lossB*1000};
+  document.getElementById('oCollect').textContent=vol.toFixed(1)+' L in '+t.toFixed(1)+' s';
+  document.getElementById('oQ').textContent=(Qb*1000).toFixed(3)+' L/s';
+  refresh();
+}
+
+// ================= record / table / chart =================
+function fmtQ(q,qb){ const e=(q/qb-1)*100; return (q*1000).toFixed(3)+'<br><small>('+(e>=0?'+':'')+e.toFixed(1)+'%)</small>'; }
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="13" style="color:var(--muted)">No tests yet — set the valve, run a timed collection, then press “Record test”.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.l.toFixed(0)+'</td><td>'+o.vol.toFixed(1)+'</td><td>'+o.t.toFixed(1)+
+    '</td><td>'+(o.Qb*1000).toFixed(3)+'</td><td>'+fmtQ(o.Qv,o.Qb)+'</td><td>'+fmtQ(o.Qo,o.Qb)+'</td><td>'+fmtQ(o.Qr,o.Qb)+
+    '</td><td>'+o.dHv.toFixed(0)+'</td><td>'+o.dHo.toFixed(0)+'</td><td>'+o.dHr.toFixed(0)+'</td><td>'+o.dHd.toFixed(1)+'</td><td>'+o.dHb.toFixed(1)+'</td></tr>').join('');
+  drawChart();
+}
+document.getElementById('recBtn').addEventListener('click',()=>{ if(reading){ obs.push(reading); reading=null; collectDone=false; noiseSeed+=0.37; document.getElementById('oCollect').textContent='not started'; renderTable(); refresh(); } });
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+
+// ================= rig animation =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+// pipe geometry along x (half-heights in px), axis y
+const AXY=272;
+function boreAt(x){
+  // venturi 60–150 (26→16→26), diffuser 165–215 (26→52), pipe 52 to bend at 430, orifice plate at 300
+  if(x<60) return 13;
+  if(x<95) return 13-(x-60)/35*6;         // converge to throat (≈16mm scaled)
+  if(x<110) return 7;
+  if(x<150) return 7+(x-110)/40*6;        // diverge back
+  if(x<165) return 13;
+  if(x<215) return 13+(x-165)/50*13;      // diffuser to 52mm
+  return 26;
+}
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  const st=trueState(), ms=measured(st); phase+=st.Q*9000;
+  rc.clearRect(0,0,RW,RH);
+
+  // ---- manometer bank (top) ----
+  const bankX=30, tubeW=13, gap=38, bankBase=150, bankTop=14;
+  rc.fillStyle='#334155'; rc.font='11px Inter'; rc.fillText('manometer bank (mm of water)',bankX,bankTop-2);
+  const letters=['A','B','C','D','E','F','G','H','I'];
+  letters.forEach((t,i)=>{
+    const x=bankX+i*gap;
+    rc.strokeStyle='#94a3b8'; rc.lineWidth=1.2;
+    rc.strokeRect(x,bankTop+6,tubeW,bankBase-bankTop-6);
+    const hmm=ms.m[t]*1000;                       // 0–440 scale
+    const hh=Math.max(2,Math.min(bankBase-bankTop-8, hmm/440*(bankBase-bankTop-8)));
+    rc.fillStyle='#38bdf8';
+    rc.fillRect(x+1.5,bankBase-2-hh,tubeW-3,hh);
+    rc.fillStyle='#334155'; rc.font='10px Inter'; rc.textAlign='center';
+    rc.fillText(t,x+tubeW/2,bankBase+12);
+    rc.fillStyle='#64748b'; rc.font='8.5px Inter';
+    rc.fillText(hmm.toFixed(0),x+tubeW/2,bankBase+23);
+    rc.textAlign='left';
+  });
+
+  // ---- pipework ----
+  rc.beginPath();
+  rc.moveTo(20,AXY-boreAt(20));
+  for(let x=20;x<=430;x+=4) rc.lineTo(x,AXY-boreAt(x));
+  rc.lineTo(430,AXY-26);
+  rc.lineTo(456,AXY-26);                 // into bend
+  rc.lineTo(456,AXY+26);
+  for(let x=430;x>=20;x-=4) rc.lineTo(x,AXY+boreAt(x));
+  rc.closePath();
+  rc.fillStyle='#e0f2fe'; rc.fill();
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+
+  // orifice plate at x=300
+  rc.fillStyle='#475569';
+  rc.fillRect(298,AXY-26,5,16); rc.fillRect(298,AXY+10,5,16);
+
+  // rotameter: vertical tapered tube rising from the bend
+  const rx=443, rTop=170, rBot=AXY-26;
+  rc.beginPath();
+  rc.moveTo(rx-9,rBot); rc.lineTo(rx-14,rTop); rc.lineTo(rx+14,rTop); rc.lineTo(rx+9,rBot);
+  rc.closePath();
+  rc.fillStyle='#f0f9ff'; rc.fill(); rc.strokeStyle='#334155'; rc.stroke();
+  // float at height ∝ l (0–100 mm scale)
+  const fl=Math.min(100,ms.lRead), fy=rBot-10-fl/100*(rBot-rTop-22);
+  rc.fillStyle='#dc2626';
+  rc.beginPath(); rc.moveTo(rx-7,fy); rc.lineTo(rx+7,fy); rc.lineTo(rx,fy-11); rc.closePath(); rc.fill();
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('rotameter',rx-26,rTop-8);
+  rc.fillText('l = '+ms.lRead.toFixed(0)+' mm',rx-24,rTop+8);
+
+  // exit pipe to volumetric tank
+  rc.strokeStyle='#0ea5e9'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(rx,rTop); rc.lineTo(rx,rTop-12); rc.lineTo(560,rTop-12); rc.lineTo(560,RH-96); rc.stroke();
+
+  // volumetric tank
+  const vx=528,vw=64,vb=RH-18,vh=74;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*100,100).toFixed(0)+'%';
+  } else if(collectDone) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('volumetric tank',vx-6,vb-vh-6);
+
+  // flow particles
+  rc.fillStyle='#0ea5e9';
+  for(let i=0;i<30;i++){
+    const x=25+((i*29+phase)% 400);
+    const b=boreAt(x)*0.7;
+    rc.fillRect(x,AXY+((i%5)-2)/2*b,4,2.2);
+  }
+
+  // station labels on pipe
+  rc.fillStyle='#0369a1'; rc.font='bold 10px Inter'; rc.textAlign='center';
+  const stations=[['A',65],['B',102],['C',158],['D',218],['E',268],['F',312],['G',352],['H',430]];
+  stations.forEach(([t,x])=>{ rc.fillText(t,x,AXY+40); rc.strokeStyle='#94a3b8'; rc.lineWidth=1;
+    rc.beginPath(); rc.moveTo(x,AXY+30); rc.lineTo(x,AXY+boreAt(x)+2); rc.stroke(); });
+  rc.fillText('I',rx+22,rTop+30);
+  rc.textAlign='left';
+  rc.fillStyle='#64748b'; rc.font='10px Inter';
+  rc.fillText('venturi',75,AXY+56); rc.fillText('diffuser',175,AXY+56);
+  rc.fillText('orifice',285,AXY+56); rc.fillText('bend',415,AXY+56);
+}
+requestAnimationFrame(drawRig);
+
+// ================= calibration chart =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:56,r:16,t:16,b:42}, QMAX=0.5;
+function X(q){ return M.l+q/QMAX*(CW-M.l-M.r); }
+function Y(q){ return CH-M.b-q/QMAX*(CH-M.t-M.b); }
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  cc.strokeStyle='#e2e8f0'; cc.lineWidth=1; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let q=0;q<=QMAX+1e-9;q+=0.1){
+    cc.beginPath(); cc.moveTo(X(q),M.t); cc.lineTo(X(q),CH-M.b); cc.stroke();
+    cc.fillText(q.toFixed(1),X(q),CH-M.b+14);
+    cc.textAlign='right'; cc.beginPath(); cc.moveTo(M.l,Y(q)); cc.lineTo(CW-M.r,Y(q)); cc.stroke();
+    cc.fillText(q.toFixed(1),M.l-5,Y(q)+3); cc.textAlign='center';
+  }
+  cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('Q bench — timed collection (L/s)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('Q meter (L/s)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // 1:1 line
+  cc.strokeStyle='#64748b'; cc.setLineDash([6,5]); cc.lineWidth=1.5;
+  cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(QMAX),Y(QMAX)); cc.stroke(); cc.setLineDash([]);
+  cc.fillStyle='#64748b'; cc.fillText('1:1',X(QMAX*0.93),Y(QMAX*0.93)-10);
+  // legend + points
+  const series=[['Qv','#059669','venturi'],['Qo','#d97706','orifice'],['Qr','#7c3aed','rotameter']];
+  series.forEach(([k,col,name],si)=>{
+    cc.fillStyle=col; cc.textAlign='left'; cc.font='11px Inter';
+    cc.fillRect(M.l+10,M.t+10+si*16,9,9); cc.fillText(name,M.l+24,M.t+18+si*16);
+    obs.forEach(o=>{
+      const qb=o.Qb*1000, qm=o[k]*1000;
+      if(qb>QMAX||qm>QMAX) return;
+      cc.beginPath();
+      if(si===0) cc.arc(X(qb),Y(qm),4.5,0,7);
+      else if(si===1) cc.rect(X(qb)-4,Y(qm)-4,8,8);
+      else { cc.moveTo(X(qb),Y(qm)-5); cc.lineTo(X(qb)+5,Y(qm)+4); cc.lineTo(X(qb)-5,Y(qm)+4); cc.closePath(); }
+      cc.fill();
+      cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+    });
+  });
+  cc.textAlign='left';
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>
