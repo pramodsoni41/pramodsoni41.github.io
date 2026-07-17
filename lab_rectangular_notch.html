@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 4: Flow over a Rectangular Notch | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: calibrate rectangular and V-notch sharp-crested weirs — set the point-gauge datum, measure head and discharge, observe the nappe and determine the coefficient of discharge."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#f0f9ff,#f8fafc)}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 10px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.85rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .status{padding:8px 12px;border-radius:10px;font-weight:700;font-size:.84rem;text-align:center;margin-top:8px}
+    .status.clear{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .status.depressed{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+    .status.clinging{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+    .status.spill{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.82rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+    .fitbox{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.92rem}
+    .fitbox b{color:#0369a1;font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 4</span>
+    <h1>&#9985; Flow over a Rectangular Notch</h1>
+    <p>A virtual re-creation of the sharp-crested weir experiment on the hydraulics bench. Set the point-gauge datum at
+       the crest, step the head up in increments, measure discharge with the volumetric tank, watch the <strong>nappe</strong>
+       change character — then determine the <strong>coefficient of discharge</strong> from your Q&nbsp;vs&nbsp;H<sup>n</sup> plot.
+       Repeat with the V-notch and see why it wins at low flows.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objective</h2>
+    <p>To determine the characteristics of flow over a rectangular weir (and a 90° V-notch): the head–discharge
+       relationship, the coefficient of discharge C<sub>d</sub>, and the behaviour of the nappe.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>Applying the energy equation from upstream to the weir crest — with the usual simplifying assumptions — gives:</p>
+    <p class="eqn">Rectangular notch: Q = C<sub>d</sub>·(2/3)·√(2g)·b·H<sup>3/2</sup> &nbsp;•&nbsp;
+       V-notch: Q = C<sub>d</sub>·(8/15)·√(2g)·tan(θ/2)·H<sup>5/2</sup> &nbsp;•&nbsp; H = h − h₀</p>
+    <p>C<sub>d</sub> absorbs everything the ideal theory neglects — the approach velocity, the contraction of the nappe,
+       viscosity and surface tension. It must be found by experiment: plot Q against H<sup>3/2</sup> (rectangular) or
+       H<sup>5/2</sup> (V-notch); the slope of the straight line through the origin gives C<sub>d</sub>.</p>
+    <h2 style="margin-top:14px">Equipment</h2>
+    <p>F1-10 hydraulics bench; F1-13 rectangular and V-notch weir plates; vernier hook &amp; point gauge on an
+       instrument carrier; stopwatch.</p>
+    <p>
+      <span class="pill">Rectangular notch: b = 30 mm</span>
+      <span class="pill">V-notch: θ = 90°</span>
+      <span class="pill">Gauge ≥ 3H upstream of the plate</span>
+      <span class="pill">Collect ≥ 120 s per reading</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+        <div class="status clear" id="nappeChip">—</div>
+      </div>
+      <div>
+        <div class="mode-tabs">
+          <button id="tabRect" class="active">Rectangular notch</button>
+          <button id="tabVee">V-notch 90°</button>
+        </div>
+
+        <button class="btn ghost" id="datumBtn" style="width:100%">&#128204; Set datum h₀ (water level at crest, pump off)</button>
+
+        <div class="ctrl" style="margin-top:12px">
+          <label>Bench regulating valve <span class="val"><span id="vValve">40</span>%</span></label>
+          <input type="range" id="valve" min="4" max="100" step="1" value="40">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Step the head up ~10 mm (rect) / ~5 mm (V) per test.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Datum h₀</span><b id="oH0">not set</b></div>
+          <div class="row"><span>Point gauge h</span><b id="oH">not read</b></div>
+          <div class="row"><span>Head H = h − h₀</span><b id="oHead">—</b></div>
+          <div class="row"><span>Timed collection (120 s)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub></span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="gaugeBtn">&#128207; Read gauge</button>
+          <button class="btn" id="collectBtn">&#9201; Collect</button>
+          <button class="btn" id="recBtn" disabled>Record</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Take ~7 readings per notch. H = h − h₀;
+       C<sub>d</sub> = Q / (K·H<sup>n</sup>) where K = (2/3)√(2g)·b for the rectangular notch (n = 3/2) and
+       K = (8/15)√(2g)·tan(θ/2) for the V-notch (n = 5/2). Note the nappe type at each head.</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Notch</th><th>h₀ (mm)</th><th>h (mm)</th><th>H (mm)</th><th>H<sup>n</sup> (m<sup>n</sup>)</th>
+        <th>Vol (L)</th><th>t (s)</th><th>Q (L/s)</th><th>C<sub>d</sub></th><th>Nappe</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="11" style="color:var(--muted)">No readings yet — set the datum, adjust the valve, read the gauge, collect, then Record.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Calibration plot — Q vs H<sup>n</sup></h2>
+    <p style="font-size:.86rem;color:var(--muted)">A straight line through the origin confirms the theoretical exponent;
+       its slope gives C<sub>d</sub>. The dashed line is the textbook value for comparison.</p>
+    <canvas id="chart" width="620" height="360"></canvas>
+    <div class="fitbox" id="fitBox">Record at least two readings on the selected notch to fit C<sub>d</sub>.</div>
+  </section>
+
+  <section class="card">
+    <h2>Report Questions &amp; Precautions</h2>
+    <details class="qa"><summary>What are the limitations of the theory?</summary>
+      <p>The derivation assumes an ideal fluid (no viscosity or surface tension), negligible approach velocity, uniform
+         upstream velocity distribution, atmospheric pressure throughout the nappe, and no contraction — none strictly
+         true. All the neglected effects are swept into C<sub>d</sub>, which is why it must be measured.</p></details>
+    <details class="qa"><summary>Why is there wider variation of C<sub>d</sub> at lower flow rates?</summary>
+      <p>At small heads, surface tension and viscosity are proportionally much stronger — the nappe may cling to the
+         plate instead of springing clear, changing the flow pattern entirely. Measurement errors are also relatively
+         larger: a ±0.3 mm gauge error on a 8 mm head is ~4%, and H enters the formula raised to the 1.5 or 2.5 power.</p></details>
+    <details class="qa"><summary>Nappe types</summary>
+      <p><strong>Springing clear:</strong> the sheet leaves the crest cleanly with air beneath — the condition the theory
+         assumes. <strong>Depressed:</strong> partial vacuum under the nappe pulls it down, increasing discharge slightly.
+         <strong>Clinging:</strong> at very low heads the nappe adheres to the downstream face — C<sub>d</sub> becomes
+         erratic and the calibration is unreliable.</p></details>
+    <details class="qa"><summary>Why use a V-notch at low flows?</summary>
+      <p>With Q ∝ H<sup>5/2</sup>, a small discharge still produces a usefully large, accurately measurable head, and
+         the notch keeps a proper springing nappe. A rectangular notch at the same low flow runs at a few millimetres of
+         head, where gauge error and surface tension ruin the accuracy.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> level the bench before starting; measure the head at least
+       3H upstream of the plate (the surface draws down near the crest); let the level stabilise before reading; collect
+       for at least 120 seconds; do not let water spill over the plate top beside the notch.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, B=0.03, P=0.08;                       // notch width, crest height
+const KR=(2/3)*Math.sqrt(2*G)*B;                    // rect constant
+const KV=(8/15)*Math.sqrt(2*G)*Math.tan(Math.PI/4); // 90° V constant
+let notch='rect';                                    // 'rect' | 'vee'
+let obs=[], h0=null, hRead=null, collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function cdTrue(H){ return notch==='rect' ? 0.602+0.0832*H/P+0.02*Math.exp(-H/0.008) : 0.585; }
+function Kn(){ return notch==='rect'?KR:KV; }
+function nExp(){ return notch==='rect'?1.5:2.5; }
+
+function trueState(){
+  const valve=+document.getElementById('valve').value/100;
+  const Q=(notch==='rect' ? 0.04+valve*0.48 : 0.03+valve*0.60)/1000;   // m³/s
+  let H=0.02;
+  for(let i=0;i<25;i++) H=Math.pow(Q/(cdTrue(H)*Kn()),1/nExp());
+  const nappe = H<0.008?'clinging':(H<0.015?'depressed':'springing clear');
+  return {Q,H,nappe,spill: H>0.046};
+}
+
+function refresh(){
+  const st=trueState();
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  document.getElementById('oH0').textContent= h0==null?'not set':h0.toFixed(1)+' mm';
+  document.getElementById('oH').textContent= hRead==null?'not read':hRead.toFixed(1)+' mm';
+  document.getElementById('oHead').textContent=(h0!=null&&hRead!=null)?(hRead-h0).toFixed(1)+' mm':'—';
+  document.getElementById('oCollect').textContent= collectRes? collectRes.vol.toFixed(1)+' L in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  const chip=document.getElementById('nappeChip');
+  if(st.spill){ chip.className='status spill'; chip.textContent='⚠ Water nearly spilling over the plate top — close the valve!'; }
+  else{
+    chip.className='status '+(st.nappe==='springing clear'?'clear':st.nappe);
+    chip.textContent='Nappe: '+st.nappe+'  ·  H ≈ '+(st.H*1000).toFixed(0)+' mm';
+  }
+  document.getElementById('recBtn').disabled=!(h0!=null&&hRead!=null&&collectRes&&!st.spill);
+}
+document.getElementById('valve').addEventListener('input',()=>{ hRead=null; collectRes=null; refresh(); });
+
+// ---- actions ----
+document.getElementById('datumBtn').addEventListener('click',()=>{
+  h0=80+noiseFor(3.1,0.2); hRead=null; collectRes=null; noiseSeed+=0.11; refresh();
+});
+document.getElementById('gaugeBtn').addEventListener('click',()=>{
+  const st=trueState();
+  hRead=80+st.H*1000+noiseFor(+document.getElementById('valve').value*7.3,0.3);
+  refresh();
+});
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const st=trueState();
+    const t=120*(1+noiseFor(+document.getElementById('valve').value*3.7,0.005));
+    const vol=st.Q*1000*120*(1+noiseFor(+document.getElementById('valve').value*11.9,0.012));
+    collectRes={vol,t,Qb:vol/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  const H=(hRead-h0)/1000;
+  if(H<=0) return;
+  const Hn=Math.pow(H,nExp());
+  const cd=collectRes.Qb/(Kn()*Hn);
+  const st=trueState();
+  obs.push({notch,h0,h:hRead,H:H*1000,Hn,vol:collectRes.vol,t:collectRes.t,Q:collectRes.Qb,cd,nappe:st.nappe});
+  hRead=null; collectRes=null; noiseSeed+=0.37;
+  renderTable(); refresh();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+
+function setNotch(n){
+  notch=n; hRead=null; collectRes=null; h0=null;
+  document.getElementById('tabRect').classList.toggle('active',n==='rect');
+  document.getElementById('tabVee').classList.toggle('active',n==='vee');
+  renderTable(); refresh();
+}
+document.getElementById('tabRect').addEventListener('click',()=>setNotch('rect'));
+document.getElementById('tabVee').addEventListener('click',()=>setNotch('vee'));
+
+// ================= table / fit / chart =================
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="11" style="color:var(--muted)">No readings yet — set the datum, adjust the valve, read the gauge, collect, then Record.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+(o.notch==='rect'?'Rect':'V-90°')+'</td><td>'+o.h0.toFixed(1)+'</td><td>'+o.h.toFixed(1)+
+    '</td><td>'+o.H.toFixed(1)+'</td><td>'+o.Hn.toExponential(3)+'</td><td>'+o.vol.toFixed(1)+'</td><td>'+o.t.toFixed(0)+
+    '</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.cd.toFixed(3)+'</td><td>'+o.nappe+'</td></tr>').join('');
+  drawChart();
+}
+
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:60,r:16,t:16,b:44};
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const pts=obs.filter(o=>o.notch===notch);
+  const n=nExp(), K=Kn();
+  const xmax=Math.max(notch==='rect'?0.012:0.0006, ...pts.map(o=>o.Hn))*1.15;
+  const ymax=Math.max(notch==='rect'?0.55:0.7, ...pts.map(o=>o.Q*1000))*1.15;
+  const X=v=>M.l+v/xmax*(CW-M.l-M.r), Y=v=>CH-M.b-v/ymax*(CH-M.t-M.b);
+  // grid
+  cc.strokeStyle='#e2e8f0'; cc.lineWidth=1; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let i=0;i<=5;i++){
+    const xv=xmax*i/5, yv=ymax*i/5;
+    cc.beginPath(); cc.moveTo(X(xv),M.t); cc.lineTo(X(xv),CH-M.b); cc.stroke();
+    cc.fillText(xv.toExponential(1),X(xv),CH-M.b+14);
+    cc.textAlign='right';
+    cc.beginPath(); cc.moveTo(M.l,Y(yv)); cc.lineTo(CW-M.r,Y(yv)); cc.stroke();
+    cc.fillText(yv.toFixed(2),M.l-5,Y(yv)+3); cc.textAlign='center';
+  }
+  cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('H^'+(notch==='rect'?'1.5':'2.5')+'  (m^'+(notch==='rect'?'1.5':'2.5')+')',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('Q (L/s)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // theory line (textbook Cd)
+  const cdBook= notch==='rect'?0.62:0.585;
+  cc.strokeStyle='#94a3b8'; cc.setLineDash([6,5]); cc.lineWidth=1.5;
+  cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(xmax),Y(cdBook*K*xmax*1000)); cc.stroke(); cc.setLineDash([]);
+  cc.fillStyle='#64748b'; cc.textAlign='left';
+  cc.fillText('textbook Cd = '+cdBook,M.l+8,M.t+14);
+  // least-squares fit through origin
+  if(pts.length>=2){
+    let sxy=0,sxx=0;
+    pts.forEach(o=>{ sxy+=o.Hn*(o.Q*1000); sxx+=o.Hn*o.Hn; });
+    const slope=sxy/sxx, cdFit=slope/1000/K;
+    cc.strokeStyle='#0284c7'; cc.lineWidth=2;
+    cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(xmax),Y(slope*xmax)); cc.stroke();
+    const err=(cdFit/cdBook-1)*100;
+    document.getElementById('fitBox').innerHTML='Best-fit slope → <b>C<sub>d</sub> = '+cdFit.toFixed(3)+'</b> &nbsp;('+
+      (err>=0?'+':'')+err.toFixed(1)+'% vs textbook '+cdBook+') &nbsp;·&nbsp; n = '+ (notch==='rect'?'1.5':'2.5')+' assumed from theory';
+  } else {
+    document.getElementById('fitBox').innerHTML='Record at least two readings on the selected notch to fit C<sub>d</sub>.';
+  }
+  // points
+  pts.forEach(o=>{
+    cc.fillStyle= o.nappe==='springing clear'?'#059669':(o.nappe==='depressed'?'#d97706':'#dc2626');
+    cc.beginPath(); cc.arc(X(o.Hn),Y(o.Q*1000),4.5,0,7); cc.fill();
+    cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+  });
+  cc.textAlign='left';
+}
+
+// ================= rig animation =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+const BED=RH-36, SC=2.4;                    // px per mm
+const PLX=430;                              // plate x
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  const st=trueState(); phase+=0.8+st.Q*4000;
+  rc.clearRect(0,0,RW,RH);
+
+  // bench + channel bed
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,BED,RW,RH-BED);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,BED,RW,RH-BED);
+  rc.fillStyle='#64748b'; rc.font='11px Inter'; rc.fillText('hydraulics bench channel',10,RH-14);
+
+  const crest=BED-80*SC;                     // crest 80 mm above bed · 2.4 px/mm
+  const surf=crest-st.H*1000*SC;             // water surface upstream
+
+  // upstream water body (up to the plate)
+  rc.fillStyle='#7dd3fc';
+  rc.fillRect(20,surf,PLX-20,BED-surf);
+  // surface drawdown near plate
+  rc.fillStyle='#f0f9ff';
+  rc.beginPath();
+  rc.moveTo(PLX-60,surf);
+  rc.quadraticCurveTo(PLX-18,surf+st.H*1000*SC*0.18,PLX,crest-2);
+  rc.lineTo(PLX,surf); rc.closePath(); rc.fill();
+
+  // stilling baffle
+  rc.fillStyle='#475569';
+  for(let y=surf+8;y<BED-6;y+=14) rc.fillRect(120,y,5,8);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('stilling baffle',96,Math.max(surf-6,14));
+
+  // weir plate
+  rc.fillStyle='#334155'; rc.fillRect(PLX,crest,7,BED-crest);
+  rc.fillStyle='#0369a1'; rc.font='10px Inter'; rc.fillText('weir plate',PLX-16,BED+14);
+
+  // nappe: springs clear / depressed / clinging by H
+  const Hpx=st.H*1000*SC;
+  rc.fillStyle='rgba(56,189,248,.85)';
+  rc.beginPath();
+  if(st.nappe==='clinging'){
+    rc.moveTo(PLX,crest);
+    rc.lineTo(PLX+7,crest);
+    rc.lineTo(PLX+9,BED); rc.lineTo(PLX,BED);
+  } else {
+    const spring= st.nappe==='springing clear'? 1:0.55;
+    rc.moveTo(PLX,crest-Hpx*0.75);
+    rc.quadraticCurveTo(PLX+40*spring, crest+8, PLX+52*spring+8, BED);
+    rc.lineTo(PLX+22*spring+4, BED);
+    rc.quadraticCurveTo(PLX+16*spring, crest+16, PLX+2,crest);
+  }
+  rc.closePath(); rc.fill();
+  if(st.nappe==='springing clear'){ // air gap marker
+    rc.fillStyle='#f0f9ff'; rc.font='9px Inter'; rc.fillText('air',PLX+12,BED-18);
+  }
+
+  // collecting tank under nappe
+  const vx=PLX+70,vw=70,vb=BED-2,vh=64;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*120,120).toFixed(0)+' s';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('volumetric tank',vx-4,vb-vh-6);
+
+  // point gauge (>=3H upstream)
+  const gx=PLX-Math.max(60,st.H*1000*SC*1.3+40);
+  rc.fillStyle='#475569'; rc.fillRect(gx-26,16,72,10);            // carrier
+  rc.fillRect(gx-2,26,4,surf-26-2);                               // stem
+  rc.beginPath(); rc.moveTo(gx,surf-2); rc.lineTo(gx-4,surf-10); rc.lineTo(gx+4,surf-10); rc.closePath();
+  rc.fillStyle='#dc2626'; rc.fill();                              // point
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('point gauge',gx-24,12);
+
+  // flow arrows upstream
+  rc.fillStyle='rgba(255,255,255,.8)';
+  for(let i=0;i<12;i++){
+    const x=30+((i*33+phase)%(PLX-120));
+    const y=surf+10+(i%4)*(BED-surf-20)/4;
+    if(x<PLX-30) rc.fillRect(x,y,7,2.5);
+  }
+
+  // dimension labels
+  rc.strokeStyle='#0369a1'; rc.lineWidth=1;
+  rc.beginPath(); rc.moveTo(PLX+22,crest); rc.lineTo(PLX+22,surf); rc.stroke();
+  rc.fillStyle='#0369a1'; rc.font='bold 10px Inter';
+  rc.fillText('H = '+(st.H*1000).toFixed(0)+' mm',PLX-108,Math.max(surf-8,12));
+  rc.fillText('crest',PLX+12,crest+4);
+
+  // front-view inset of the notch plate
+  const ix=26,iy=20,iw=120,ih=96;
+  rc.fillStyle='#fff'; rc.fillRect(ix,iy,iw,ih);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(ix,iy,iw,ih);
+  rc.fillStyle='#cbd5e1'; rc.fillRect(ix+6,iy+16,iw-12,ih-22);
+  const cx=ix+iw/2, cy=iy+ih-30;                                  // crest point on inset
+  rc.fillStyle='#fff';
+  if(notch==='rect'){ rc.fillRect(cx-18,iy+16,36,cy-iy-16+14); }
+  else { rc.beginPath(); rc.moveTo(cx,cy+14); rc.lineTo(cx-34,iy+16); rc.lineTo(cx+34,iy+16); rc.closePath(); rc.fill(); }
+  // water level line in inset
+  const lvl=cy+14-st.H*1000*0.9;
+  rc.fillStyle='rgba(56,189,248,.6)';
+  if(notch==='rect'){ rc.fillRect(cx-18,lvl,36,cy+14-lvl); }
+  else {
+    rc.save(); rc.beginPath(); rc.moveTo(cx,cy+14); rc.lineTo(cx-34,iy+16); rc.lineTo(cx+34,iy+16); rc.closePath(); rc.clip();
+    rc.fillRect(cx-34,lvl,68,cy+14-lvl); rc.restore();
+  }
+  rc.fillStyle='#334155'; rc.font='9px Inter';
+  rc.fillText(notch==='rect'?'front view · b = 30 mm':'front view · θ = 90°',ix+8,iy+11);
+}
+requestAnimationFrame(drawRig);
+
+renderTable(); refresh();
+</script>
+</body>
+</html>
