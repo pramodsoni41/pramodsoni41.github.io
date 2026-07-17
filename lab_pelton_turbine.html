@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 5: Pelton Wheel Turbine | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: load a Pelton wheel with a band brake, measure speed, torque and flow, and map the torque-power-efficiency characteristics at two spear-valve openings."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#f0f9ff,#f8fafc)}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 10px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.85rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .status{padding:8px 12px;border-radius:10px;font-weight:700;font-size:.84rem;text-align:center;margin-top:8px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+    .status.stall{background:#fef2f2;color:#991b1b;border-color:#fecaca}
+    .status.runaway{background:#fffbeb;color:#92400e;border-color:#fde68a}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.8rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 5</span>
+    <h1>&#9881;&#65039; Pelton Wheel Turbine</h1>
+    <p>A virtual re-creation of the impulse-turbine experiment. Open the spear valve, let the jet spin the runner to
+       maximum speed, then tighten the band brake step by step — from free runaway all the way to stall — recording
+       speed, spring-balance forces, flow and inlet head to map the turbine's <strong>torque, power and efficiency
+       characteristics</strong>. Then throttle the spear valve and see how the curves shift.</p>
+  </div>
+
+  <section class="card">
+    <h2>Purpose</h2>
+    <p>To investigate the performance characteristics of an impulse turbine (Pelton wheel) and compare them with the
+       ideal curves.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>The nozzle converts the supply head into a high-velocity jet; the buckets turn the jet nearly 180°, and the
+       change of momentum drives the runner. With the band brake providing the load:</p>
+    <p class="eqn">F<sub>b</sub> = F₁ − F₂ &nbsp;•&nbsp; T = F<sub>b</sub>·r, r = 0.03 m &nbsp;•&nbsp;
+       P<sub>b</sub> = 2π·n·T &nbsp;•&nbsp; P<sub>h</sub> = ρ·g·Q·H<sub>i</sub> &nbsp;•&nbsp;
+       η = P<sub>b</sub>/P<sub>h</sub></p>
+    <p>Ideal theory predicts torque falling <em>linearly</em> from a maximum at stall to zero at runaway (bucket speed =
+       jet speed), so power and efficiency are <em>parabolas</em> peaking near half the runaway speed — the classic
+       operating point u ≈ V<sub>jet</sub>/2.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Armfield hydraulic bench; F1-25 Pelton turbine demonstration unit (spear valve, jet deflector, band brake over the
+       drum with two spring balances); tachometer; stopwatch; Bourdon inlet-pressure gauge.</p>
+    <p>
+      <span class="pill">Brake drum radius r = 0.03 m</span>
+      <span class="pill">Collect 4 L per flow reading</span>
+      <span class="pill">≥ 6 load steps per spear setting, last one at stall</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+        <div class="status" id="opChip">—</div>
+      </div>
+      <div>
+        <div class="mode-tabs">
+          <button id="tabFull" class="active">Spear fully open</button>
+          <button id="tabPart">Spear partially open</button>
+        </div>
+        <div class="ctrl">
+          <label>Band-brake tension <span class="val"><span id="vBrake">0</span>%</span></label>
+          <input type="range" id="brake" min="0" max="100" step="1" value="0">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">0% = free runaway · 100% = rotor stalled.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Tachometer n</span><b id="oN">—</b></div>
+          <div class="row"><span>Spring balance F₁ / F₂</span><b id="oF">—</b></div>
+          <div class="row"><span>Bourdon gauge H<sub>i</sub></span><b id="oHi">—</b></div>
+          <div class="row"><span>Timed collection (4 L)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub></span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Collect 4 L</button>
+          <button class="btn" id="recBtn" disabled>Record set</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Collect ≥ 6 sets per spear setting from free speed down to stall.
+       F<sub>b</sub> = F₁ − F₂; T = F<sub>b</sub>·r; P<sub>b</sub> = 2πnT (n in rev/s); P<sub>h</sub> = ρgQH<sub>i</sub>;
+       η = P<sub>b</sub>/P<sub>h</sub>.</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Spear</th><th>n (rpm)</th><th>F₁ (N)</th><th>F₂ (N)</th><th>F<sub>b</sub> (N)</th>
+        <th>Q (L/s)</th><th>H<sub>i</sub> (m)</th><th>T (N·m)</th><th>P<sub>b</sub> (W)</th><th>P<sub>h</sub> (W)</th><th>η (%)</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="12" style="color:var(--muted)">No sets yet — set the brake, collect 4 L, then press “Record set”.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Characteristic curves — T, P<sub>b</sub> and η vs speed</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Your recorded points against the ideal curves (solid = spear fully
+       open, dashed = partially open). Note where maximum torque, maximum power and maximum efficiency each occur.</p>
+    <canvas id="chart" width="620" height="470"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Discussion</h2>
+    <details class="qa"><summary>Comment on the shape of the graphs</summary>
+      <p>Torque falls almost linearly with speed — maximum at stall, zero at runaway. Because P<sub>b</sub> = 2πnT, the
+         power curve is a parabola: zero at both extremes and peaking near half the runaway speed. Efficiency has the
+         same parabolic shape since P<sub>h</sub> is nearly constant for a fixed spear setting.</p></details>
+    <details class="qa"><summary>Where do maximum torque and maximum power occur — full vs partial opening?</summary>
+      <p>Maximum torque is always at stall (n = 0); maximum power at roughly half the runaway speed. Throttling the spear
+         valve reduces Q, so the whole torque line drops and the power parabola shrinks — but the runaway speed barely
+         changes, because it is set by the jet velocity (≈√(2gH<sub>i</sub>)), not by the flow rate.</p></details>
+    <details class="qa"><summary>Is maximum efficiency at the same speed for both spear settings?</summary>
+      <p>Very nearly, yes. Peak efficiency occurs where the bucket speed is about half the jet speed (u ≈ V<sub>j</sub>/2).
+         Since the jet velocity depends on the head — nearly the same at both openings — the optimum speed hardly moves,
+         which is precisely why Pelton wheels regulate power by throttling flow with the spear valve while running at
+         constant (synchronous) speed.</p></details>
+    <details class="qa"><summary>Optimum operating condition</summary>
+      <p>Run the wheel at a speed ratio u/V<sub>j</sub> ≈ 0.46–0.48 (just under half the runaway speed) — that is where
+         the efficiency peaks; use the spear valve for load changes, and the deflector for sudden rejections to protect
+         the penstock from water hammer.</p></details>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, RHO=1000, R=0.05, r=0.03, CV=0.95, MM=0.85, TF=0.025;
+const SPEAR={ full:{Q:0.30e-3, Hi:14.0, label:'Full'}, part:{Q:0.20e-3, Hi:16.0, label:'Partial'} };
+let spear='full', obs=[], collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+
+function trueState(){
+  const sp=SPEAR[spear];
+  const Vj=CV*Math.sqrt(2*G*sp.Hi);
+  const T0=RHO*sp.Q*Vj*(1+MM)*R;                 // stall driving torque
+  const frac=+document.getElementById('brake').value/100;
+  const Tb=frac*(T0-TF);                          // brake torque applied
+  let u=Vj-(Tb+TF)/(RHO*sp.Q*(1+MM)*R);
+  let stalled=false;
+  if(u<=0){ u=0; stalled=true; }
+  const w=u/R, n=w*60/(2*Math.PI);
+  const Tmeas= stalled? T0-TF : Tb;               // what the band holds
+  const Fb=Tmeas/r;
+  const Pb=Tmeas*w, Ph=RHO*G*sp.Q*sp.Hi;
+  return {sp,Vj,T0,Tb,u,w,n,Fb,Pb,Ph,stalled,frac};
+}
+function measuredNow(){
+  const st=trueState();
+  const k=+document.getElementById('brake').value + (spear==='full'?0:500);
+  const n=Math.max(0, st.n*(1+noiseFor(k*3.1,0.006)));
+  const Fb=Math.max(0, st.Fb+noiseFor(k*7.7,0.08));
+  const F2=0.3+0.15*Fb, F1=F2+Fb;
+  const Hi=st.sp.Hi*(1+noiseFor(k*11.3,0.008));
+  return {n,F1,F2,Fb,Hi,st};
+}
+
+function refresh(){
+  const ms=measuredNow(), st=ms.st;
+  document.getElementById('vBrake').textContent=document.getElementById('brake').value;
+  document.getElementById('oN').textContent=ms.n.toFixed(0)+' rpm';
+  document.getElementById('oF').textContent=ms.F1.toFixed(2)+' / '+ms.F2.toFixed(2)+' N';
+  document.getElementById('oHi').textContent=ms.Hi.toFixed(1)+' m ('+(ms.Hi/10.2).toFixed(2)+' bar)';
+  document.getElementById('oCollect').textContent= collectRes? '4.0 L in '+collectRes.t.toFixed(1)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  const chip=document.getElementById('opChip');
+  if(st.stalled){ chip.className='status stall'; chip.textContent='Rotor stalled (n = 0) — maximum torque point'; }
+  else if(st.frac<0.03){ chip.className='status runaway'; chip.textContent='Free runaway — maximum speed, zero load'; }
+  else { chip.className='status'; chip.textContent='Loaded — n ≈ '+ms.n.toFixed(0)+' rpm · u/Vj = '+(st.u/st.Vj).toFixed(2); }
+  document.getElementById('recBtn').disabled=!collectRes;
+}
+document.getElementById('brake').addEventListener('input',()=>{ collectRes=null; refresh(); });
+
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const st=trueState();
+    const t=(4/(st.sp.Q*1000))*(1+noiseFor(+document.getElementById('brake').value*5.3,0.015));
+    collectRes={t,Qb:4/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  const ms=measuredNow();
+  const nHz=ms.n/60, T=ms.Fb*r, Pb=2*Math.PI*nHz*T, Ph=RHO*G*collectRes.Qb*ms.Hi;
+  obs.push({spear:SPEAR[spear].label, n:ms.n, F1:ms.F1, F2:ms.F2, Fb:ms.Fb, Q:collectRes.Qb, Hi:ms.Hi,
+            T, Pb, Ph, eta:Ph>0?Pb/Ph*100:0});
+  collectRes=null; noiseSeed+=0.37;
+  renderTable(); refresh();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+
+function setSpear(s){
+  spear=s; collectRes=null;
+  document.getElementById('tabFull').classList.toggle('active',s==='full');
+  document.getElementById('tabPart').classList.toggle('active',s==='part');
+  renderTable(); refresh();
+}
+document.getElementById('tabFull').addEventListener('click',()=>setSpear('full'));
+document.getElementById('tabPart').addEventListener('click',()=>setSpear('part'));
+
+// ================= table =================
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="12" style="color:var(--muted)">No sets yet — set the brake, collect 4 L, then press “Record set”.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.spear+'</td><td>'+o.n.toFixed(0)+'</td><td>'+o.F1.toFixed(2)+
+    '</td><td>'+o.F2.toFixed(2)+'</td><td>'+o.Fb.toFixed(2)+'</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.Hi.toFixed(1)+
+    '</td><td>'+o.T.toFixed(4)+'</td><td>'+o.Pb.toFixed(1)+'</td><td>'+o.Ph.toFixed(1)+'</td><td>'+o.eta.toFixed(1)+'</td></tr>').join('');
+  drawChart();
+}
+
+// ================= rig animation =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let angle=0,lastTs=0;
+function drawRig(ts){
+  requestAnimationFrame(drawRig);
+  const dt=lastTs?Math.min(0.1,(ts-lastTs)/1000):1/60; lastTs=ts;
+  const st=trueState();
+  angle+=st.w*dt*0.35;                       // scaled visual spin
+  rc.clearRect(0,0,RW,RH);
+
+  // bench
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,RH-30,RW,30);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,RH-30,RW,30);
+  rc.fillStyle='#64748b'; rc.font='11px Inter'; rc.fillText('hydraulic bench',10,RH-11);
+
+  const cx=300, cy=170, RUN=78;
+
+  // casing
+  rc.beginPath(); rc.arc(cx,cy,RUN+26,0,7);
+  rc.fillStyle='#f8fafc'; rc.fill(); rc.strokeStyle='#64748b'; rc.lineWidth=2; rc.stroke();
+
+  // spear nozzle + jet (from left)
+  const nx=cx-RUN-96, ny=cy+26;
+  rc.fillStyle='#475569'; rc.fillRect(nx-40,ny-9,74,18);
+  rc.beginPath(); rc.moveTo(nx+34,ny-9); rc.lineTo(nx+58,ny-3); rc.lineTo(nx+58,ny+3); rc.lineTo(nx+34,ny+9); rc.closePath(); rc.fill();
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('spear valve',nx-38,ny-14);
+  // jet
+  const jw= spear==='full'?6:4;
+  rc.fillStyle='#38bdf8';
+  rc.fillRect(nx+58,ny-jw/2, cx-RUN+16-(nx+58), jw);
+  // jet particles
+  rc.fillStyle='#0ea5e9';
+  for(let i=0;i<6;i++){ const x=nx+62+((i*22+angle*220)%(cx-RUN-nx-46)); rc.fillRect(x,ny-jw/2+1,7,jw-2); }
+
+  // runner with buckets
+  rc.save(); rc.translate(cx,cy); rc.rotate(angle);
+  rc.strokeStyle='#0369a1'; rc.lineWidth=3;
+  rc.beginPath(); rc.arc(0,0,RUN-14,0,7); rc.stroke();
+  for(let i=0;i<12;i++){
+    rc.save(); rc.rotate(i*Math.PI/6); rc.translate(RUN-6,0);
+    rc.fillStyle='#0284c7';
+    rc.beginPath(); rc.arc(0,-5,7,Math.PI*0.5,Math.PI*1.5); rc.arc(0,5,7,Math.PI*1.5,Math.PI*0.5); rc.closePath(); rc.fill();
+    rc.restore();
+  }
+  rc.fillStyle='#334155'; rc.beginPath(); rc.arc(0,0,10,0,7); rc.fill();
+  rc.restore();
+
+  // brake drum + band + spring balances
+  rc.beginPath(); rc.arc(cx,cy,26,0,7); rc.fillStyle='#94a3b8'; rc.fill(); rc.strokeStyle='#475569'; rc.stroke();
+  const frac=st.frac;
+  rc.strokeStyle= frac>0? '#b45309':'#cbd5e1'; rc.lineWidth=4;
+  rc.beginPath(); rc.arc(cx,cy,26,Math.PI*1.15,Math.PI*1.85,false); rc.stroke();
+  // two vertical lines up to balances
+  const bx1=cx-22,bx2=cx+22,by=34;
+  rc.lineWidth=2; rc.strokeStyle='#b45309';
+  rc.beginPath(); rc.moveTo(bx1,cy-14); rc.lineTo(bx1,by+18); rc.stroke();
+  rc.beginPath(); rc.moveTo(bx2,cy-14); rc.lineTo(bx2,by+18); rc.stroke();
+  const ms=measuredNow();
+  [[bx1,'F₁',ms.F1],[bx2,'F₂',ms.F2]].forEach(([x,lbl,v])=>{
+    rc.fillStyle='#fff'; rc.fillRect(x-20,by-16,40,34);
+    rc.strokeStyle='#64748b'; rc.lineWidth=1.5; rc.strokeRect(x-20,by-16,40,34);
+    rc.fillStyle='#0369a1'; rc.font='bold 10px Inter'; rc.textAlign='center';
+    rc.fillText(lbl,x,by-5); rc.fillText(v.toFixed(1)+' N',x,by+10); rc.textAlign='left';
+  });
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('band brake · spring balances',cx+58,40);
+
+  // tachometer
+  rc.beginPath(); rc.arc(cx+RUN+72,cy-40,30,0,7); rc.fillStyle='#fff'; rc.fill(); rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+  const nfrac=Math.min(1,ms.n/3200), ta=Math.PI*0.75+nfrac*Math.PI*1.5;
+  rc.strokeStyle='#dc2626'; rc.beginPath(); rc.moveTo(cx+RUN+72,cy-40);
+  rc.lineTo(cx+RUN+72+Math.cos(ta)*22, cy-40+Math.sin(ta)*22); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.textAlign='center';
+  rc.fillText('tachometer',cx+RUN+72,cy+2);
+  rc.fillText(ms.n.toFixed(0)+' rpm',cx+RUN+72,cy+14); rc.textAlign='left';
+
+  // Bourdon gauge on supply
+  rc.beginPath(); rc.arc(nx-52,ny-44,24,0,7); rc.fillStyle='#fff'; rc.fill(); rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+  const pa=Math.PI*0.75+Math.min(1,ms.Hi/25)*Math.PI*1.5;
+  rc.strokeStyle='#dc2626'; rc.beginPath(); rc.moveTo(nx-52,ny-44);
+  rc.lineTo(nx-52+Math.cos(pa)*17, ny-44+Math.sin(pa)*17); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='9px Inter'; rc.textAlign='center';
+  rc.fillText('Hᵢ '+ms.Hi.toFixed(1)+' m',nx-52,ny-12); rc.textAlign='left';
+  // supply pipe
+  rc.strokeStyle='#64748b'; rc.lineWidth=5;
+  rc.beginPath(); rc.moveTo(24,RH-30); rc.lineTo(24,ny); rc.lineTo(nx-40,ny); rc.stroke();
+
+  // tailrace + volumetric tank
+  rc.strokeStyle='#38bdf8'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(cx,cy+RUN+26); rc.lineTo(cx,RH-64); rc.lineTo(536,RH-64); rc.stroke();
+  const vx=506,vw=62,vb=RH-32,vh=52;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*4,4).toFixed(1)+' L';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('volumetric tank',vx-8,vb-vh-6);
+}
+requestAnimationFrame(drawRig);
+
+// ================= chart: 3 stacked panels =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height;
+const NMAX=3300;
+function theory(sp,u){ // returns {T,Pb,eta} at bucket speed u for spear config
+  const Vj=CV*Math.sqrt(2*G*sp.Hi);
+  const Tdrive=RHO*sp.Q*(Vj-u)*(1+MM)*R;
+  const T=Math.max(0,Tdrive-TF);
+  const w=u/R, Pb=T*w, Ph=RHO*G*sp.Q*sp.Hi;
+  return {T,Pb,eta:Pb/Ph*100,Vj};
+}
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const panels=[
+    {key:'T',   label:'Torque T (N·m)',      ymax:0.5,  get:o=>o.T},
+    {key:'Pb',  label:'Brake power P_b (W)', ymax:36,   get:o=>o.Pb},
+    {key:'eta', label:'Efficiency η (%)',    ymax:85,   get:o=>o.eta}
+  ];
+  const ph=(CH-30)/3, ML=56, MR=14;
+  panels.forEach((p,pi)=>{
+    const top=8+pi*ph, bot=top+ph-34;
+    const X=n=>ML+n/NMAX*(CW-ML-MR), Y=v=>bot-(v/p.ymax)*(bot-top);
+    // grid + labels
+    cc.strokeStyle='#e2e8f0'; cc.lineWidth=1; cc.fillStyle='#64748b'; cc.font='9px Inter'; cc.textAlign='center';
+    for(let n=0;n<=NMAX;n+=500){ cc.beginPath(); cc.moveTo(X(n),top); cc.lineTo(X(n),bot); cc.stroke();
+      if(pi===2) cc.fillText(n,X(n),bot+12); }
+    cc.textAlign='right';
+    for(let i=0;i<=2;i++){ const v=p.ymax*i/2; cc.beginPath(); cc.moveTo(ML,Y(v)); cc.lineTo(CW-MR,Y(v)); cc.stroke();
+      cc.fillText(v.toFixed(v<1?2:0),ML-4,Y(v)+3); }
+    cc.strokeStyle='#94a3b8'; cc.strokeRect(ML,top,CW-ML-MR,bot-top);
+    cc.fillStyle='#334155'; cc.font='10px Inter'; cc.textAlign='left';
+    cc.fillText(p.label,ML+6,top+12);
+    // theory curves for both spear settings
+    [['full','#0284c7',[]],['part','#d97706',[6,5]]].forEach(([sk,col,dash])=>{
+      const sp=SPEAR[sk];
+      cc.strokeStyle=col; cc.lineWidth=1.8; cc.setLineDash(dash);
+      cc.beginPath(); let first=true;
+      for(let n=0;n<=NMAX;n+=40){
+        const u=n*2*Math.PI/60*R;
+        const th=theory(sp,u);
+        if(u>th.Vj) break;
+        const v= p.key==='T'?th.T : p.key==='Pb'?th.Pb : th.eta;
+        if(v<0) break;
+        const x=X(n),y=Y(Math.min(v,p.ymax));
+        first?cc.moveTo(x,y):cc.lineTo(x,y); first=false;
+      }
+      cc.stroke(); cc.setLineDash([]);
+    });
+    // recorded points
+    obs.forEach(o=>{
+      const col= o.spear==='Full'?'#0284c7':'#d97706';
+      cc.fillStyle=col;
+      cc.beginPath(); cc.arc(X(Math.min(o.n,NMAX)),Y(Math.min(p.get(o),p.ymax)),4,0,7); cc.fill();
+      cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+    });
+  });
+  // legend + x label
+  cc.fillStyle='#0284c7'; cc.fillRect(ML+6,CH-14,16,3); cc.fillStyle='#334155'; cc.font='10px Inter';
+  cc.fillText('spear fully open',ML+27,CH-9);
+  cc.strokeStyle='#d97706'; cc.setLineDash([6,5]); cc.lineWidth=2;
+  cc.beginPath(); cc.moveTo(ML+140,CH-12); cc.lineTo(ML+156,CH-12); cc.stroke(); cc.setLineDash([]);
+  cc.fillText('spear partially open',ML+161,CH-9);
+  cc.textAlign='center'; cc.fillText('speed n (rpm)',CW/2,CH-22); cc.textAlign='left';
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>
