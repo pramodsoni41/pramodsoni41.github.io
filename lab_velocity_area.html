@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 6: Discharge by Velocity-Area Method | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: traverse a rectangular channel with a pitot-static tube, build velocity profiles on three verticals, compute discharge by the velocity-area method and verify the 0.6-depth and 0.2/0.8-depth stream-gauging rules."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:linear-gradient(#f0f9ff,#f8fafc)}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 6px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.83rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.81rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .obswrap{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+    .resgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+    @media(max-width:640px){.resgrid{grid-template-columns:1fr}}
+    .rcard{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px;text-align:center}
+    .rcard .n{font-size:1.25rem;font-weight:700;color:#0369a1;font-variant-numeric:tabular-nums}
+    .rcard .l{font-size:.76rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 6</span>
+    <h1>&#127754; Discharge by the Velocity-Area Method</h1>
+    <p>A virtual re-creation of stream gauging in the glass flume. Traverse a <strong>pitot-static tube</strong> up three
+       mid-verticals of the cross-section, read the twin <strong>30°-inclined manometer tubes</strong>, build the velocity
+       profiles, and integrate them into a discharge — checked against the supply venturimeter. Then test the two classic
+       stream-gauging shortcuts: the <strong>0.6-depth rule</strong> and the <strong>0.2/0.8-depth average</strong>.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objectives</h2>
+    <p>(1) To measure the discharge passing a given cross-section of a rectangular open channel;
+       (2) to verify the adequacy of two common assumptions regarding the velocity distribution in a vertical, used in
+       stream gauging.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p>Velocity is zero at the boundaries and greatest near the surface, so a single reading cannot give the discharge.
+       The section is divided into n vertical strips; point velocities along each mid-vertical are combined into a
+       weighted mean, and:</p>
+    <p class="eqn">Q = Σ v̄ᵢ·Aᵢ &nbsp;•&nbsp; v̄ᵢ = Σ(uᵢⱼ·aᵢⱼ)/Aᵢ &nbsp;•&nbsp;
+       u = √(2g·Δh), &nbsp;Δh = (R_total − R_static)·sin 30°</p>
+    <p>Field tests show the vertical velocity distribution is roughly parabolic/logarithmic, giving two practical rules:
+       <strong>v̄ ≈ u at 0.6·depth below the surface</strong>, and <strong>v̄ ≈ ½(u at 0.2·depth + u at 0.8·depth)</strong>.
+       The inclined tubes stretch each head reading by 1/sin30° = 2, halving the reading error.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Glass-walled flume with stilling tank and entry screens; traversing point gauge; Prandtl pitot-static tube on a
+       slidable plank, connected to two open glass tubes inclined at 30°; venturimeter on the supply line.</p>
+    <p>
+      <span class="pill">Channel width B = 0.30 m</span>
+      <span class="pill">Depth at station O = 15 cm</span>
+      <span class="pill">n = 3 verticals · m = 11 points each</span>
+      <span class="pill">Lowest point 0.3 cm above the bed</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Inlet valve (flow) <span class="val"><span id="vValve">50</span>%</span></label>
+          <input type="range" id="valve" min="5" max="100" step="1" value="50">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Depth is held at 15 cm at station O. Venturimeter gives the reference Q.</div>
+        </div>
+        <div class="mode-tabs">
+          <button id="sec1" class="active">Vertical 1</button>
+          <button id="sec2">Vertical 2</button>
+          <button id="sec3">Vertical 3</button>
+        </div>
+        <div class="ctrl">
+          <label>Pitot height above bed <span class="val"><span id="vY">0.3</span> cm</span></label>
+          <input type="range" id="py" min="0.3" max="14.7" step="0.1" value="0.3">
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Total-head tube R<sub>t</sub> (inclined)</span><b id="oRt">—</b></div>
+          <div class="row"><span>Static tube R<sub>s</sub> (inclined)</span><b id="oRs">—</b></div>
+          <div class="row"><span>Δh = (R<sub>t</sub>−R<sub>s</sub>)·sin30°</span><b id="oDh">—</b></div>
+          <div class="row"><span>Point velocity u</span><b id="oU">—</b></div>
+          <div class="row"><span>Venturimeter Q<sub>ref</sub></span><b id="oQref">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="recBtn">Record point</button>
+          <button class="btn ghost" id="travBtn">Auto-traverse (11 pts)</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations</h2>
+    <div class="obswrap">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Vertical</th><th>y (cm)</th><th>R<sub>t</sub> (mm)</th><th>R<sub>s</sub> (mm)</th>
+        <th>Δh (mm)</th><th>u (m/s)</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="7" style="color:var(--muted)">No points yet — position the pitot tube and press “Record point”, or Auto-traverse a vertical.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Results — discharge &amp; the gauging rules</h2>
+    <div class="resgrid">
+      <div class="rcard"><div class="n" id="rQ">—</div><div class="l">Q velocity-area (L/s)</div></div>
+      <div class="rcard"><div class="n" id="rQref">—</div><div class="l">Q venturimeter (L/s)</div></div>
+      <div class="rcard"><div class="n" id="rErr">—</div><div class="l">difference</div></div>
+    </div>
+    <div style="overflow-x:auto">
+    <table class="obs" style="margin-top:12px">
+      <thead><tr>
+        <th>Vertical</th><th>points</th><th>v̄ integrated (m/s)</th><th>u@0.6-depth (m/s)</th><th>err %</th>
+        <th>½(u₀.₂+u₀.₈) (m/s)</th><th>err %</th>
+      </tr></thead>
+      <tbody id="ruleRows"><tr><td colspan="7" style="color:var(--muted)">Traverse the verticals to evaluate the two stream-gauging rules.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Velocity profiles</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Recorded points on the three mid-verticals. Dashed levels mark
+       0.2, 0.6 and 0.8 of the depth below the surface — the levels the gauging rules use.</p>
+    <canvas id="chart" width="620" height="360"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Discussion &amp; Precautions</h2>
+    <details class="qa"><summary>Why is the maximum velocity slightly below the surface?</summary>
+      <p>Ideally it would be at the surface, but secondary currents driven by the side walls and the air resistance at
+         the free surface push the velocity maximum a little below it — the "velocity dip", most pronounced in narrow
+         channels where the width-to-depth ratio is small.</p></details>
+    <details class="qa"><summary>Why do the 0.6-depth and 0.2/0.8-depth rules work?</summary>
+      <p>For a logarithmic (or near-parabolic) vertical velocity distribution, the depth-averaged velocity mathematically
+         occurs at almost exactly 0.6 of the depth below the surface, and equals the average of the velocities at 0.2 and
+         0.8 depth. Stream gaugers exploit this to replace a full traverse with one or two current-meter readings per
+         vertical.</p></details>
+    <details class="qa"><summary>Why are the manometer tubes inclined at 30°?</summary>
+      <p>The head difference at these velocities is only a few millimetres of water. Inclining the tubes stretches each
+         reading by 1/sin30° = 2, doubling the scale length and halving the relative reading error — the same trick as an
+         inclined-tube manometer.</p></details>
+    <details class="qa"><summary>Sources of error</summary>
+      <p>Misalignment of the pitot tube with the flow direction, air bubbles in the connecting tubing, the finite size of
+         the probe near the bed, unsteadiness of the supply, and reading errors on the inclined tubes — largest for the
+         slow near-bed points where Δh is a millimetre or two.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> purge all air from the pitot tubing before readings; keep the
+       horizontal limb submerged and aligned with the flow; wait for the inclined-tube menisci to steady at each point;
+       take the lowest point with the limb just touching the bed (measurement centre 0.3 cm up).</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, B=0.30, D=0.15, KAPPA=0.41, Y0=5e-5;
+const SECF=[0.94,1.07,0.95];                   // lateral factors, verticals 1..3
+let sec=0, obs=[], noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function ubarGlobal(){ return 0.20+(+document.getElementById('valve').value/100)*0.30; }
+function uTrue(si,y){
+  const ub=ubarGlobal()*SECF[si];
+  const us=ub*KAPPA/(Math.log(D/Y0)-1);
+  let u=(us/KAPPA)*Math.log(Math.max(y,Y0*1.01)/Y0);
+  const dip=1-0.04*Math.pow(Math.max(0,(y/D-0.85)/0.15),2);
+  return Math.max(0,u*dip);
+}
+function Qtrue(){ return SECF.reduce((s,f)=>s+f,0)/3 * ubarGlobal() * B * D; }
+
+// live pitot readings (noisy, frozen per position)
+function readings(){
+  const y=+document.getElementById('py').value/100;
+  const u=uTrue(sec,y);
+  const dh=u*u/(2*G);                                        // m
+  const base=120;                                            // mm static column along incline
+  const k=sec*997+y*3731+(+document.getElementById('valve').value)*13;
+  const Rs=base+noiseFor(k,0.5);
+  const Rt=base+dh*2*1000+noiseFor(k+57,0.5);                // incline doubles the head
+  const dhMeas=Math.max(0,(Rt-Rs)/2);                        // mm
+  const uMeas=Math.sqrt(2*G*dhMeas/1000);
+  return {y,Rt,Rs,dhMeas,uMeas};
+}
+
+function refresh(){
+  const r=readings();
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  document.getElementById('vY').textContent=(+document.getElementById('py').value).toFixed(1);
+  document.getElementById('oRt').textContent=r.Rt.toFixed(1)+' mm';
+  document.getElementById('oRs').textContent=r.Rs.toFixed(1)+' mm';
+  document.getElementById('oDh').textContent=r.dhMeas.toFixed(1)+' mm';
+  document.getElementById('oU').textContent=r.uMeas.toFixed(3)+' m/s';
+  document.getElementById('oQref').textContent=(Qtrue()*1000*(1+noiseFor(9.7,0.01))).toFixed(2)+' L/s';
+}
+['valve','py'].forEach(id=>document.getElementById(id).addEventListener('input',refresh));
+
+// ================= actions =================
+function recordAt(yCm){
+  document.getElementById('py').value=yCm;
+  const r=readings();
+  obs.push({sec, y:yCm, Rt:r.Rt, Rs:r.Rs, dh:r.dhMeas, u:r.uMeas});
+  noiseSeed+=0.19;
+}
+document.getElementById('recBtn').addEventListener('click',()=>{ recordAt(+document.getElementById('py').value); renderAll(); });
+document.getElementById('travBtn').addEventListener('click',()=>{
+  const ys=[0.3,1.5,3,4.5,6,7.5,9,10.5,12,13.5,14.7];
+  // drop existing points on this vertical, then record the standard 11
+  obs=obs.filter(o=>o.sec!==sec);
+  ys.forEach(y=>recordAt(y));
+  renderAll();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderAll(); });
+[0,1,2].forEach(i=>document.getElementById('sec'+(i+1)).addEventListener('click',()=>{
+  sec=i;
+  [0,1,2].forEach(j=>document.getElementById('sec'+(j+1)).classList.toggle('active',j===i));
+  refresh(); drawChart();
+}));
+
+// ================= computation =================
+function vertStats(si){
+  const pts=obs.filter(o=>o.sec===si).sort((a,b)=>a.y-b.y);
+  if(pts.length<3) return null;
+  // trapezoid: bed anchor (0,0), points, extend last to surface
+  const seq=[[0,0],...pts.map(p=>[p.y/100,p.u]),[D,pts[pts.length-1].u]];
+  let integ=0;
+  for(let i=0;i<seq.length-1;i++) integ+=(seq[i+1][0]-seq[i][0])*(seq[i+1][1]+seq[i][1])/2;
+  const vmean=integ/D;
+  const interp=(yq)=>{ // linear interpolation of u at height yq (m)
+    for(let i=0;i<seq.length-1;i++){
+      if(yq>=seq[i][0]&&yq<=seq[i+1][0]){
+        const t=(yq-seq[i][0])/Math.max(1e-9,seq[i+1][0]-seq[i][0]);
+        return seq[i][1]+t*(seq[i+1][1]-seq[i][1]);
+      }
+    }
+    return null;
+  };
+  const u06=interp(0.4*D);                                  // 0.6 depth below surface
+  const u28=(interp(0.8*D)+interp(0.2*D))/2;                // 0.2 & 0.8 below surface
+  return {n:pts.length,vmean,u06,u28};
+}
+function renderAll(){ renderTable(); renderResults(); drawChart(); refresh(); }
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="7" style="color:var(--muted)">No points yet — position the pitot tube and press “Record point”, or Auto-traverse a vertical.</td></tr>'; return; }
+  tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+(o.sec+1)+'</td><td>'+o.y.toFixed(1)+'</td><td>'+o.Rt.toFixed(1)+
+    '</td><td>'+o.Rs.toFixed(1)+'</td><td>'+o.dh.toFixed(1)+'</td><td>'+o.u.toFixed(3)+'</td></tr>').join('');
+}
+function renderResults(){
+  const A=B*D/3;
+  let Q=0, done=0;
+  const rows=[0,1,2].map(si=>{
+    const st=vertStats(si);
+    if(!st) return '<tr><td>'+(si+1)+'</td><td colspan="6" style="color:var(--muted)">need ≥3 points (use Auto-traverse)</td></tr>';
+    done++; Q+=st.vmean*A;
+    const e1=(st.u06/st.vmean-1)*100, e2=(st.u28/st.vmean-1)*100;
+    return '<tr><td>'+(si+1)+'</td><td>'+st.n+'</td><td>'+st.vmean.toFixed(3)+'</td><td>'+st.u06.toFixed(3)+
+      '</td><td>'+(e1>=0?'+':'')+e1.toFixed(1)+'</td><td>'+st.u28.toFixed(3)+'</td><td>'+(e2>=0?'+':'')+e2.toFixed(1)+'</td></tr>';
+  });
+  document.getElementById('ruleRows').innerHTML=rows.join('');
+  const Qref=Qtrue()*1000*(1+noiseFor(9.7,0.01));
+  document.getElementById('rQref').textContent=Qref.toFixed(2);
+  if(done===3){
+    document.getElementById('rQ').textContent=(Q*1000).toFixed(2);
+    document.getElementById('rErr').textContent=((Q*1000/Qref-1)*100).toFixed(1)+' %';
+  } else {
+    document.getElementById('rQ').textContent='—';
+    document.getElementById('rErr').textContent=done+'/3 verticals';
+  }
+}
+
+// ================= rig animation =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=1;
+  rc.clearRect(0,0,RW,RH);
+
+  // ---- cross-section (looking downstream) ----
+  const chX=40, chW=330, bedY=RH-50, SC=(bedY-90)/0.15;   // px per m of depth
+  // walls & bed
+  rc.fillStyle='#e2e8f0';
+  rc.fillRect(chX-12,60,12,bedY-60+12); rc.fillRect(chX+chW,60,12,bedY-60+12); rc.fillRect(chX-12,bedY,chW+24,12);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(chX-12,60,chW+24,bedY-60+12);
+  // water
+  const surfY=bedY-0.15*SC;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(chX,surfY,chW,bedY-surfY);
+  // shimmer
+  rc.strokeStyle='rgba(255,255,255,.6)'; rc.lineWidth=1;
+  for(let i=0;i<5;i++){ const x=chX+((i*73+phase)%chW); rc.beginPath(); rc.moveTo(x,surfY+2); rc.lineTo(x+9,surfY+2); rc.stroke(); }
+  // mid-verticals
+  rc.setLineDash([5,4]); rc.strokeStyle='#0369a1'; rc.lineWidth=1.2;
+  [0,1,2].forEach(i=>{
+    const x=chX+chW*(i*2+1)/6;
+    rc.beginPath(); rc.moveTo(x,surfY); rc.lineTo(x,bedY); rc.stroke();
+    rc.setLineDash([]); rc.fillStyle= i===sec?'#0284c7':'#64748b'; rc.font=(i===sec?'bold ':'')+'10px Inter'; rc.textAlign='center';
+    rc.fillText('v'+(i+1),x,bedY+14); rc.setLineDash([5,4]); rc.textAlign='left';
+  });
+  rc.setLineDash([]);
+  rc.fillStyle='#334155'; rc.font='11px Inter';
+  rc.fillText('channel cross-section at station O · B = 0.30 m · depth 15 cm',chX-8,52);
+
+  // pitot tube at selected vertical & height
+  const px=chX+chW*(sec*2+1)/6, yCm=+document.getElementById('py').value;
+  const tipY=bedY-(yCm/100)*SC;
+  rc.strokeStyle='#334155'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(px,26); rc.lineTo(px,tipY); rc.stroke();       // vertical stem
+  rc.beginPath(); rc.moveTo(px,tipY); rc.lineTo(px-16,tipY); rc.stroke();  // horizontal limb (into flow)
+  rc.fillStyle='#dc2626'; rc.beginPath(); rc.arc(px-16,tipY,3,0,7); rc.fill();
+  // carrier
+  rc.fillStyle='#475569'; rc.fillRect(px-24,16,48,10);
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('pitot-static tube · y = '+yCm.toFixed(1)+' cm',px-58,RH-16);
+
+  // ---- inclined manometer panel (right) ----
+  const mx=430, my=70;
+  rc.fillStyle='#fff'; rc.fillRect(mx-14,my-30,210,190);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(mx-14,my-30,210,190);
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('inclined tubes · 30°',mx-4,my-16);
+  const r=readings();
+  const ang=Math.PI/6;                        // 30°
+  [['R_t',r.Rt,'#0284c7',0],['R_s',r.Rs,'#0369a1',44]].forEach(([lbl,val,col,off])=>{
+    const x0=mx+off*0.9, y0=my+130;
+    const len=170;
+    // tube
+    rc.save(); rc.translate(x0,y0); rc.rotate(-ang);
+    rc.strokeStyle='#94a3b8'; rc.lineWidth=1.5; rc.strokeRect(0,-6,len,12);
+    // water column length ∝ reading (scale 0.8 px/mm)
+    rc.fillStyle='#7dd3fc'; rc.fillRect(1.5,-4.5,Math.min(len-3,val*0.8),9);
+    rc.restore();
+    rc.fillStyle=col; rc.font='bold 10px Inter';
+    rc.fillText(lbl+' = '+val.toFixed(1)+' mm',x0+66,y0+24-off*0.28);
+  });
+  rc.fillStyle='#0369a1'; rc.font='bold 11px Inter';
+  rc.fillText('Δh = '+r.dhMeas.toFixed(1)+' mm → u = '+r.uMeas.toFixed(3)+' m/s',mx-4,my+152);
+}
+requestAnimationFrame(drawRig);
+
+// ================= profile chart =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:56,r:16,t:18,b:42};
+const UMAX=0.65;
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const X=u=>M.l+u/UMAX*(CW-M.l-M.r), Y=y=>CH-M.b-(y/0.15)*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.lineWidth=1; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let u=0;u<=UMAX;u+=0.1){ cc.beginPath(); cc.moveTo(X(u),M.t); cc.lineTo(X(u),CH-M.b); cc.stroke(); cc.fillText(u.toFixed(1),X(u),CH-M.b+14); }
+  cc.textAlign='right';
+  for(let y=0;y<=0.15+1e-9;y+=0.03){ cc.beginPath(); cc.moveTo(M.l,Y(y)); cc.lineTo(CW-M.r,Y(y)); cc.stroke(); cc.fillText((y*100).toFixed(0),M.l-5,Y(y)+3); }
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('point velocity u (m/s)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('height above bed y (cm)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // rule levels: 0.2, 0.6, 0.8 depth below surface = y = 0.8D, 0.4D, 0.2D
+  [[0.8,'0.2·depth'],[0.4,'0.6·depth'],[0.2,'0.8·depth']].forEach(([f,lbl])=>{
+    cc.strokeStyle='#dc2626'; cc.setLineDash([5,4]); cc.lineWidth=1;
+    cc.beginPath(); cc.moveTo(M.l,Y(f*0.15)); cc.lineTo(CW-M.r,Y(f*0.15)); cc.stroke(); cc.setLineDash([]);
+    cc.fillStyle='#dc2626'; cc.font='9px Inter'; cc.textAlign='left';
+    cc.fillText(lbl,CW-M.r-58,Y(f*0.15)-3);
+  });
+  const cols=['#059669','#0284c7','#d97706'];
+  // true profiles
+  [0,1,2].forEach(si=>{
+    cc.strokeStyle=cols[si]; cc.lineWidth=1.4; cc.globalAlpha=0.55;
+    cc.beginPath(); let first=true;
+    for(let y=0.001;y<=0.15;y+=0.003){
+      const u=uTrue(si,y);
+      first?cc.moveTo(X(u),Y(y)):cc.lineTo(X(u),Y(y)); first=false;
+    }
+    cc.stroke(); cc.globalAlpha=1;
+  });
+  // recorded points
+  obs.forEach(o=>{
+    cc.fillStyle=cols[o.sec];
+    cc.beginPath(); cc.arc(X(o.u),Y(o.y/100),3.6,0,7); cc.fill();
+    cc.strokeStyle='#fff'; cc.lineWidth=1; cc.stroke();
+  });
+  // legend
+  cc.textAlign='left'; cc.font='10px Inter';
+  [0,1,2].forEach(si=>{ cc.fillStyle=cols[si]; cc.fillRect(M.l+8,M.t+8+si*14,9,9);
+    cc.fillStyle='#334155'; cc.fillText('vertical '+(si+1),M.l+21,M.t+16+si*14); });
+}
+drawChart();
+renderResults();
+refresh();
+</script>
+</body>
+</html>
