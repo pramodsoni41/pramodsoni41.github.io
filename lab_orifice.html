@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 9: Flow through a Circular Orifice | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: determine the coefficients of velocity, contraction and discharge for a sharp-edged circular orifice using jet trajectory and timed collection."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig,canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    canvas#rig{background:linear-gradient(#f0f9ff,#f8fafc)}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.81rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+    .resgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+    @media(max-width:640px){.resgrid{grid-template-columns:1fr}}
+    .rcard{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:12px;text-align:center}
+    .rcard .n{font-size:1.35rem;font-weight:700;color:#0369a1;font-variant-numeric:tabular-nums}
+    .rcard .l{font-size:.76rem;color:var(--muted)}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 9</span>
+    <h1>&#127919; Flow through a Circular Orifice</h1>
+    <p>A constant-head tank discharges a jet through a sharp-edged 12 mm orifice. Trace the jet's parabola with the hook
+       gauge to get the <strong>coefficient of velocity C<sub>v</sub></strong>, time the discharge for the
+       <strong>coefficient of discharge C<sub>d</sub></strong>, and split out the
+       <strong>coefficient of contraction C<sub>c</sub> = C<sub>d</sub>/C<sub>v</sub></strong> — the signature of the
+       vena contracta.</p>
+  </div>
+
+  <section class="card">
+    <h2>Aims</h2>
+    <p>To determine, for a sharp-edged circular orifice, the coefficient of velocity, the coefficient of contraction and
+       the coefficient of discharge — maintaining a constant head, measuring the jet trajectory (x, y) and the discharge.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p class="eqn">Torricelli: V<sub>ideal</sub> = √(2gH) &nbsp;•&nbsp; trajectory: C<sub>v</sub> = x / (2√(y·H)) &nbsp;•&nbsp;
+       C<sub>d</sub> = Q<sub>actual</sub> / (A·√(2gH)) &nbsp;•&nbsp; C<sub>c</sub> = C<sub>d</sub>/C<sub>v</sub></p>
+    <p>The streamlines converge on the opening from all directions, so the jet keeps contracting to the
+       <em>vena contracta</em> just outside the plate — the real jet is both slightly slower (friction → C<sub>v</sub> ≈ 0.96–0.98)
+       and markedly narrower (contraction → C<sub>c</sub> ≈ 0.64) than the ideal, giving C<sub>d</sub> ≈ 0.62. The jet
+       centreline is a projectile parabola: measuring a fall y over a horizontal run x recovers its launch velocity.</p>
+    <h2 style="margin-top:14px">Apparatus</h2>
+    <p>Constant-head tank with a sharp-edged side orifice; hook gauge and scale on a traversing rail; collector tank and
+       stopwatch; vernier calliper.</p>
+    <p>
+      <span class="pill">Orifice d = 12 mm (sharp, bevel outward)</span>
+      <span class="pill">Datum at orifice centre-line</span>
+      <span class="pill">Typical: C<sub>v</sub> ≈ 0.96 · C<sub>d</sub> ≈ 0.62 · C<sub>c</sub> ≈ 0.64</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Constant head H <span class="val"><span id="vH">25</span> cm</span></label>
+          <input type="range" id="head" min="10" max="40" step="1" value="25">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">The supply tap and overflow hold this head steady.</div>
+        </div>
+        <div class="ctrl">
+          <label>Hook gauge at x <span class="val"><span id="vX">20</span> cm</span></label>
+          <input type="range" id="hx" min="5" max="45" step="0.5" value="20">
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Gauge fall y at this x</span><b id="oY">—</b></div>
+          <div class="row"><span>C<sub>v</sub> from this (x, y)</span><b id="oCv">—</b></div>
+          <div class="row"><span>Timed collection (60 s)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>actual</sub></span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Collect</button>
+          <button class="btn" id="recBtn" disabled>Record</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Repeat for several heads. A = 1.131×10⁻⁴ m².
+       C<sub>v</sub> = x/2√(yH); C<sub>d</sub> = Q/(A√(2gH)); C<sub>c</sub> = C<sub>d</sub>/C<sub>v</sub>.</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>H (cm)</th><th>x (cm)</th><th>y (cm)</th><th>C<sub>v</sub></th>
+        <th>Vol (L)</th><th>t (s)</th><th>Q (L/s)</th><th>Q<sub>th</sub> (L/s)</th><th>C<sub>d</sub></th><th>C<sub>c</sub></th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="11" style="color:var(--muted)">No readings yet — set the head, read the hook gauge, collect, then Record.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Results</h2>
+    <div class="resgrid">
+      <div class="rcard"><div class="n" id="avCv">—</div><div class="l">mean C<sub>v</sub> (typical ≈ 0.96)</div></div>
+      <div class="rcard"><div class="n" id="avCd">—</div><div class="l">mean C<sub>d</sub> (typical ≈ 0.62)</div></div>
+      <div class="rcard"><div class="n" id="avCc">—</div><div class="l">mean C<sub>c</sub> (typical ≈ 0.64)</div></div>
+    </div>
+    <h2 style="margin-top:16px">Calibration — Q vs √H</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Torricelli makes Q linear in √H; the fitted slope gives C<sub>d</sub>·A·√(2g).</p>
+    <canvas id="chart" width="620" height="330"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Discussion</h2>
+    <details class="qa"><summary>Why is C<sub>c</sub> so much smaller than C<sub>v</sub>?</summary>
+      <p>Friction at a sharp edge is minimal, so the jet loses little speed (C<sub>v</sub> near 1). But the streamlines
+         approach the opening radially and cannot turn a sharp corner instantly — they keep converging past the plate,
+         shrinking the jet to the vena contracta at roughly 64% of the orifice area. Contraction, not friction, is what
+         limits the discharge.</p></details>
+    <details class="qa"><summary>Why use a sharp edge with the bevel outward?</summary>
+      <p>It gives the fluid a single, well-defined separation line and minimum contact with the plate, so the contraction
+         is repeatable and the frictional loss negligible — which is what makes tabulated coefficients reliable.</p></details>
+    <details class="qa"><summary>Main error sources</summary>
+      <p>Head fluctuation if the overflow is overwhelmed, judging the jet centre-line with the hook gauge (the jet
+         thickens and wobbles downstream), timing errors over short collections, and the jet's slight spread from air
+         drag at large x.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> keep the head truly constant (steady overflow) before every
+       reading; measure x from the vena contracta plane and y from the orifice centre-line datum; take trajectory readings
+       at several x and use the farther ones cautiously; collect for at least 60 s.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, DOR=0.012, A=Math.PI/4*DOR*DOR;
+const CV=0.97, CD=0.62;
+let obs=[], collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function H(){ return +document.getElementById('head').value/100; }
+function yAt(x){ // true jet centreline fall (m) at horizontal x (m)
+  const V=CV*Math.sqrt(2*G*H());
+  return G*x*x/(2*V*V);
+}
+function yMeas(){
+  const x=+document.getElementById('hx').value/100;
+  return yAt(x)+noiseFor(x*731+H()*97,0.0015);
+}
+
+function refresh(){
+  const x=+document.getElementById('hx').value/100;
+  document.getElementById('vH').textContent=document.getElementById('head').value;
+  document.getElementById('vX').textContent=(+document.getElementById('hx').value).toFixed(1);
+  const y=yMeas();
+  document.getElementById('oY').textContent=(y*100).toFixed(1)+' cm';
+  const cv= y>0? x/(2*Math.sqrt(y*H())) : NaN;
+  document.getElementById('oCv').textContent= isFinite(cv)? cv.toFixed(3):'—';
+  document.getElementById('oCollect').textContent= collectRes? collectRes.vol.toFixed(1)+' L in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  document.getElementById('recBtn').disabled=!collectRes;
+}
+['head','hx'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ if(id==='head') collectRes=null; refresh(); }));
+
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const Q=CD*A*Math.sqrt(2*G*H());
+    const t=60*(1+noiseFor(H()*371,0.006));
+    const vol=Q*1000*60*(1+noiseFor(H()*911,0.012));
+    collectRes={vol,t,Qb:vol/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  const x=+document.getElementById('hx').value/100, y=yMeas();
+  const cv=x/(2*Math.sqrt(y*H()));
+  const Qth=A*Math.sqrt(2*G*H());
+  const cd=collectRes.Qb/Qth;
+  obs.push({H:H()*100,x:x*100,y:y*100,cv,vol:collectRes.vol,t:collectRes.t,Q:collectRes.Qb,Qth,cd,cc:cd/cv});
+  collectRes=null; noiseSeed+=0.37;
+  renderAll();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderAll(); });
+
+function renderAll(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="11" style="color:var(--muted)">No readings yet — set the head, read the hook gauge, collect, then Record.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.H.toFixed(0)+'</td><td>'+o.x.toFixed(1)+'</td><td>'+o.y.toFixed(1)+
+    '</td><td>'+o.cv.toFixed(3)+'</td><td>'+o.vol.toFixed(1)+'</td><td>'+o.t.toFixed(0)+'</td><td>'+(o.Q*1000).toFixed(3)+
+    '</td><td>'+(o.Qth*1000).toFixed(3)+'</td><td>'+o.cd.toFixed(3)+'</td><td>'+o.cc.toFixed(3)+'</td></tr>').join('');
+  const avg=f=>obs.length?obs.reduce((s,o)=>s+f(o),0)/obs.length:null;
+  document.getElementById('avCv').textContent= obs.length? avg(o=>o.cv).toFixed(3):'—';
+  document.getElementById('avCd').textContent= obs.length? avg(o=>o.cd).toFixed(3):'—';
+  document.getElementById('avCc').textContent= obs.length? avg(o=>o.cc).toFixed(3):'—';
+  drawChart(); refresh();
+}
+
+// ================= rig =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+const SC=5.2;   // px per cm
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=2;
+  rc.clearRect(0,0,RW,RH);
+  const tankR=150, orifY=120;      // orifice at right wall of tank, y in px
+  const bedY=RH-40;
+  // floor
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,bedY,RW,RH-bedY);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,bedY,RW,RH-bedY);
+  // tank
+  const hPx=H()*100*SC*0.42;                 // compressed head scale
+  rc.fillStyle='#7dd3fc'; rc.fillRect(24,orifY-hPx,tankR-24,hPx+ (bedY-orifY));
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(24,60,tankR-24,bedY-60);
+  // supply + overflow
+  rc.strokeStyle='#64748b'; rc.lineWidth=4;
+  rc.beginPath(); rc.moveTo(40,20); rc.lineTo(40,orifY-hPx-4); rc.stroke();
+  rc.fillStyle='#0ea5e9';
+  for(let i=0;i<3;i++){ const y=24+((i*22+phase*2)%(orifY-hPx-30)); rc.fillRect(37,y,6,8); }
+  rc.strokeStyle='#94a3b8'; rc.lineWidth=2;
+  rc.beginPath(); rc.moveTo(24,orifY-hPx); rc.lineTo(6,orifY-hPx); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('overflow',2,orifY-hPx-5);
+  rc.fillText('supply',48,26);
+  rc.fillText('constant head H = '+document.getElementById('head').value+' cm',34,52);
+  // head dimension
+  rc.strokeStyle='#0369a1'; rc.lineWidth=1;
+  rc.beginPath(); rc.moveTo(tankR-12,orifY-hPx); rc.lineTo(tankR-12,orifY); rc.stroke();
+  rc.fillStyle='#0369a1'; rc.font='bold 10px Inter'; rc.fillText('H',tankR-8,orifY-hPx/2);
+  // orifice + jet parabola (px per cm horizontal = 8, vertical uses real parabola scaled)
+  rc.fillStyle='#334155'; rc.fillRect(tankR-3,orifY-6,6,12);
+  const V=CV*Math.sqrt(2*G*H());
+  rc.strokeStyle='#38bdf8'; rc.lineWidth=5; rc.lineCap='round';
+  rc.beginPath(); rc.moveTo(tankR+3,orifY);
+  for(let xc=0;xc<=48;xc+=1){
+    const xm=xc/100, ym=G*xm*xm/(2*V*V);
+    const px=tankR+3+xc*8.6, py=orifY+ym*100*SC*0.42;
+    if(py>bedY) break;
+    rc.lineTo(px,py);
+  }
+  rc.stroke(); rc.lineCap='butt';
+  // datum line
+  rc.strokeStyle='#94a3b8'; rc.setLineDash([5,4]); rc.lineWidth=1;
+  rc.beginPath(); rc.moveTo(tankR,orifY); rc.lineTo(RW-16,orifY); rc.stroke(); rc.setLineDash([]);
+  rc.fillStyle='#64748b'; rc.font='9px Inter'; rc.fillText('datum (orifice centre-line)',RW-180,orifY-5);
+  // hook gauge at x
+  const xg=+document.getElementById('hx').value;
+  const gx=tankR+3+xg*8.6, gy=orifY+yAt(xg/100)*100*SC*0.42;
+  rc.strokeStyle='#dc2626'; rc.lineWidth=1.6;
+  rc.beginPath(); rc.moveTo(gx,44); rc.lineTo(gx,gy-8); rc.stroke();
+  rc.beginPath(); rc.moveTo(gx,gy-8); rc.lineTo(gx-4,gy-2); rc.lineTo(gx+4,gy-2); rc.closePath(); rc.fillStyle='#dc2626'; rc.fill();
+  rc.fillStyle='#475569'; rc.fillRect(gx-14,34,28,10);
+  rc.fillStyle='#334155'; rc.font='10px Inter';
+  rc.fillText('hook gauge',gx-26,30);
+  rc.fillText('x = '+xg.toFixed(1)+' cm · y = '+(yMeas()*100).toFixed(1)+' cm',gx-46,gy+22);
+  // collector tank under jet end
+  const vx=500,vw=70,vb=bedY-2,vh=56;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*60,60).toFixed(0)+' s';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('collector tank',vx+2,vb-vh-6);
+}
+requestAnimationFrame(drawRig);
+
+// ================= chart: Q vs sqrt(H) =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:58,r:14,t:16,b:42};
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const XMAX=0.70, YMAX=0.24;   // sqrt(H) up to sqrt(0.45), Q L/s
+  const X=v=>M.l+v/XMAX*(CW-M.l-M.r), Y=q=>CH-M.b-q/YMAX*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let v=0;v<=XMAX;v+=0.1){ cc.beginPath(); cc.moveTo(X(v),M.t); cc.lineTo(X(v),CH-M.b); cc.stroke(); cc.fillText(v.toFixed(1),X(v),CH-M.b+14); }
+  cc.textAlign='right';
+  for(let q=0;q<=YMAX;q+=0.04){ cc.beginPath(); cc.moveTo(M.l,Y(q)); cc.lineTo(CW-M.r,Y(q)); cc.stroke(); cc.fillText(q.toFixed(2),M.l-5,Y(q)+3); }
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('√H (m^0.5)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('Q actual (L/s)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // theory line Cd=0.62
+  const Sth=0.62*A*Math.sqrt(2*G)*1000;
+  cc.strokeStyle='#94a3b8'; cc.setLineDash([6,5]); cc.lineWidth=1.5;
+  cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(XMAX),Y(Sth*XMAX)); cc.stroke(); cc.setLineDash([]);
+  cc.fillStyle='#64748b'; cc.textAlign='left'; cc.font='10px Inter';
+  cc.fillText('textbook Cd = 0.62 (dashed)',M.l+10,M.t+14);
+  // points + fit
+  if(obs.length>=2){
+    let sxy=0,sxx=0;
+    obs.forEach(o=>{ const sx=Math.sqrt(o.H/100); sxy+=sx*(o.Q*1000); sxx+=sx*sx; });
+    const S=sxy/sxx, cdFit=S/(A*Math.sqrt(2*G)*1000);
+    cc.strokeStyle='#0284c7'; cc.lineWidth=2;
+    cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(XMAX),Y(Math.min(YMAX,S*XMAX))); cc.stroke();
+    cc.fillStyle='#0369a1';
+    cc.fillText('fit → Cd = '+cdFit.toFixed(3),M.l+10,M.t+28);
+  }
+  obs.forEach(o=>{
+    cc.fillStyle='#0284c7';
+    cc.beginPath(); cc.arc(X(Math.sqrt(o.H/100)),Y(o.Q*1000),4.5,0,7); cc.fill();
+    cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+  });
+  cc.textAlign='left';
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>

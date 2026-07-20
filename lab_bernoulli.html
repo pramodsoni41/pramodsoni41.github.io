@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 7: Bernoulli's Theorem | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: verify Bernoulli's equation along a tapered venturi duct with six manometers and a traversing total-head probe."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig,canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    canvas#rig{background:linear-gradient(#f0f9ff,#f8fafc)}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 8px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.83rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.8rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .obswrap{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 7</span>
+    <h1>&#128200; Validity of Bernoulli's Theorem</h1>
+    <p>A virtual F1-15 apparatus: steady flow through a tapered circular duct with <strong>six manometers</strong>
+       reading the pressure head, and a traversing <strong>hypodermic total-head probe</strong>. Watch pressure trade for
+       velocity through the contraction, compare the <em>calculated</em> total head (h + v²/2g) with the <em>measured</em>
+       one, and see where — and why — Bernoulli's ideal picture leaks energy.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objective</h2>
+    <p>To investigate the validity of the Bernoulli equation applied to steady flow of water through a tapered duct.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p class="eqn">h + v²/2g + z = constant (ideal) &nbsp;•&nbsp; v = Q/A &nbsp;•&nbsp;
+       h<sub>t,calc</sub> = h + v²/2g &nbsp;•&nbsp; probe: h<sub>t,meas</sub> = stagnation head</p>
+    <p>The duct is horizontal so z drops out. As the section contracts, continuity accelerates the flow and the pressure
+       head falls; in the diverging part the process reverses — but not perfectly, because friction and (in the steeper
+       diffuser) separation dissipate energy. The measured total head therefore falls slowly along the duct, most of all
+       through the diffuser.</p>
+    <h2 style="margin-top:14px">Equipment</h2>
+    <p>F1-10 hydraulics bench; F1-15 Bernoulli apparatus (venturi test section with tappings h₁–h₆, manometer bank,
+       traversing total-head probe); stopwatch.</p>
+    <p>
+      <span class="pill">Tappings: 25.0 / 13.9 / 11.8 / 10.7 / 10.0 / 25.0 mm</span>
+      <span class="pill">Position 1: 14° converging · Position 2: 21° converging</span>
+      <span class="pill">Collect ≥ 60 s per flow</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="330"></canvas>
+      </div>
+      <div>
+        <div class="mode-tabs">
+          <button id="tabP1" class="active">Position 1 (14° conv.)</button>
+          <button id="tabP2">Position 2 (21° conv.)</button>
+        </div>
+        <div class="ctrl">
+          <label>Apparatus flow valve <span class="val"><span id="vValve">60</span>%</span></label>
+          <input type="range" id="valve" min="20" max="100" step="1" value="60">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Manual asks for three flows: max, h₁−h₅ ≈ 50 mm (min), and midway.</div>
+        </div>
+        <div class="ctrl">
+          <label>Total-head probe at <span class="val">h<span id="vProbe">1</span></span></label>
+          <input type="range" id="probe" min="1" max="6" step="1" value="1">
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>h₁ − h₅ (flow indicator)</span><b id="oDiff">—</b></div>
+          <div class="row"><span>Probe total head</span><b id="oProbe">—</b></div>
+          <div class="row"><span>Timed collection (60 s)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub></span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Collect</button>
+          <button class="btn" id="recBtn" disabled>Record set (6 tappings)</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Head distribution along the duct — live</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Pressure head (manometers), velocity head from continuity, their sum
+       (calculated total) and the probe's measured total. The gap between the two totals is the energy loss.</p>
+    <canvas id="chart" width="620" height="330"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <div class="obswrap">
+    <table class="obs">
+      <thead><tr>
+        <th>Set</th><th>Pos.</th><th>Q (L/s)</th><th>Tap</th><th>d (mm)</th><th>h (mm)</th><th>v = Q/A (m/s)</th>
+        <th>v²/2g (mm)</th><th>h<sub>t</sub> calc (mm)</th><th>h<sub>t</sub> probe (mm)</th><th>loss (mm)</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="11" style="color:var(--muted)">No sets yet — set a flow, collect, then Record.</td></tr></tbody>
+    </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Report Questions</h2>
+    <details class="qa"><summary>Is Bernoulli's equation valid through the converging part? The diverging part?</summary>
+      <p>Through the smooth contraction the calculated and measured totals agree within a few millimetres — acceleration
+         is nearly loss-free, so Bernoulli holds well. Through the diffuser the measured total drops noticeably below the
+         ideal: the decelerating flow thickens its boundary layer and (especially at the steeper 21° divergence of
+         Position 1) tends to separate, dissipating energy as turbulence.</p></details>
+    <details class="qa"><summary>Where are maximum velocity and minimum pressure?</summary>
+      <p>Both at the throat (tapping h₅, d = 10 mm): continuity puts the highest velocity at the smallest area, and
+         Bernoulli then demands the lowest pressure exactly there.</p></details>
+    <details class="qa"><summary>How does the energy loss show in the results?</summary>
+      <p>As the growing gap between the probe's measured total head and the upstream value — small through the
+         contraction, largest across the diffuser — and in h₆ failing to recover to h₁ even though the areas are equal.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> level the apparatus; purge all air from manometers and probe
+       tubing; retract the probe while reading the manometers (it blocks part of the throat); collect for at least 60 s;
+       take readings only when levels are steady.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81;
+const TAP=[{x:0,d:25.0},{x:0.0603,d:13.9},{x:0.0687,d:11.8},{x:0.0732,d:10.7},{x:0.0811,d:10.0},{x:0.1415,d:25.0}];
+const LOSSF={p1:[0,.02,.04,.06,.08,.20], p2:[0,.02,.03,.05,.07,.12]};   // cumulative, × throat vel head
+const T0=0.250;                                                          // supply total head (m)
+let pos='p1', setNo=0, obs=[], collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function Qtrue(){ return (0.06+(+document.getElementById('valve').value/100)*0.11)/1000; } // 0.08–0.17 L/s
+function stations(){
+  const Q=Qtrue();
+  const A5=Math.PI/4*Math.pow(0.010,2), vh5=Math.pow(Q/A5,2)/(2*G);
+  return TAP.map((t,i)=>{
+    const A=Math.PI/4*Math.pow(t.d/1000,2), v=Q/A, vh=v*v/(2*G);
+    const ht=T0-LOSSF[pos][i]*vh5;
+    return {i,x:t.x,d:t.d,v,vh,ht,hp:ht-vh};
+  });
+}
+function measured(){
+  const st=stations(), k=+document.getElementById('valve').value+(pos==='p1'?0:500);
+  return st.map(s=>({...s,
+    hMeas:(s.hp+noiseFor(k*7+s.i*13,0.0015))*1000,
+    htMeas:(s.ht+noiseFor(k*11+s.i*17,0.0015))*1000}));
+}
+
+function refresh(){
+  const ms=measured();
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  const pi=+document.getElementById('probe').value;
+  document.getElementById('vProbe').textContent=pi;
+  document.getElementById('oDiff').textContent=(ms[0].hMeas-ms[4].hMeas).toFixed(0)+' mm';
+  document.getElementById('oProbe').textContent=ms[pi-1].htMeas.toFixed(0)+' mm';
+  document.getElementById('oCollect').textContent= collectRes? collectRes.vol.toFixed(1)+' L in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  document.getElementById('recBtn').disabled=!collectRes;
+  drawChart();
+}
+['valve','probe'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ if(id==='valve') collectRes=null; refresh(); }));
+
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const t=60*(1+noiseFor(+document.getElementById('valve').value*3.7,0.006));
+    const vol=Qtrue()*1000*60*(1+noiseFor(+document.getElementById('valve').value*9.1,0.012));
+    collectRes={vol,t,Qb:vol/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  setNo++;
+  const ms=measured(), Q=collectRes.Qb;
+  ms.forEach(s=>{
+    const A=Math.PI/4*Math.pow(s.d/1000,2), v=Q/A, vh=v*v/(2*G)*1000;
+    obs.push({set:setNo,pos:pos==='p1'?'1':'2',Q,tap:'h'+(s.i+1),d:s.d,h:s.hMeas,v,vh,
+      calc:s.hMeas+vh, probe:s.htMeas, loss:(T0*1000)-s.htMeas});
+  });
+  collectRes=null; noiseSeed+=0.37;
+  renderTable(); refresh();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; setNo=0; renderTable(); });
+function setPos(p){ pos=p; collectRes=null;
+  document.getElementById('tabP1').classList.toggle('active',p==='p1');
+  document.getElementById('tabP2').classList.toggle('active',p==='p2');
+  refresh(); }
+document.getElementById('tabP1').addEventListener('click',()=>setPos('p1'));
+document.getElementById('tabP2').addEventListener('click',()=>setPos('p2'));
+
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="11" style="color:var(--muted)">No sets yet — set a flow, collect, then Record.</td></tr>'; return; }
+  tb.innerHTML=obs.map(o=>'<tr><td>'+o.set+'</td><td>'+o.pos+'</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.tap+'</td><td>'+o.d.toFixed(1)+
+    '</td><td>'+o.h.toFixed(0)+'</td><td>'+o.v.toFixed(2)+'</td><td>'+o.vh.toFixed(0)+'</td><td>'+o.calc.toFixed(0)+
+    '</td><td>'+o.probe.toFixed(0)+'</td><td>'+o.loss.toFixed(0)+'</td></tr>').join('');
+}
+
+// ================= rig =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function ductR(x){ // duct half-height in px along [0,0.1415]
+  const d1=25,d5=10;
+  const xs=pos==='p1'?[0,0.0603,0.0811,0.1415]:[0,0.0604,0.0812,0.1415];
+  let d;
+  if(x<=0.025) d=d1;
+  else if(x<=0.0811) d=d1-(d1-d5)*(x-0.025)/(0.0811-0.025);
+  else d=d5+(d1-d5)*(x-0.0811)/(0.1415-0.0811);
+  return d*1.4;
+}
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=Qtrue()*30000;
+  rc.clearRect(0,0,RW,RH);
+  const ms=measured();
+  // manometer bank (top)
+  const bankX=60,gap=88,tubeW=13,bankBase=140,bankTop=16;
+  rc.fillStyle='#334155'; rc.font='11px Inter'; rc.fillText('manometers h₁–h₆ (mm)',bankX,bankTop-3);
+  ms.forEach((s,i)=>{
+    const x=bankX+i*gap;
+    rc.strokeStyle='#94a3b8'; rc.lineWidth=1.2; rc.strokeRect(x,bankTop+4,tubeW,bankBase-bankTop-4);
+    const hh=Math.max(2,Math.min(bankBase-bankTop-6, s.hMeas/300*(bankBase-bankTop-6)));
+    rc.fillStyle='#38bdf8'; rc.fillRect(x+1.5,bankBase-2-hh,tubeW-3,hh);
+    rc.fillStyle='#334155'; rc.font='10px Inter'; rc.textAlign='center';
+    rc.fillText('h'+(i+1),x+tubeW/2,bankBase+12);
+    rc.fillStyle='#64748b'; rc.font='8.5px Inter'; rc.fillText(s.hMeas.toFixed(0),x+tubeW/2,bankBase+22);
+    rc.textAlign='left';
+  });
+  // duct (side view) with flow direction depending on position
+  const dx0=70,dx1=570,axy=240;
+  rc.beginPath();
+  for(let px=dx0;px<=dx1;px+=3){ const xm=(px-dx0)/(dx1-dx0)*0.1415; rc.lineTo(px,axy-ductR(pos==='p1'?xm:0.1415-xm)); }
+  for(let px=dx1;px>=dx0;px-=3){ const xm=(px-dx0)/(dx1-dx0)*0.1415; rc.lineTo(px,axy+ductR(pos==='p1'?xm:0.1415-xm)); }
+  rc.closePath(); rc.fillStyle='#e0f2fe'; rc.fill(); rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+  // particles accelerate through throat
+  rc.fillStyle='#0ea5e9';
+  for(let i=0;i<26;i++){
+    const xm=((i*0.006+phase*0.000001*3)%0.1415);
+    const px=dx0+(xm/0.1415)*(dx1-dx0);
+    const r=ductR(pos==='p1'?xm:0.1415-xm)*0.7;
+    rc.fillRect(px,axy+((i%5)-2)/2.4*r,4.5,2.2);
+  }
+  // tapping ticks + probe
+  ms.forEach((s,i)=>{
+    const xm=pos==='p1'?s.x:0.1415-s.x;
+    const px=dx0+(xm/0.1415)*(dx1-dx0);
+    rc.strokeStyle='#0284c7'; rc.lineWidth=1.5;
+    rc.beginPath(); rc.moveTo(px,axy-ductR(xm)); rc.lineTo(px,axy-ductR(xm)-10); rc.stroke();
+    rc.fillStyle='#0369a1'; rc.font='9px Inter'; rc.textAlign='center'; rc.fillText('h'+(i+1),px,axy-ductR(xm)-14); rc.textAlign='left';
+  });
+  const pi=+document.getElementById('probe').value, ps=ms[pi-1];
+  const pxm=pos==='p1'?ps.x:0.1415-ps.x;
+  const ppx=dx0+(pxm/0.1415)*(dx1-dx0);
+  rc.strokeStyle='#dc2626'; rc.lineWidth=2;
+  rc.beginPath(); rc.moveTo(dx1+40,axy); rc.lineTo(ppx,axy); rc.stroke();
+  rc.fillStyle='#dc2626'; rc.beginPath(); rc.arc(ppx,axy,3.4,0,7); rc.fill();
+  rc.font='10px Inter'; rc.fillText('total-head probe',dx1-90,axy+30);
+  rc.fillStyle='#334155'; rc.font='11px Inter';
+  rc.fillText(pos==='p1'?'flow → (14° converging)':'flow → (21° converging)',dx0,axy+64);
+}
+requestAnimationFrame(drawRig);
+
+// ================= live head chart =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:56,r:14,t:16,b:40};
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const ms=measured();
+  const X=x=>M.l+x/0.1415*(CW-M.l-M.r), Y=h=>CH-M.b-(h/300)*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let h=0;h<=300;h+=50){ cc.beginPath(); cc.moveTo(M.l,Y(h)); cc.lineTo(CW-M.r,Y(h)); cc.stroke();
+    cc.textAlign='right'; cc.fillText(h,M.l-5,Y(h)+3); cc.textAlign='center'; }
+  ms.forEach(s=>{ cc.beginPath(); cc.moveTo(X(s.x),M.t); cc.lineTo(X(s.x),CH-M.b); cc.stroke(); cc.fillText('h'+(s.i+1),X(s.x),CH-M.b+14); });
+  cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('distance into duct (tappings)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('head (mm of water)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  function line(vals,col,dash){
+    cc.strokeStyle=col; cc.lineWidth=2; cc.setLineDash(dash||[]);
+    cc.beginPath(); vals.forEach((v,i)=>{ const x=X(ms[i].x),y=Y(Math.max(0,Math.min(300,v))); i?cc.lineTo(x,y):cc.moveTo(x,y); });
+    cc.stroke(); cc.setLineDash([]);
+  }
+  line(ms.map(s=>s.hMeas),'#0284c7');                       // pressure head
+  line(ms.map(s=>s.vh*1000),'#d97706');                     // velocity head
+  line(ms.map(s=>s.hMeas+s.vh*1000),'#059669',[6,4]);       // calc total
+  ms.forEach(s=>{ cc.fillStyle='#dc2626'; cc.beginPath(); cc.arc(X(s.x),Y(s.htMeas),4,0,7); cc.fill(); }); // probe
+  const leg=[['#0284c7','pressure head h'],['#d97706','velocity head v²/2g'],['#059669','calculated total (dashed)'],['#dc2626','probe total (points)']];
+  cc.textAlign='left'; cc.font='10px Inter';
+  leg.forEach(([col,lbl],i)=>{ cc.fillStyle=col; cc.fillRect(M.l+10,M.t+8+i*14,9,9); cc.fillStyle='#334155'; cc.fillText(lbl,M.l+23,M.t+16+i*14); });
+}
+drawChart();
+renderTable();
+refresh();
+</script>
+</body>
+</html>

@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 8: Impact of a Jet | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: verify the momentum equation by balancing jet forces on flat, 120-degree and hemispherical deflectors against applied weights."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig,canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    canvas#rig{background:linear-gradient(#f0f9ff,#f8fafc)}
+    .mode-tabs{display:flex;gap:8px;margin-bottom:12px}
+    .mode-tabs button{flex:1;padding:9px 6px;border:1px solid var(--line);background:var(--card);border-radius:10px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:.82rem}
+    .mode-tabs button.active{background:#0284c7;color:#fff;border-color:#0284c7}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .status{padding:8px 12px;border-radius:10px;font-weight:700;font-size:.84rem;text-align:center;margin-top:8px;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+    .status.balanced{background:#ecfdf5;color:#065f46;border-color:#a7f3d0}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.81rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .obswrap{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+    .fitbox{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.9rem}
+    .fitbox b{color:#0369a1;font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 8</span>
+    <h1>&#128167; Impact of a Jet</h1>
+    <p>A virtual F1-16 apparatus: a vertical water jet strikes a deflector on a weighted stem. Load the pan with masses,
+       open the valve until the pan floats back to its datum — momentum balanced against gravity — and verify the
+       momentum equation for <strong>flat (90°), 120° and hemispherical (180°)</strong> targets. The hemisphere should
+       need exactly half the dynamic force of the flat plate.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objective</h2>
+    <p>To investigate the reaction force produced by the change in momentum of a jet striking flat and curved surfaces,
+       and compare measured forces with the momentum equation.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p class="eqn">v = Q/A &nbsp;•&nbsp; F<sub>y</sub> = ρQv(1−cosθ) = ρA·v²(1−cosθ) &nbsp;•&nbsp; balance: W = mg = F<sub>y</sub>
+       &nbsp;•&nbsp; slope of W vs v²: S = ρA(1−cosθ)</p>
+    <p>Deflection factors: flat plate θ = 90° → (1−cos90°) = 1; conical 120° → 1.5; hemispherical cup 180° → 2.
+       Plotting the applied weight against v² should give straight lines through the origin whose slopes are in the
+       ratio 1 : 1.5 : 2.</p>
+    <h2 style="margin-top:14px">Equipment</h2>
+    <p>F1-10 hydraulics bench; F1-16 impact-of-a-jet apparatus (clear cylinder, nozzle, interchangeable deflectors on a
+       spring-supported stem with weight pan, datum level gauge); stopwatch.</p>
+    <p>
+      <span class="pill">Nozzle d = 8 mm</span>
+      <span class="pill">Masses 50 → 500 g in 50 g steps</span>
+      <span class="pill">Collect ≥ 60 s per flow</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+        <div class="status" id="balChip">—</div>
+      </div>
+      <div>
+        <div class="mode-tabs">
+          <button id="d90" class="active">Flat 90°</button>
+          <button id="d120">Cone 120°</button>
+          <button id="d180">Hemisphere 180°</button>
+        </div>
+        <div class="ctrl">
+          <label>Mass on pan <span class="val"><span id="vMass">150</span> g</span></label>
+          <input type="range" id="mass" min="50" max="500" step="50" value="150">
+        </div>
+        <div class="ctrl">
+          <label>Bench valve <span class="val"><span id="vValve">30</span>%</span></label>
+          <input type="range" id="valve" min="5" max="100" step="0.5" value="30">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Open until the pan datum lines up with the gauge — or press Auto-balance.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Pan position vs datum</span><b id="oPan">—</b></div>
+          <div class="row"><span>Timed collection (60 s)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub></span><b id="oQ">—</b></div>
+          <div class="row"><span>Jet velocity v = Q/A</span><b id="oV">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn ghost" id="autoBtn">&#9878; Auto-balance</button>
+          <button class="btn" id="collectBtn">&#9201; Collect</button>
+          <button class="btn" id="recBtn" disabled>Record</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Record with the pan balanced. W = mg; F<sub>y</sub> = ρQv(1−cosθ)
+       from the measured flow; the last column compares them.</p>
+    <div class="obswrap">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>Deflector</th><th>m (g)</th><th>W (N)</th><th>Vol (L)</th><th>t (s)</th>
+        <th>Q (L/s)</th><th>v (m/s)</th><th>v² (m²/s²)</th><th>F<sub>y</sub> (N)</th><th>W/F<sub>y</sub></th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="11" style="color:var(--muted)">No readings yet — balance the pan, collect, then Record.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">W vs v² — slopes against theory</h2>
+    <canvas id="chart" width="620" height="360"></canvas>
+    <div class="fitbox" id="fitBox">Record at least two balanced points on a deflector to fit its slope.</div>
+  </section>
+
+  <section class="card">
+    <h2>Discussion</h2>
+    <details class="qa"><summary>Does this verify the momentum equation?</summary>
+      <p>Yes — quantitatively. The fitted W–v² slopes reproduce ρA(1−cosθ) within a few percent, and the three deflectors
+         fall in the predicted 1 : 1.5 : 2 ratio. The residual gap is systematic: the jet slows slightly (gravity, air
+         entrainment and splash) between nozzle and target, so slightly more flow is needed than the ideal theory says.</p></details>
+    <details class="qa"><summary>Would results differ if the deflector were closer to the nozzle?</summary>
+      <p>Yes. The jet decelerates under gravity as it rises (v² = v₀² − 2gs), so a closer target intercepts a faster jet
+         and the measured force would sit closer to the ideal prediction.</p></details>
+    <details class="qa"><summary>Why does the hemispherical cup double the force?</summary>
+      <p>It reverses the jet completely (θ = 180°), so the momentum change per unit mass is 2v instead of v for the flat
+         plate, which merely destroys the vertical component. That doubling is the basis of the Pelton bucket's shape.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> level the cylinder; check the pan swings freely and set the
+       datum gauge with no weights; wait for the pan to settle before recording; collect for at least 60 seconds.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, RHO=1000, D=0.008, A=Math.PI/4*D*D;
+const DEFL={d90:{f:1.0,name:'Flat 90°'}, d120:{f:1.5,name:'Cone 120°'}, d180:{f:2.0,name:'Hemi 180°'}};
+const QMAX=0.55e-3;
+let defl='d90', obs=[], collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function Qtrue(){ return (+document.getElementById('valve').value/100)*QMAX; }
+function jetForce(Q){ const v=Q/A; return RHO*Q*v*DEFL[defl].f*0.985; }  // 1.5% jet decay
+function Qbalance(m){ return Math.sqrt(m*G*A/(RHO*DEFL[defl].f*0.985)); }
+function panOffset(){ // mm; + = pan above datum (too much flow)
+  const W=(+document.getElementById('mass').value/1000)*G;
+  const F=jetForce(Qtrue());
+  return Math.max(-22,Math.min(22,(F-W)/W*60));
+}
+
+function refresh(){
+  document.getElementById('vMass').textContent=document.getElementById('mass').value;
+  document.getElementById('vValve').textContent=(+document.getElementById('valve').value).toFixed(1);
+  const off=panOffset();
+  document.getElementById('oPan').textContent=(off>=0?'+':'')+off.toFixed(1)+' mm';
+  const chip=document.getElementById('balChip');
+  if(Math.abs(off)<=1.2){ chip.className='status balanced'; chip.textContent='⚖ Balanced — pan datum on the gauge, ready to collect'; }
+  else{ chip.className='status'; chip.textContent= off>0?'Pan riding high — close the valve a little':'Pan sagging — open the valve'; }
+  document.getElementById('oCollect').textContent= collectRes? collectRes.vol.toFixed(1)+' L in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  document.getElementById('oV').textContent= collectRes? (collectRes.Qb/A).toFixed(2)+' m/s':'—';
+  document.getElementById('recBtn').disabled=!(collectRes&&Math.abs(off)<=1.2);
+}
+['mass','valve'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ collectRes=null; refresh(); }));
+
+document.getElementById('autoBtn').addEventListener('click',()=>{
+  const m=+document.getElementById('mass').value/1000;
+  const Q=Qbalance(m)*(1+noiseFor(m*731,0.004));
+  document.getElementById('valve').value=Math.min(100,Q/QMAX*100);
+  collectRes=null; refresh();
+});
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const t=60*(1+noiseFor(+document.getElementById('valve').value*3.7,0.006));
+    const vol=Qtrue()*1000*60*(1+noiseFor(+document.getElementById('valve').value*9.1,0.012));
+    collectRes={vol,t,Qb:vol/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  const m=+document.getElementById('mass').value/1000, W=m*G;
+  const Q=collectRes.Qb, v=Q/A, Fy=RHO*Q*v*DEFL[defl].f;
+  obs.push({defl:DEFL[defl].name, f:DEFL[defl].f, m:m*1000, W, vol:collectRes.vol, t:collectRes.t, Q, v, v2:v*v, Fy, ratio:W/Fy});
+  collectRes=null; noiseSeed+=0.37;
+  renderTable(); refresh();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+Object.keys(DEFL).forEach(k=>document.getElementById(k).addEventListener('click',()=>{
+  defl=k; collectRes=null;
+  Object.keys(DEFL).forEach(j=>document.getElementById(j).classList.toggle('active',j===k));
+  refresh();
+}));
+
+function renderTable(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="11" style="color:var(--muted)">No readings yet — balance the pan, collect, then Record.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.defl+'</td><td>'+o.m.toFixed(0)+'</td><td>'+o.W.toFixed(3)+
+    '</td><td>'+o.vol.toFixed(1)+'</td><td>'+o.t.toFixed(0)+'</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.v.toFixed(2)+
+    '</td><td>'+o.v2.toFixed(2)+'</td><td>'+o.Fy.toFixed(3)+'</td><td>'+o.ratio.toFixed(3)+'</td></tr>').join('');
+  drawChart();
+}
+
+// ================= rig =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=2+Qtrue()*20000;
+  rc.clearRect(0,0,RW,RH);
+  const cx=280, baseY=RH-40;
+  // bench
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,baseY,RW,RH-baseY);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,baseY,RW,RH-baseY);
+  // cylinder
+  rc.fillStyle='rgba(224,242,254,.5)'; rc.fillRect(cx-90,60,180,baseY-60);
+  rc.strokeStyle='#64748b'; rc.lineWidth=2; rc.strokeRect(cx-90,60,180,baseY-60);
+  // nozzle (bottom, firing up)
+  rc.fillStyle='#475569';
+  rc.beginPath(); rc.moveTo(cx-14,baseY); rc.lineTo(cx-5,baseY-34); rc.lineTo(cx+5,baseY-34); rc.lineTo(cx+14,baseY); rc.closePath(); rc.fill();
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('nozzle d = 8 mm',cx+22,baseY-8);
+  // target height
+  const targY=150;
+  // jet
+  const Q=Qtrue();
+  if(Q>0.02e-3){
+    const jw=4+Q/QMAX*5;
+    rc.fillStyle='#38bdf8'; rc.fillRect(cx-jw/2,targY+12,jw,baseY-34-targY-12);
+    rc.fillStyle='#0ea5e9';
+    for(let i=0;i<8;i++){ const y=baseY-40-((i*26+phase)%(baseY-52-targY)); rc.fillRect(cx-jw/2+1,y,jw-2,5); }
+    // splash at target
+    rc.fillStyle='rgba(125,211,252,.8)';
+    const spread= defl==='d90'? 26 : defl==='d120'? 18 : 10;
+    for(let i=0;i<7;i++){ const a=(i/6-0.5)*Math.PI*(defl==='d180'?1.6:0.9);
+      rc.beginPath(); rc.arc(cx+Math.sin(a)*spread,targY+14+Math.abs(Math.cos(a))*(defl==='d180'?18:5),2.5,0,7); rc.fill(); }
+  }
+  // deflector
+  const off=panOffset()*1.2;
+  const ty=targY-off;
+  rc.fillStyle='#0369a1';
+  if(defl==='d90'){ rc.fillRect(cx-30,ty,60,8); }
+  else if(defl==='d120'){ rc.beginPath(); rc.moveTo(cx-30,ty+14); rc.lineTo(cx,ty); rc.lineTo(cx+30,ty+14); rc.lineTo(cx+30,ty+20); rc.lineTo(cx,ty+7); rc.lineTo(cx-30,ty+20); rc.closePath(); rc.fill(); }
+  else { rc.beginPath(); rc.arc(cx,ty+16,30,Math.PI,0); rc.lineTo(cx+24,ty+16); rc.arc(cx,ty+16,24,0,Math.PI,true); rc.closePath(); rc.fill(); }
+  // stem + pan + spring
+  rc.strokeStyle='#334155'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(cx,ty); rc.lineTo(cx,84-off); rc.stroke();
+  rc.fillStyle='#b45309'; rc.fillRect(cx-44,74-off,88,8);          // pan
+  const mass=+document.getElementById('mass').value;
+  for(let i=0;i<mass/50;i++){ rc.fillStyle='#78350f'; rc.fillRect(cx-16,66-off-i*7,32,6); }
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText(mass+' g',cx+52,72-off);
+  // datum gauge
+  rc.strokeStyle='#dc2626'; rc.lineWidth=1.6; rc.setLineDash([5,4]);
+  rc.beginPath(); rc.moveTo(cx-110,78); rc.lineTo(cx+110,78); rc.stroke(); rc.setLineDash([]);
+  rc.fillStyle='#dc2626'; rc.font='10px Inter'; rc.fillText('datum gauge',cx-172,82);
+  // spring hint
+  rc.strokeStyle='#94a3b8'; rc.lineWidth=1.5;
+  rc.beginPath();
+  for(let i=0;i<6;i++){ rc.moveTo(cx-60,96+i*6-off/2); rc.lineTo(cx-52,99+i*6-off/2); }
+  rc.stroke();
+  // collection tank
+  const vx=530,vw=64,vb=baseY-2,vh=64;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*60,60).toFixed(0)+' s';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('volumetric tank',vx-6,vb-vh-6);
+}
+requestAnimationFrame(drawRig);
+
+// ================= chart =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:56,r:14,t:16,b:42};
+const V2MAX=110, WMAX=5.5;
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const X=v=>M.l+v/V2MAX*(CW-M.l-M.r), Y=w=>CH-M.b-w/WMAX*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let v=0;v<=V2MAX;v+=20){ cc.beginPath(); cc.moveTo(X(v),M.t); cc.lineTo(X(v),CH-M.b); cc.stroke(); cc.fillText(v,X(v),CH-M.b+14); }
+  cc.textAlign='right';
+  for(let w=0;w<=WMAX;w+=1){ cc.beginPath(); cc.moveTo(M.l,Y(w)); cc.lineTo(CW-M.r,Y(w)); cc.stroke(); cc.fillText(w,M.l-5,Y(w)+3); }
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('v² (m²/s²)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('applied weight W (N)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  const series=[['Flat 90°','#0284c7',1.0],['Cone 120°','#d97706',1.5],['Hemi 180°','#7c3aed',2.0]];
+  const fits=[];
+  series.forEach(([name,col,f],si)=>{
+    // theoretical line
+    const Sth=RHO*A*f;
+    cc.strokeStyle=col; cc.lineWidth=1.2; cc.setLineDash([6,5]); cc.globalAlpha=0.6;
+    cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(V2MAX),Y(Math.min(WMAX,Sth*V2MAX))); cc.stroke();
+    cc.setLineDash([]); cc.globalAlpha=1;
+    // points + fit
+    const pts=obs.filter(o=>o.defl===name);
+    pts.forEach(o=>{
+      cc.fillStyle=col; cc.beginPath();
+      if(si===0) cc.arc(X(o.v2),Y(o.W),4.5,0,7);
+      else if(si===1) cc.rect(X(o.v2)-4,Y(o.W)-4,8,8);
+      else { cc.moveTo(X(o.v2),Y(o.W)-5); cc.lineTo(X(o.v2)+5,Y(o.W)+4); cc.lineTo(X(o.v2)-5,Y(o.W)+4); cc.closePath(); }
+      cc.fill(); cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+    });
+    if(pts.length>=2){
+      let sxy=0,sxx=0; pts.forEach(o=>{ sxy+=o.v2*o.W; sxx+=o.v2*o.v2; });
+      const S=sxy/sxx;
+      cc.strokeStyle=col; cc.lineWidth=2;
+      cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(V2MAX),Y(Math.min(WMAX,S*V2MAX))); cc.stroke();
+      fits.push(name+': S<sub>exp</sub> = <b>'+S.toFixed(4)+'</b> vs S<sub>th</sub> = ρA(1−cosθ) = '+Sth.toFixed(4)+
+        ' ('+(((S/Sth)-1)*100).toFixed(1)+'%)');
+    }
+    cc.fillStyle=col; cc.textAlign='left'; cc.font='10px Inter';
+    cc.fillRect(M.l+10,M.t+8+si*14,9,9); cc.fillStyle='#334155'; cc.fillText(name+' (dashed = theory)',M.l+23,M.t+16+si*14);
+  });
+  document.getElementById('fitBox').innerHTML= fits.length? fits.join('<br>') :'Record at least two balanced points on a deflector to fit its slope.';
+  cc.textAlign='left';
+}
+drawChart();
+renderTable();
+refresh();
+</script>
+</body>
+</html>

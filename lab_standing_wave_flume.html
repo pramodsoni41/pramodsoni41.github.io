@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 10: Standing Wave Flume | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: calibrate a standing-wave (venturi) flume — critical flow at the throat gives a unique head-discharge relation; determine its coefficient and calibration curve."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig,canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    canvas#rig{background:linear-gradient(#f0f9ff,#f8fafc)}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:4px 0;font-size:.88rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .status{padding:8px 12px;border-radius:10px;font-weight:700;font-size:.84rem;text-align:center;margin-top:8px;background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+    .status.warn{background:#fffbeb;color:#92400e;border-color:#fde68a}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.81rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+    .fitbox{background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:10px 14px;margin-top:10px;font-size:.92rem}
+    .fitbox b{color:#0369a1;font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 10</span>
+    <h1>&#127940; Calibration of a Standing Wave Flume</h1>
+    <p>A venturi flume in the 5 m tilting channel: the throat contraction forces the flow through <strong>critical
+       depth</strong>, so one upstream head reading fixes the discharge — no downstream gauge needed. A hydraulic jump
+       (the <em>standing wave</em>) rides just downstream of the throat. Measure head and discharge over a range of
+       flows, determine the flume coefficient C<sub>f</sub>, and draw its calibration curve.</p>
+  </div>
+
+  <section class="card">
+    <h2>Aim</h2>
+    <p>To determine the coefficient of discharge for a standing-wave flume both by calculation and graphically, and to
+       calibrate the flume by preparing its calibration curve.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p class="eqn">critical flow at throat: Q = C<sub>f</sub>·1.705·B·H<sup>3/2</sup> &nbsp;•&nbsp;
+       H = upstream head above the hump crest &nbsp;•&nbsp; 1.705 = (2/3)<sup>3/2</sup>·√g</p>
+    <p>The side contraction and bed hump reduce the specific energy margin until the flow passes through critical
+       conditions in the throat. Because critical depth and discharge are uniquely related, the flume acts as a
+       flow-measuring structure — a "venturi" for open channels. Downstream, the supercritical stream jumps back to the
+       subcritical tailwater through a standing wave. Modular (free-flow) operation requires the jump to stay downstream
+       of the throat; drowning it spoils the unique H–Q relation.</p>
+    <h2 style="margin-top:14px">Experimental set-up</h2>
+    <p>Glass-walled (Perspex) rectangular tilting-bed flume, 5 m long × 10.3 cm wide × 60 cm deep, fed by a pump;
+       standing-wave flume insert with side contraction and hump; pointer gauge; measuring tank with stopwatch.</p>
+    <p>
+      <span class="pill">Flume width T = 10.3 cm</span>
+      <span class="pill">Throat width B = 6.0 cm</span>
+      <span class="pill">Hump height z = 2.0 cm</span>
+      <span class="pill">Bed slope S₀ = 0</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="330"></canvas>
+        <div class="status" id="modChip">—</div>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Supply valve <span class="val"><span id="vValve">50</span>%</span></label>
+          <input type="range" id="valve" min="8" max="100" step="1" value="50">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Take ~7 observations across the range.</div>
+        </div>
+
+        <div class="readout">
+          <div class="row"><span>Pointer gauge: head H over hump</span><b id="oH">—</b></div>
+          <div class="row"><span>H<sup>3/2</sup></span><b id="oH32">—</b></div>
+          <div class="row"><span>Measuring tank (Δlevel over t)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>tank</sub></span><b id="oQ">—</b></div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Tank reading (60 s)</button>
+          <button class="btn" id="recBtn" disabled>Record</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Tank area A<sub>t</sub> = 0.25 m². Q = A<sub>t</sub>·Δlevel/t.
+       C<sub>f</sub> = Q / (1.705·B·H<sup>3/2</sup>).</p>
+    <div style="overflow-x:auto">
+    <table class="obs">
+      <thead><tr>
+        <th>No.</th><th>H (cm)</th><th>H<sup>3/2</sup> (m<sup>3/2</sup>)</th><th>Δlevel (cm)</th><th>t (s)</th>
+        <th>Q (L/s)</th><th>C<sub>f</sub></th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="7" style="color:var(--muted)">No observations yet — set a flow, take a tank reading, then Record.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">Calibration curve — Q vs H<sup>3/2</sup></h2>
+    <canvas id="chart" width="620" height="330"></canvas>
+    <div class="fitbox" id="fitBox">Record at least two observations to fit the flume coefficient.</div>
+  </section>
+
+  <section class="card">
+    <h2>Discussion &amp; Precautions</h2>
+    <details class="qa"><summary>Why does critical flow make the flume a flow meter?</summary>
+      <p>At the critical condition the specific energy is a minimum for the given discharge, and depth and discharge are
+         uniquely linked (q² = g·y<sub>c</sub>³). Once the throat forces the flow through critical, the upstream energy
+         head alone fixes Q — no second gauge, no rating shifts from downstream conditions, as long as the flume runs
+         free (modular).</p></details>
+    <details class="qa"><summary>What is the standing wave, and why must it stay downstream?</summary>
+      <p>It is the hydraulic jump by which the supercritical jet leaving the throat rejoins the subcritical tailwater. If
+         the tailwater rises enough to push the jump into the throat, the flow there is no longer critical — the flume is
+         "drowned" and the one-to-one H–Q relation is lost.</p></details>
+    <details class="qa"><summary>Why is C<sub>f</sub> slightly less than 1?</summary>
+      <p>Friction in the approach and contraction, non-uniform velocity distribution, and streamline curvature over the
+         hump all slightly reduce the effective energy head, so real flumes deliver a few percent less than the ideal
+         critical-flow formula — typically C<sub>f</sub> ≈ 0.95–0.98.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> set the flume bed to zero slope and record the bed (datum)
+       pointer reading first; confirm the standing wave is visible downstream of the throat at every flow; read the
+       upstream gauge where the surface is calm, clear of the drawdown; time the tank rise over at least 60 s.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, B=0.06, CF=0.96, AT=0.25;      // throat width, true coeff, tank area m²
+let obs=[], collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function Qtrue(){ return (0.3+(+document.getElementById('valve').value/100)*2.6)/1000; }  // 0.5–2.9 L/s
+function Htrue(){ return Math.pow(Qtrue()/(CF*1.705*B),2/3); }                              // m
+function Hmeas(){ return Htrue()+noiseFor(+document.getElementById('valve').value*7.3,0.0006); }
+
+function refresh(){
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  const H=Hmeas();
+  document.getElementById('oH').textContent=(H*100).toFixed(2)+' cm';
+  document.getElementById('oH32').textContent=Math.pow(H,1.5).toExponential(3);
+  document.getElementById('oCollect').textContent= collectRes? collectRes.dz.toFixed(1)+' cm in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  const chip=document.getElementById('modChip');
+  chip.className='status'; chip.textContent='Modular flow — standing wave clear of the throat ✓';
+  document.getElementById('recBtn').disabled=!collectRes;
+}
+document.getElementById('valve').addEventListener('input',()=>{ collectRes=null; refresh(); });
+
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const t=60*(1+noiseFor(+document.getElementById('valve').value*3.7,0.006));
+    const dz=Qtrue()*60/AT*100*(1+noiseFor(+document.getElementById('valve').value*9.1,0.012));  // cm rise
+    collectRes={dz,t,Qb:dz/100*AT/t};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  const H=Hmeas(), H32=Math.pow(H,1.5);
+  const cf=collectRes.Qb/(1.705*B*H32);
+  obs.push({H:H*100,H32,dz:collectRes.dz,t:collectRes.t,Q:collectRes.Qb,cf});
+  collectRes=null; noiseSeed+=0.37;
+  renderAll();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderAll(); });
+
+function renderAll(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="7" style="color:var(--muted)">No observations yet — set a flow, take a tank reading, then Record.</td></tr>'; }
+  else tb.innerHTML=obs.map((o,i)=>'<tr><td>'+(i+1)+'</td><td>'+o.H.toFixed(2)+'</td><td>'+o.H32.toExponential(3)+
+    '</td><td>'+o.dz.toFixed(1)+'</td><td>'+o.t.toFixed(0)+'</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.cf.toFixed(3)+'</td></tr>').join('');
+  drawChart(); refresh();
+}
+
+// ================= rig: side view with critical transition + jump =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=1+Qtrue()*2500;
+  rc.clearRect(0,0,RW,RH);
+  const bedY=RH-70, SC=9;                     // px per cm of depth
+  const humpX1=250, humpX2=390, z=2*SC;       // hump 2 cm
+  const H=Htrue()*100;                         // cm over hump
+  const yc=Math.pow(Math.pow(Qtrue()/B,2)/G,1/3)*100;  // critical depth over hump (cm)
+  const yUp=(2+H), yDown=2+yc*0.75+H*0.35;             // upstream depth over bed; tailwater approx
+
+  // side walls / bed
+  rc.fillStyle='#e2e8f0'; rc.fillRect(0,bedY,RW,20);
+  rc.strokeStyle='#94a3b8'; rc.strokeRect(0,bedY,RW,20);
+  // hump
+  rc.fillStyle='#cbd5e1';
+  rc.beginPath(); rc.moveTo(humpX1,bedY);
+  rc.quadraticCurveTo((humpX1+humpX2)/2,bedY-z*1.6,humpX2,bedY);
+  rc.closePath(); rc.fill(); rc.strokeStyle='#64748b'; rc.stroke();
+
+  // water surface: subcritical upstream → drawdown over hump through critical → supercritical → jump → tailwater
+  const midX=(humpX1+humpX2)/2;
+  const jumpX=humpX2+55;
+  rc.fillStyle='#7dd3fc';
+  rc.beginPath();
+  rc.moveTo(0,bedY-yUp*SC);
+  rc.lineTo(humpX1-40,bedY-yUp*SC);
+  // drawdown to critical over hump crest
+  rc.quadraticCurveTo(midX-30,bedY-yUp*SC,midX,bedY-z-(yc*SC));
+  // supercritical run-down
+  rc.quadraticCurveTo(humpX2+8,bedY-z*0.3-yc*SC*0.6,jumpX,bedY-yc*SC*0.55);
+  // standing wave (jump) up to tailwater
+  rc.quadraticCurveTo(jumpX+18,bedY-yDown*SC*1.06,jumpX+40,bedY-yDown*SC);
+  rc.lineTo(RW,bedY-yDown*SC);
+  rc.lineTo(RW,bedY); rc.lineTo(0,bedY); rc.closePath(); rc.fill();
+
+  // roller foam at jump
+  rc.fillStyle='rgba(255,255,255,.9)';
+  for(let i=0;i<14;i++){ const bx=jumpX+Math.random()*38, by=bedY-yDown*SC+Math.random()*14; rc.beginPath(); rc.arc(bx,by,1.6+Math.random()*2.2,0,7); rc.fill(); }
+  rc.fillStyle='#b45309'; rc.font='bold 10px Inter'; rc.fillText('standing wave',jumpX-4,bedY-yDown*SC-10);
+
+  // flow particles
+  rc.fillStyle='rgba(255,255,255,.75)';
+  for(let i=0;i<20;i++){
+    const x=((i*37+phase)%(RW-20))+10;
+    let top;
+    if(x<humpX1-40) top=bedY-yUp*SC;
+    else if(x<midX) top=bedY-yUp*SC+(x-(humpX1-40))/(midX-(humpX1-40))*((yUp-2-yc)*SC-z*0);
+    else if(x<jumpX) top=bedY-z*0.5-yc*SC*0.8;
+    else top=bedY-yDown*SC;
+    rc.fillRect(x,top+8+(i%3)*8,6,2.4);
+  }
+
+  // pointer gauge upstream
+  const gx=150;
+  rc.fillStyle='#475569'; rc.fillRect(gx-20,20,40,10);
+  rc.strokeStyle='#334155'; rc.lineWidth=2;
+  rc.beginPath(); rc.moveTo(gx,30); rc.lineTo(gx,bedY-yUp*SC-2); rc.stroke();
+  rc.beginPath(); rc.moveTo(gx,bedY-yUp*SC-2); rc.lineTo(gx-4,bedY-yUp*SC-9); rc.lineTo(gx+4,bedY-yUp*SC-9); rc.closePath();
+  rc.fillStyle='#dc2626'; rc.fill();
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('pointer gauge',gx-32,16);
+  // H dimension over hump crest level
+  rc.strokeStyle='#0369a1'; rc.setLineDash([4,3]); rc.lineWidth=1;
+  rc.beginPath(); rc.moveTo(gx+16,bedY-z); rc.lineTo(humpX1+30,bedY-z); rc.stroke(); rc.setLineDash([]);
+  rc.beginPath(); rc.moveTo(gx+24,bedY-z); rc.lineTo(gx+24,bedY-yUp*SC); rc.stroke();
+  rc.fillStyle='#0369a1'; rc.font='bold 10px Inter';
+  rc.fillText('H = '+(Htrue()*100).toFixed(1)+' cm',gx+30,bedY-z-(H*SC)/2);
+  // critical marker at throat
+  rc.fillStyle='#059669'; rc.font='10px Inter'; rc.textAlign='center';
+  rc.fillText('critical depth y_c',midX,bedY-z-yc*SC-10); rc.textAlign='left';
+
+  // plan-view inset: throat contraction
+  const ix=430,iy=18,iw=190,ih=64;
+  rc.fillStyle='#fff'; rc.fillRect(ix,iy,iw,ih); rc.strokeStyle='#94a3b8'; rc.strokeRect(ix,iy,iw,ih);
+  rc.fillStyle='#7dd3fc';
+  rc.beginPath();
+  rc.moveTo(ix+6,iy+10); rc.lineTo(ix+60,iy+10); rc.lineTo(ix+92,iy+20); rc.lineTo(ix+124,iy+20);
+  rc.lineTo(ix+156,iy+10); rc.lineTo(ix+iw-6,iy+10);
+  rc.lineTo(ix+iw-6,iy+ih-10); rc.lineTo(ix+156,iy+ih-10); rc.lineTo(ix+124,iy+ih-20); rc.lineTo(ix+92,iy+ih-20);
+  rc.lineTo(ix+60,iy+ih-10); rc.lineTo(ix+6,iy+ih-10); rc.closePath(); rc.fill();
+  rc.strokeStyle='#334155'; rc.stroke();
+  rc.fillStyle='#334155'; rc.font='9px Inter';
+  rc.fillText('plan: T = 10.3 cm → throat B = 6 cm',ix+8,iy+ih+12);
+
+  // measuring tank
+  const vx=560,vw=64,vb=RH-8,vh=54;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*60,60).toFixed(0)+' s';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='9px Inter'; rc.fillText('measuring tank',vx-8,vb-vh-5);
+}
+requestAnimationFrame(drawRig);
+
+// ================= chart =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:58,r:14,t:16,b:42};
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const XMAX=0.032, YMAX=3.2;   // H^1.5 (m^1.5), Q L/s
+  const X=v=>M.l+v/XMAX*(CW-M.l-M.r), Y=q=>CH-M.b-q/YMAX*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let v=0;v<=XMAX+1e-9;v+=0.008){ cc.beginPath(); cc.moveTo(X(v),M.t); cc.lineTo(X(v),CH-M.b); cc.stroke(); cc.fillText(v.toFixed(3),X(v),CH-M.b+14); }
+  cc.textAlign='right';
+  for(let q=0;q<=YMAX;q+=0.8){ cc.beginPath(); cc.moveTo(M.l,Y(q)); cc.lineTo(CW-M.r,Y(q)); cc.stroke(); cc.fillText(q.toFixed(1),M.l-5,Y(q)+3); }
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('H^1.5 (m^1.5)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('Q (L/s)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  // ideal Cf=1 line
+  const Sid=1.705*B*1000;
+  cc.strokeStyle='#94a3b8'; cc.setLineDash([6,5]); cc.lineWidth=1.5;
+  cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(XMAX),Y(Math.min(YMAX,Sid*XMAX))); cc.stroke(); cc.setLineDash([]);
+  cc.fillStyle='#64748b'; cc.textAlign='left'; cc.font='10px Inter';
+  cc.fillText('ideal Cf = 1 (dashed)',M.l+10,M.t+14);
+  if(obs.length>=2){
+    let sxy=0,sxx=0;
+    obs.forEach(o=>{ sxy+=o.H32*(o.Q*1000); sxx+=o.H32*o.H32; });
+    const S=sxy/sxx, cfFit=S/(1.705*B*1000);
+    cc.strokeStyle='#0284c7'; cc.lineWidth=2;
+    cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(XMAX),Y(Math.min(YMAX,S*XMAX))); cc.stroke();
+    const cfAvg=obs.reduce((s,o)=>s+o.cf,0)/obs.length;
+    document.getElementById('fitBox').innerHTML='Graphical (slope): <b>C<sub>f</sub> = '+cfFit.toFixed(3)+
+      '</b> &nbsp;·&nbsp; by calculation (mean of column): <b>C<sub>f</sub> = '+cfAvg.toFixed(3)+'</b>';
+  } else document.getElementById('fitBox').innerHTML='Record at least two observations to fit the flume coefficient.';
+  obs.forEach(o=>{
+    cc.fillStyle='#0284c7';
+    cc.beginPath(); cc.arc(X(o.H32),Y(o.Q*1000),4.5,0,7); cc.fill();
+    cc.strokeStyle='#fff'; cc.lineWidth=1.2; cc.stroke();
+  });
+  cc.textAlign='left';
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>

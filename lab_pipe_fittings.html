@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Virtual Lab · Experiment 11: Minor Losses in Pipe Fittings | Dr. Pramod Soni</title>
+  <meta name="description" content="Interactive virtual lab for CE-311: determine the loss coefficient K for bends, an enlargement, a contraction, a mitre, an elbow and a gate valve from manometer readings over a range of flows."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .lab-hero{background:linear-gradient(135deg,#075985 0%,#0ea5e9 100%);border-radius:18px;padding:26px 28px;margin-top:16px;color:#fff}
+    .lab-hero h1{margin:0 0 6px;font-size:1.7rem;color:#fff}
+    .lab-hero .badge{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:3px 14px;font-size:.82rem;margin-bottom:10px}
+    .lab-hero p{color:rgba(255,255,255,.92);margin:4px 0 0;max-width:760px}
+    .sim{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+    @media(max-width:880px){.sim{grid-template-columns:1fr}}
+    canvas#rig,canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff}
+    canvas#rig{background:linear-gradient(#f0f9ff,#f8fafc)}
+    .ctrl{margin-bottom:14px}
+    .ctrl label{display:flex;justify-content:space-between;font-weight:600;font-size:.88rem;margin-bottom:5px}
+    .ctrl label .val{color:#0284c7;font-variant-numeric:tabular-nums}
+    input[type=range]{width:100%;accent-color:#0284c7}
+    .readout{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}
+    .readout .row{display:flex;justify-content:space-between;padding:3px 0;font-size:.85rem;border-bottom:1px dashed var(--line)}
+    .readout .row:last-child{border-bottom:none}
+    .readout .row b{font-variant-numeric:tabular-nums;color:#0369a1}
+    .btn{padding:9px 14px;border:none;border-radius:10px;background:#0284c7;color:#fff;font:inherit;font-weight:700;cursor:pointer;font-size:.88rem}
+    .btn:hover{background:#0369a1}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.8rem}
+    table.obs th,table.obs td{border:1px solid var(--line);padding:5px 6px;text-align:center;font-variant-numeric:tabular-nums}
+    table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.72rem}
+    table.obs tr:nth-child(even) td{background:#f8fafc}
+    .obswrap{max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+    .eqn{font-family:ui-monospace,monospace;background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;overflow-x:auto;font-size:.9rem}
+    details.qa{margin-top:8px}details.qa summary{cursor:pointer;font-weight:600;color:#0369a1;padding:6px 0}
+    .pill{display:inline-block;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8rem;margin:2px 2px 2px 0}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="wrap nav-inner">
+  <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a><a href="Other_Activities.html">Other Activities</a><a href="publications.html">Publications</a>
+    <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a><a href="students.html">Students</a>
+    <a href="administration.html">Administration</a><a href="Important_Links.html">Important Links</a>
+  </div>
+</div></nav>
+
+<main class="wrap">
+  <p style="margin-bottom:0;font-size:.9rem;"><a href="teaching.html">&#8592; Back to Teaching</a></p>
+  <div class="lab-hero">
+    <span class="badge">CE-311 Open Channel Flow Laboratory · Experiment 11</span>
+    <h1>&#128296; Minor Losses in Bends &amp; Fittings</h1>
+    <p>A virtual F1-22 rig: six fittings in series — <strong>mitre, elbow, short bend, long bend, enlargement,
+       contraction</strong> — each straddled by a manometer pair, plus a <strong>gate valve</strong> on a differential
+       gauge. Run a range of flows, read the head drops, and extract each fitting's loss coefficient
+       K — then see why "minor" losses are anything but minor.</p>
+  </div>
+
+  <section class="card">
+    <h2>Objective</h2>
+    <p>To determine the loss coefficient K for a range of pipe fittings, including several bends, a contraction, an
+       enlargement and a gate valve.</p>
+    <h2 style="margin-top:14px">Theory</h2>
+    <p class="eqn">h<sub>L</sub> = K·v²/2g &nbsp;•&nbsp; same-bore fitting: h<sub>L</sub> = Δh (manometer difference)
+       &nbsp;•&nbsp; area change: h<sub>L</sub> = Δh + (v<sub>up</sub>² − v<sub>down</sub>²)/2g</p>
+    <p>Each fitting destroys energy in the swirl and separation its geometry provokes; the loss scales with the velocity
+       head, and K is the constant of proportionality. Where the bore changes, part of the manometric difference is
+       velocity-head exchange, not loss — across the enlargement the piezometric head actually <em>rises</em> — so the
+       kinetic correction must be applied before computing K.</p>
+    <h2 style="margin-top:14px">Equipment</h2>
+    <p>F1-10 hydraulics bench; F1-22 energy-losses-in-bends apparatus (twelve manometers, differential gauge, air-bleed
+       valve, flow control valve); stopwatch; clamps; thermometer.</p>
+    <p>
+      <span class="pill">Pipe bore d = 18.3 mm</span>
+      <span class="pill">Enlargement outlet / contraction inlet d = 24.0 mm</span>
+      <span class="pill">Collect ≥ 60 s per flow</span>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Procedure — perform it here</h2>
+    <div class="sim">
+      <div>
+        <canvas id="rig" width="640" height="340"></canvas>
+      </div>
+      <div>
+        <div class="ctrl">
+          <label>Flow-control valve <span class="val"><span id="vValve">60</span>%</span></label>
+          <input type="range" id="valve" min="15" max="100" step="1" value="60">
+          <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Take ~5 runs across the flow range.</div>
+        </div>
+        <div class="ctrl">
+          <label>Gate-valve opening <span class="val"><span id="vGate">50</span>%</span></label>
+          <input type="range" id="gate" min="25" max="100" step="25" value="50">
+        </div>
+
+        <div class="readout" id="liveDh"></div>
+
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn" id="collectBtn">&#9201; Collect</button>
+          <button class="btn" id="recBtn" disabled>Record run (all fittings)</button>
+          <button class="btn ghost" id="clrBtn">Clear</button>
+        </div>
+        <div class="readout" style="margin-top:10px">
+          <div class="row"><span>Timed collection (60 s)</span><b id="oCollect">not started</b></div>
+          <div class="row"><span>Q<sub>bench</sub></span><b id="oQ">—</b></div>
+          <div class="row"><span>v (18.3 mm pipe)</span><b id="oV">—</b></div>
+          <div class="row"><span>v²/2g</span><b id="oVh">—</b></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Observations &amp; Computations</h2>
+    <p style="font-size:.86rem;color:var(--muted)">One row per fitting per run. v refers to the 18.3 mm pipe (the
+       reference for K). For the enlargement and contraction the kinetic correction (v₁²−v₂²)/2g is applied to the raw
+       manometric difference before computing K; the gate valve uses the differential gauge.</p>
+    <div class="obswrap">
+    <table class="obs">
+      <thead><tr>
+        <th>Run</th><th>Q (L/s)</th><th>Fitting</th><th>Δh raw (mm)</th><th>h<sub>L</sub> (mm)</th>
+        <th>v²/2g (mm)</th><th>K = h<sub>L</sub>/(v²/2g)</th><th>K typical</th>
+      </tr></thead>
+      <tbody id="obsRows"><tr><td colspan="8" style="color:var(--muted)">No runs yet — set a flow, collect, then Record.</td></tr></tbody>
+    </table>
+    </div>
+
+    <h2 style="margin-top:16px">h<sub>L</sub> vs velocity head — slope = K</h2>
+    <canvas id="chart" width="620" height="360"></canvas>
+  </section>
+
+  <section class="card">
+    <h2>Discussion &amp; Precautions</h2>
+    <details class="qa"><summary>Why are “minor” losses often not minor?</summary>
+      <p>In compact pipe networks — pump stations, plant rooms, building services — fittings can outnumber metres of
+         straight pipe, and a single half-open gate valve (K ≈ 2) wastes as much head as many metres of pipe friction.
+         The name refers to the analysis category, not the magnitude.</p></details>
+    <details class="qa"><summary>Why does the mitre lose more than the long bend?</summary>
+      <p>The sharper the turn, the stronger the flow separation and the secondary (twin-vortex) swirl it sets up:
+         mitre (K ≈ 1.1) &gt; elbow (≈ 0.9) &gt; short bend (≈ 0.75) &gt; long-radius bend (≈ 0.45). Gradual geometry lets
+         the flow turn with attached boundary layers.</p></details>
+    <details class="qa"><summary>Why does the piezometric head rise across the enlargement?</summary>
+      <p>The flow decelerates into the larger bore, converting kinetic energy back to pressure (a diffuser). The rise is
+         less than the ideal (v₁²−v₂²)/2g because Borda–Carnot separation loss eats part of it — that shortfall is
+         exactly the h<sub>L</sub> the experiment extracts.</p></details>
+    <details class="qa"><summary>How does the gate valve's K change with opening?</summary>
+      <p>Dramatically and non-linearly: roughly K ≈ 0.2 fully open, ≈ 0.9 at three-quarters, ≈ 2 at half, and ≈ 17 at
+         one-quarter open — which is why throttling with a gate valve is so dissipative, and control valves exist.</p></details>
+    <p style="margin-top:10px"><strong>Precautions:</strong> purge all air from the manometers and gauge before readings;
+       take readings only at steady flow; apply the kinetic correction where the bore changes; collect for at least 60 s;
+       note the water temperature.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p></footer>
+
+<script>
+document.getElementById('navToggle').addEventListener('click',function(){document.getElementById('navLinks').classList.toggle('open');});
+(function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
+
+// ================= model =================
+const G=9.81, D1=0.0183, D2=0.0240;
+const A1=Math.PI/4*D1*D1, A2=Math.PI/4*D2*D2;
+const FIT=[
+  {key:'mitre',       name:'Mitre',        K:1.10, kind:'plain', col:'#dc2626'},
+  {key:'elbow',       name:'Elbow',        K:0.90, kind:'plain', col:'#d97706'},
+  {key:'short',       name:'Short bend',   K:0.75, kind:'plain', col:'#ca8a04'},
+  {key:'long',        name:'Long bend',    K:0.45, kind:'plain', col:'#059669'},
+  {key:'enl',         name:'Enlargement',  K:0.18, kind:'enl',   col:'#0284c7'},
+  {key:'con',         name:'Contraction',  K:0.25, kind:'con',   col:'#7c3aed'},
+];
+const GATEK={25:17.0,50:2.1,75:0.90,100:0.20};
+let obs=[], runNo=0, collectRes=null, collecting=false, collectStart=0, noiseSeed=0;
+
+function noiseFor(k,amp){ const s=Math.sin((k+noiseSeed)*127.1)*43758.5453; return ((s-Math.floor(s))*2-1)*amp; }
+function Qtrue(){ return (0.05+(+document.getElementById('valve').value/100)*0.30)/1000; }
+function fittingData(Q){
+  const v1=Q/A1, v2=Q/A2, vh1=v1*v1/(2*G), vh2=v2*v2/(2*G);
+  // K referenced to the 18.3 mm pipe velocity. Manometric (piezometric) differences:
+  //  enlargement (18.3→24 mm): Δh = hL − (vh1−vh2)  — pressure recovers, raw diff goes negative
+  //  contraction (24→18.3 mm): Δh = hL + (vh1−vh2)  — acceleration adds to the drop
+  const rows=FIT.map(f=>{
+    const hL=f.K*vh1;
+    const dhRaw= f.kind==='enl'? hL-(vh1-vh2) : f.kind==='con'? hL+(vh1-vh2) : hL;
+    return {f,hL,dhRaw};
+  });
+  const gk=GATEK[+document.getElementById('gate').value];
+  const gate={hL:gk*vh1, K:gk};
+  return {v1,vh1,vh2,rows,gate};
+}
+function measuredNow(){
+  const Q=Qtrue(), fd=fittingData(Q);
+  const k=+document.getElementById('valve').value*13+(+document.getElementById('gate').value);
+  const rows=fd.rows.map((r,i)=>({...r, dhMeas:r.dhRaw*1000+noiseFor(k+i*29,1.0)}));
+  const gateBar=(fd.gate.hL/10.2)+noiseFor(k+999,0.0008);
+  return {Q,fd,rows,gateBar};
+}
+
+function refresh(){
+  document.getElementById('vValve').textContent=document.getElementById('valve').value;
+  document.getElementById('vGate').textContent=document.getElementById('gate').value;
+  const ms=measuredNow();
+  const live=document.getElementById('liveDh');
+  live.innerHTML=ms.rows.map(r=>'<div class="row"><span>'+r.f.name+' Δh</span><b>'+r.dhMeas.toFixed(1)+' mm</b></div>').join('')+
+    '<div class="row"><span>Gate valve gauge</span><b>'+ms.gateBar.toFixed(3)+' bar</b></div>';
+  document.getElementById('oCollect').textContent= collectRes? collectRes.vol.toFixed(1)+' L in '+collectRes.t.toFixed(0)+' s':'not started';
+  document.getElementById('oQ').textContent= collectRes? (collectRes.Qb*1000).toFixed(3)+' L/s':'—';
+  document.getElementById('oV').textContent= collectRes? (collectRes.Qb/A1).toFixed(2)+' m/s':'—';
+  document.getElementById('oVh').textContent= collectRes? (Math.pow(collectRes.Qb/A1,2)/(2*G)*1000).toFixed(1)+' mm':'—';
+  document.getElementById('recBtn').disabled=!collectRes;
+}
+['valve','gate'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{ collectRes=null; refresh(); }));
+
+document.getElementById('collectBtn').addEventListener('click',()=>{
+  if(collecting) return;
+  collecting=true; collectStart=performance.now();
+  setTimeout(()=>{
+    collecting=false;
+    const t=60*(1+noiseFor(+document.getElementById('valve').value*3.7,0.006));
+    const vol=Qtrue()*1000*60*(1+noiseFor(+document.getElementById('valve').value*9.1,0.012));
+    collectRes={vol,t,Qb:vol/t/1000};
+    refresh();
+  },1650);
+});
+document.getElementById('recBtn').addEventListener('click',()=>{
+  runNo++;
+  const ms=measuredNow(), Q=collectRes.Qb;
+  const v1=Q/A1, v2=Q/A2, vh1=v1*v1/(2*G)*1000, vh2=v2*v2/(2*G)*1000;
+  ms.rows.forEach(r=>{
+    let hL;
+    if(r.f.kind==='enl') hL=r.dhMeas+(vh1-vh2);
+    else if(r.f.kind==='con') hL=r.dhMeas-(vh1-vh2);
+    else hL=r.dhMeas;
+    obs.push({run:runNo,Q,fit:r.f.name,col:r.f.col,dhRaw:r.dhMeas,hL,vh:vh1,K:hL/vh1,Ktyp:r.f.K});
+  });
+  const gk=GATEK[+document.getElementById('gate').value];
+  const gHL=ms.gateBar*10.2*1000;
+  obs.push({run:runNo,Q,fit:'Gate valve '+document.getElementById('gate').value+'%',col:'#334155',dhRaw:gHL,hL:gHL,vh:vh1,K:gHL/vh1,Ktyp:gk});
+  collectRes=null; noiseSeed+=0.37;
+  renderAll();
+});
+document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; runNo=0; renderAll(); });
+
+function renderAll(){
+  const tb=document.getElementById('obsRows');
+  if(!obs.length){ tb.innerHTML='<tr><td colspan="8" style="color:var(--muted)">No runs yet — set a flow, collect, then Record.</td></tr>'; }
+  else tb.innerHTML=obs.map(o=>'<tr><td>'+o.run+'</td><td>'+(o.Q*1000).toFixed(3)+'</td><td>'+o.fit+'</td><td>'+o.dhRaw.toFixed(1)+
+    '</td><td>'+o.hL.toFixed(1)+'</td><td>'+o.vh.toFixed(1)+'</td><td>'+o.K.toFixed(2)+'</td><td>'+o.Ktyp.toFixed(2)+'</td></tr>').join('');
+  drawChart(); refresh();
+}
+
+// ================= rig =================
+const rig=document.getElementById('rig'),rc=rig.getContext('2d');
+const RW=rig.width,RH=rig.height;
+let phase=0;
+function drawRig(){
+  requestAnimationFrame(drawRig);
+  phase+=1+Qtrue()*8000;
+  rc.clearRect(0,0,RW,RH);
+  const ms=measuredNow();
+
+  // manometer bank: 12 tubes (6 pairs)
+  const bankX=34, gap=26, tubeW=10, bankBase=118, bankTop=14;
+  rc.fillStyle='#334155'; rc.font='10px Inter'; rc.fillText('manometer pairs (up/down per fitting, mm)',bankX,bankTop-3);
+  const base=260;                                          // mm common level
+  ms.rows.forEach((r,i)=>{
+    [0,1].forEach(j=>{
+      const x=bankX+(i*2+j)*gap;
+      const h= j===0? base : base-r.dhMeas;
+      rc.strokeStyle='#94a3b8'; rc.lineWidth=1; rc.strokeRect(x,bankTop+4,tubeW,bankBase-bankTop-4);
+      const hh=Math.max(2,Math.min(bankBase-bankTop-6,h/440*(bankBase-bankTop-6)));
+      rc.fillStyle='#38bdf8'; rc.fillRect(x+1.5,bankBase-2-hh,tubeW-3,hh);
+    });
+    rc.fillStyle=r.f.col; rc.font='8px Inter'; rc.textAlign='center';
+    rc.fillText(r.f.name.split(' ')[0],bankX+(i*2)*gap+gap-2,bankBase+10);
+    rc.textAlign='left';
+  });
+
+  // serpentine pipe circuit with fittings
+  const py=210;
+  rc.strokeStyle='#64748b'; rc.lineWidth=8; rc.lineCap='round';
+  rc.beginPath();
+  rc.moveTo(30,py); rc.lineTo(150,py);                      // straight
+  rc.lineTo(150,py+60); rc.lineTo(260,py+60);              // mitre corner + run
+  rc.lineTo(260,py); rc.lineTo(360,py);                     // elbow up + run
+  rc.stroke();
+  // enlargement / contraction section
+  rc.lineWidth=12; rc.beginPath(); rc.moveTo(360,py); rc.lineTo(430,py); rc.stroke();
+  rc.lineWidth=8;  rc.beginPath(); rc.moveTo(430,py); rc.lineTo(520,py); rc.stroke();
+  // gate valve + exit
+  rc.beginPath(); rc.moveTo(520,py); rc.lineTo(600,py); rc.stroke();
+  rc.lineCap='butt';
+  // fitting markers
+  rc.font='9px Inter';
+  const marks=[[150,py,'mitre','#dc2626'],[260,py+60,'elbow','#d97706'],[310,py,'short/long bends','#059669'],
+               [360,py,'enlarge','#0284c7'],[430,py,'contract','#7c3aed'],[545,py,'gate valve','#334155']];
+  marks.forEach(([x,y,lbl,col])=>{ rc.fillStyle=col; rc.beginPath(); rc.arc(x,y,5,0,7); rc.fill();
+    rc.fillText(lbl,x-14,y+22); });
+  // gate valve wheel
+  const go=+document.getElementById('gate').value/100;
+  rc.strokeStyle='#334155'; rc.lineWidth=3;
+  rc.beginPath(); rc.moveTo(545,py-6); rc.lineTo(545,py-26); rc.stroke();
+  rc.beginPath(); rc.arc(545,py-32,10,0,7); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='9px Inter'; rc.fillText((go*100)+'% open',528,py-48);
+  // flow particles
+  rc.fillStyle='#0ea5e9';
+  const path=[[30,py],[150,py],[150,py+60],[260,py+60],[260,py],[600,py]];
+  let total=0; const segs=[];
+  for(let i=0;i<path.length-1;i++){ const L=Math.hypot(path[i+1][0]-path[i][0],path[i+1][1]-path[i][1]); segs.push({a:path[i],b:path[i+1],L,s0:total}); total+=L; }
+  for(let i=0;i<16;i++){
+    const s=((i*61+phase)%total);
+    const seg=segs.find(g=>s>=g.s0&&s<=g.s0+g.L);
+    if(seg){ const t=(s-seg.s0)/seg.L;
+      rc.fillRect(seg.a[0]+(seg.b[0]-seg.a[0])*t-2, seg.a[1]+(seg.b[1]-seg.a[1])*t-2,5,5); }
+  }
+  // differential gauge for valve
+  rc.beginPath(); rc.arc(590,py-60,22,0,7); rc.fillStyle='#fff'; rc.fill(); rc.strokeStyle='#334155'; rc.lineWidth=2; rc.stroke();
+  const ang=Math.PI*0.75+Math.min(1,ms.gateBar/0.6)*Math.PI*1.5;
+  rc.strokeStyle='#dc2626'; rc.beginPath(); rc.moveTo(590,py-60); rc.lineTo(590+Math.cos(ang)*15,py-60+Math.sin(ang)*15); rc.stroke();
+  rc.fillStyle='#334155'; rc.font='9px Inter'; rc.textAlign='center';
+  rc.fillText(ms.gateBar.toFixed(2)+' bar',590,py-30); rc.textAlign='left';
+
+  // volumetric tank
+  const vx=40,vw=62,vb=RH-12,vh=52;
+  rc.strokeStyle='#334155'; rc.lineWidth=2; rc.strokeRect(vx,vb-vh,vw,vh);
+  let fillFrac=0.15;
+  if(collecting){
+    const ct=(performance.now()-collectStart)/1000;
+    fillFrac=0.15+Math.min(1,ct/1.6)*0.75;
+    document.getElementById('oCollect').textContent='collecting… '+Math.min(ct/1.6*60,60).toFixed(0)+' s';
+  } else if(collectRes) fillFrac=0.9;
+  rc.fillStyle='#7dd3fc'; rc.fillRect(vx+2,vb-2-(vh-4)*fillFrac,vw-4,(vh-4)*fillFrac);
+  rc.fillStyle='#334155'; rc.font='9px Inter'; rc.fillText('volumetric tank',vx-4,vb-vh-5);
+}
+requestAnimationFrame(drawRig);
+
+// ================= chart: hL vs velocity head =================
+const ch=document.getElementById('chart'),cc=ch.getContext('2d');
+const CW=ch.width,CH=ch.height, M={l:56,r:14,t:16,b:42};
+function drawChart(){
+  cc.clearRect(0,0,CW,CH);
+  const XMAX=95, YMAX=210;    // mm
+  const X=v=>M.l+v/XMAX*(CW-M.l-M.r), Y=h=>CH-M.b-h/YMAX*(CH-M.t-M.b);
+  cc.strokeStyle='#e2e8f0'; cc.fillStyle='#64748b'; cc.font='10px Inter'; cc.textAlign='center';
+  for(let v=0;v<=XMAX;v+=20){ cc.beginPath(); cc.moveTo(X(v),M.t); cc.lineTo(X(v),CH-M.b); cc.stroke(); cc.fillText(v,X(v),CH-M.b+14); }
+  cc.textAlign='right';
+  for(let h=0;h<=YMAX;h+=40){ cc.beginPath(); cc.moveTo(M.l,Y(h)); cc.lineTo(CW-M.r,Y(h)); cc.stroke(); cc.fillText(h,M.l-5,Y(h)+3); }
+  cc.textAlign='center'; cc.fillStyle='#334155'; cc.font='11px Inter';
+  cc.fillText('velocity head v²/2g (mm)',CW/2,CH-8);
+  cc.save(); cc.translate(14,CH/2); cc.rotate(-Math.PI/2); cc.fillText('head loss hL (mm)',0,0); cc.restore();
+  cc.strokeStyle='#94a3b8'; cc.strokeRect(M.l,M.t,CW-M.l-M.r,CH-M.t-M.b);
+  FIT.forEach((f,fi)=>{
+    // typical-K guide line
+    cc.strokeStyle=f.col; cc.lineWidth=1; cc.setLineDash([5,5]); cc.globalAlpha=0.5;
+    cc.beginPath(); cc.moveTo(X(0),Y(0)); cc.lineTo(X(XMAX),Y(Math.min(YMAX,f.K*XMAX))); cc.stroke();
+    cc.setLineDash([]); cc.globalAlpha=1;
+    const pts=obs.filter(o=>o.fit===f.name);
+    pts.forEach(o=>{ cc.fillStyle=f.col; cc.beginPath(); cc.arc(X(Math.min(XMAX,o.vh)),Y(Math.min(YMAX,o.hL)),4,0,7); cc.fill();
+      cc.strokeStyle='#fff'; cc.lineWidth=1; cc.stroke(); });
+    cc.fillStyle=f.col; cc.textAlign='left'; cc.font='9.5px Inter';
+    cc.fillRect(M.l+8,M.t+6+fi*13,8,8); cc.fillStyle='#334155'; cc.fillText(f.name+' (K≈'+f.K+')',M.l+20,M.t+13+fi*13);
+  });
+  cc.textAlign='left';
+}
+drawChart();
+refresh();
+</script>
+</body>
+</html>
