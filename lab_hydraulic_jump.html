@@ -31,6 +31,16 @@
     .btn:hover{background:#0369a1}
     .btn:disabled{opacity:.45;cursor:not-allowed}
     .btn.ghost{background:#fff;color:#0284c7;border:1px solid var(--line)}
+    .btn.small{padding:7px 10px;font-size:.8rem}
+    .mission{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    @media(max-width:760px){.mission{grid-template-columns:1fr}}
+    .mission-card{border:1px solid var(--line);background:#f8fafc;border-radius:12px;padding:12px}
+    .mission-card .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+    .mission-card .v{font-size:1rem;color:#0369a1;font-weight:800;margin-top:2px}
+    .challenge{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .challenge select{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff;color:var(--text);font:inherit;font-size:.88rem}
+    .hint{font-size:.78rem;color:var(--muted);margin-top:6px}
+    canvas#chart{width:100%;height:auto;display:block;border-radius:12px;border:1px solid var(--line);background:#fff;margin-top:10px}
     table.obs{width:100%;border-collapse:collapse;margin-top:10px;font-size:.84rem}
     table.obs th,table.obs td{border:1px solid var(--line);padding:6px 7px;text-align:center;font-variant-numeric:tabular-nums}
     table.obs th{background:#f1f5f9;color:var(--muted);font-weight:600;font-size:.76rem}
@@ -64,6 +74,16 @@
        supercritical stream, then raise the tailgate until the tailwater matches the sequent depth and a stable jump
        stands still in the test section. Measure it, record six observations, and compute the jump characteristics.</p>
   </div>
+
+  <section class="card">
+    <h2>Hands-on Mission</h2>
+    <p>Use the virtual flume like a real lab bench: choose a target jump type, adjust discharge, gate opening and tailwater, then record only stable jumps. Try to collect six valid readings that cover at least three different Froude-number ranges.</p>
+    <div class="mission">
+      <div class="mission-card"><div class="k">Your task</div><div class="v">Form, stabilize, measure</div></div>
+      <div class="mission-card"><div class="k">Success check</div><div class="v" id="missionScore">0/6 readings</div></div>
+      <div class="mission-card"><div class="k">Current target</div><div class="v" id="targetStatus">Any stable jump</div></div>
+    </div>
+  </section>
 
   <section class="card">
     <h2>Aim</h2>
@@ -105,6 +125,20 @@
           <div style="font-size:.76rem;color:var(--muted);margin-top:3px">Match the tailwater to the sequent depth y₂ to hold the jump still.</div>
         </div>
 
+        <div class="challenge">
+          <label for="targetType" style="font-weight:700;font-size:.86rem">Challenge</label>
+          <select id="targetType">
+            <option value="any">Any stable jump</option>
+            <option value="Undular">Undular jump</option>
+            <option value="Weak">Weak jump</option>
+            <option value="Oscillating">Oscillating jump</option>
+            <option value="Steady">Steady jump</option>
+            <option value="Strong">Strong jump</option>
+          </select>
+          <button class="btn ghost small" id="matchBtn" type="button">Auto-match tailwater</button>
+        </div>
+        <div class="hint" id="challengeHint">Tune the controls until the jump is stable, then record the reading.</div>
+
         <div class="readout">
           <div class="row"><span>Unit discharge q</span><b id="oQ">—</b></div>
           <div class="row"><span>V₁ (supercritical)</span><b id="oV1">—</b></div>
@@ -115,6 +149,7 @@
 
         <div style="display:flex;gap:8px;margin-top:10px">
           <button class="btn" id="recBtn" disabled>Record reading</button>
+          <button class="btn ghost" id="exportBtn" type="button" disabled>Export CSV</button>
           <button class="btn ghost" id="clrBtn">Clear</button>
         </div>
       </div>
@@ -133,6 +168,10 @@
       <tbody id="obsRows"><tr><td colspan="10" style="color:var(--muted)">No observations yet — form a stable jump and press “Record reading”.</td></tr></tbody>
     </table>
     </div>
+
+    <h2 style="margin-top:16px">Live Plot</h2>
+    <p style="font-size:.86rem;color:var(--muted)">Recorded points show how the sequent-depth ratio grows with Froude number. The guide curve is the Belanger relation for a rectangular channel.</p>
+    <canvas id="chart" width="620" height="330"></canvas>
 
     <h2 style="margin-top:16px">Results</h2>
     <div class="results">
@@ -169,7 +208,7 @@ document.getElementById('navToggle').addEventListener('click',function(){documen
 (function(){var l=document.querySelectorAll('.nav-links a'),c=location.pathname.split('/').pop()||'index.html';l.forEach(function(a){if(a.getAttribute('href')===c)a.classList.add('active');});})();
 
 const G=9.81, B=0.30;
-const els={Q:document.getElementById('Q'),y1:document.getElementById('y1'),yt:document.getElementById('yt')};
+const els={Q:document.getElementById('Q'),y1:document.getElementById('y1'),yt:document.getElementById('yt'),target:document.getElementById('targetType')};
 let obs=[], state=null;
 
 function compute(){
@@ -203,9 +242,19 @@ function refresh(){
   document.getElementById('oY2').textContent=(r.y2*100).toFixed(1)+' cm';
   document.getElementById('oType').textContent=r.type;
   const st=document.getElementById('status'); st.className='status '+r.cls; st.textContent=r.msg;
-  document.getElementById('recBtn').disabled = r.cls!=='stable';
+  const target=els.target.value;
+  const targetOk=target==='any'||r.type===target;
+  document.getElementById('targetStatus').textContent=target==='any'?'Any stable jump':target+' jump';
+  document.getElementById('challengeHint').textContent=r.cls!=='stable'?'First stabilize the jump by matching tailwater to y2.':(targetOk?'Target met - record this reading.':'Stable, but target asks for '+target+'. Change Q/gate opening to shift Fr1.');
+  document.getElementById('recBtn').disabled = r.cls!=='stable'||!targetOk;
+  drawChart();
 }
 Object.values(els).forEach(e=>e.addEventListener('input',refresh));
+document.getElementById('matchBtn').addEventListener('click',()=>{
+  const r=compute();
+  els.yt.value=Math.max(+els.yt.min,Math.min(+els.yt.max,r.y2*100)).toFixed(1);
+  refresh();
+});
 
 // ---- flume rendering ----
 const cv=document.getElementById('flume'),ctx=cv.getContext('2d');
@@ -270,6 +319,34 @@ function draw(){
 requestAnimationFrame(draw);
 
 // ---- record / table ----
+function drawChart(){
+  const ch=document.getElementById('chart'); if(!ch) return;
+  const c=ch.getContext('2d'), W=ch.width, H=ch.height, L=54, R=W-22, T=22, Btm=H-44;
+  c.clearRect(0,0,W,H); c.fillStyle='#fff'; c.fillRect(0,0,W,H);
+  c.strokeStyle='#e2e8f0'; c.lineWidth=1;
+  for(let i=0;i<=5;i++){ const x=L+(R-L)*i/5; c.beginPath(); c.moveTo(x,T); c.lineTo(x,Btm); c.stroke(); }
+  for(let i=0;i<=5;i++){ const y=T+(Btm-T)*i/5; c.beginPath(); c.moveTo(L,y); c.lineTo(R,y); c.stroke(); }
+  const xOf=fr=>L+(Math.min(10,Math.max(1,fr))-1)/9*(R-L);
+  const yRatio=fr=>0.5*(Math.sqrt(1+8*fr*fr)-1);
+  const yOf=ratio=>Btm-(Math.min(13,Math.max(1,ratio))-1)/12*(Btm-T);
+  c.strokeStyle='#0284c7'; c.lineWidth=2; c.beginPath();
+  for(let fr=1;fr<=10;fr+=0.05){ const x=xOf(fr), y=yOf(yRatio(fr)); if(fr===1)c.moveTo(x,y); else c.lineTo(x,y); }
+  c.stroke();
+  c.fillStyle='#0f172a'; c.font='12px Inter'; c.fillText('Fr1', (L+R)/2-8, H-14);
+  c.save(); c.translate(16,(T+Btm)/2+42); c.rotate(-Math.PI/2); c.fillText('y2 / y1',0,0); c.restore();
+  c.fillStyle='#64748b'; c.font='11px Inter';
+  [1,3,5,7,9].forEach(fr=>{ c.fillText(fr.toString(),xOf(fr)-4,Btm+16); });
+  [1,4,7,10,13].forEach(v=>{ c.fillText(v.toString(),22,yOf(v)+4); });
+  c.fillStyle='#0369a1'; c.fillText('Belanger curve', R-112, T+18);
+  obs.forEach((o,i)=>{ const x=xOf(o.Fr1), y=yOf(o.y2/o.y1); c.fillStyle=['#ef4444','#f59e0b','#10b981','#3b82f6','#8b5cf6','#0f172a'][i%6]; c.beginPath(); c.arc(x,y,5,0,Math.PI*2); c.fill(); });
+}
+
+function updateMission(){
+  const types=new Set(obs.map(o=>o.type));
+  document.getElementById('missionScore').textContent=obs.length+'/6 readings, '+types.size+' types';
+  document.getElementById('exportBtn').disabled=!obs.length;
+}
+
 function renderTable(){
   const tb=document.getElementById('obsRows');
   if(!obs.length){ tb.innerHTML='<tr><td colspan="10" style="color:var(--muted)">No observations yet — form a stable jump and press “Record reading”.</td></tr>'; }
@@ -283,11 +360,22 @@ function renderTable(){
   document.getElementById('avgH').textContent=aH==null?'—':aH.toFixed(1);
   document.getElementById('avgL').textContent=aL==null?'—':aL.toFixed(1);
   document.getElementById('avgE').textContent=aE==null?'—':aE.toFixed(4);
+  updateMission();
+  drawChart();
 }
-document.getElementById('recBtn').addEventListener('click',()=>{ if(state&&state.cls==='stable'){ obs.push(state); renderTable(); } });
+document.getElementById('recBtn').addEventListener('click',()=>{ if(state&&state.cls==='stable'&&!document.getElementById('recBtn').disabled){ obs.push({...state}); renderTable(); } });
 document.getElementById('clrBtn').addEventListener('click',()=>{ obs=[]; renderTable(); });
+document.getElementById('exportBtn').addEventListener('click',()=>{
+  if(!obs.length) return;
+  const rows=[['No','Q_Lps','y1_cm','y2_cm','Fr1','y2_y1','jump_height_cm','jump_length_cm','energy_loss_m','type']];
+  obs.forEach((o,i)=>rows.push([i+1,o.Q,(o.y1*100).toFixed(2),(o.y2*100).toFixed(2),o.Fr1.toFixed(3),(o.y2/o.y1).toFixed(3),(o.hj*100).toFixed(2),(o.Lj*100).toFixed(2),o.dE.toFixed(5),o.type]));
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'}), url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download='hydraulic-jump-observations.csv'; a.click(); URL.revokeObjectURL(url);
+});
 
 refresh();
 </script>
 </body>
 </html>
+
