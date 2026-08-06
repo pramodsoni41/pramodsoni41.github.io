@@ -3,155 +3,215 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Live Rain Forecast | Dr. Pramod Soni</title>
-  <meta name="description" content="Live disdrometer rain-intensity forecast with probability band, from a machine-learning survival model."/>
+  <title>Live Rain Dashboard | Dr. Pramod Soni</title>
+  <meta name="description" content="Live disdrometer rainfall dashboard: real-time intensity forecast with probability band, daily & weekly rainfall, and drop-size distribution."/>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    .rf-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:18px 20px;
-      box-shadow:0 1px 3px rgba(0,0,0,.06);margin:18px 0}
-    .rf-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px}
-    .rf-status{font-weight:700;font-size:1.05rem}
-    .rf-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
-    .rf-rain{color:#c2410c}.rf-dry{color:#2563eb}
-    .rf-stats{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-    .rf-stat{flex:1 1 130px;background:#f8fafc;border:1px solid #eef2f7;border-radius:10px;padding:10px 12px}
-    .rf-stat b{display:block;font-size:1.4rem;line-height:1.2;color:#0f172a}
-    .rf-stat span{font-size:.8rem;color:#64748b}
-    .rf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-    .rf-chip{font-size:.78rem;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:999px;padding:3px 9px}
-    #rfCanvas{width:100%;height:420px;display:block;margin-top:8px}
-    .rf-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:#475569;margin-top:6px}
-    .rf-sw{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
-    .rf-foot{font-size:.78rem;color:#94a3b8;margin-top:10px}
+    :root{
+      --rf-bg:#f6f8fb; --rf-card:#fff; --rf-line:#e5e9f0; --rf-ink:#0f172a; --rf-mut:#64748b;
+      --rf-soft:#f1f5f9; --rf-blue:#2563eb; --rf-blued:#1e40af; --rf-amber:#ea7317; --rf-ambers:#fed7aa;
+      --rf-grid:#eef2f7; --rf-shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.05);
+    }
+    @media (prefers-color-scheme:dark){
+      :root{--rf-bg:#0b1220; --rf-card:#131c2e; --rf-line:#243046; --rf-ink:#e8edf6; --rf-mut:#93a1b8;
+        --rf-soft:#0f1829; --rf-grid:#1c2740; --rf-shadow:0 1px 3px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);}
+    }
+    .rf-wrap{max-width:1080px;margin:0 auto;padding:8px 16px 48px}
+    .rf-title{font-size:1.9rem;font-weight:800;color:var(--rf-ink);margin:10px 0 2px;letter-spacing:-.01em}
+    .rf-sub{color:var(--rf-mut);font-size:.95rem;margin:0 0 6px}
+    .rf-live{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:700;color:var(--rf-mut);
+      background:var(--rf-soft);border:1px solid var(--rf-line);border-radius:999px;padding:4px 11px}
+    .rf-pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:rfp 2s infinite}
+    @keyframes rfp{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+    .rf-card{background:var(--rf-card);border:1px solid var(--rf-line);border-radius:16px;box-shadow:var(--rf-shadow);padding:18px 20px;margin:16px 0}
+    .rf-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+    .rf-h h2{font-size:1.05rem;font-weight:700;color:var(--rf-ink);margin:0}
+    .rf-h .rf-note{font-size:.78rem;color:var(--rf-mut)}
+    .rf-statusline{font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:9px}
+    .rf-dot{width:12px;height:12px;border-radius:50%}
+    .rf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .rf-chip{font-size:.78rem;background:var(--rf-soft);border:1px solid var(--rf-line);color:var(--rf-ink);border-radius:999px;padding:4px 10px}
+    .rf-chip b{color:var(--rf-amber)}
+    .rf-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .rf-tile{background:var(--rf-card);border:1px solid var(--rf-line);border-radius:14px;box-shadow:var(--rf-shadow);padding:14px 16px}
+    .rf-tile .v{font-size:1.7rem;font-weight:800;color:var(--rf-ink);line-height:1.1}
+    .rf-tile .v small{font-size:.9rem;color:var(--rf-mut);font-weight:600}
+    .rf-tile .k{font-size:.78rem;color:var(--rf-mut);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+    .rf-tile .bar{height:4px;border-radius:3px;background:var(--rf-blue);margin-top:10px;opacity:.85}
+    .rf-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    canvas{width:100%;display:block}
+    .rf-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--rf-mut);margin-top:8px}
+    .rf-sw{width:13px;height:10px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+    .rf-foot{font-size:.78rem;color:var(--rf-mut);margin-top:8px}
+    #rf-tip{position:fixed;pointer-events:none;background:var(--rf-ink);color:var(--rf-card);font-size:.75rem;
+      padding:5px 8px;border-radius:7px;opacity:0;transition:opacity .1s;z-index:50;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+    .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+    @media(max-width:760px){.rf-tiles{grid-template-columns:repeat(2,1fr)}.rf-grid2{grid-template-columns:1fr}.rf-title{font-size:1.5rem}}
   </style>
 </head>
 <body>
-
 <nav class="navbar">
   <div class="wrap nav-inner">
     <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a>
-      <a href="publications.html">Publications</a>
-      <a href="projects.html">Projects</a>
-      <a href="teaching.html">Teaching</a>
+      <a href="index.html">Home</a><a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
   </div>
 </nav>
 
-<main class="wrap">
-  <h1>Live Rain Forecast</h1>
-  <p class="meta">Machine-learning forecast from a Thies LNM disdrometer &mdash; predicts rain intensity for the next hour with a probability band, and the chance rain stops soon.</p>
+<div class="rf-wrap">
+  <h2 class="sr-only">Live rainfall dashboard from a disdrometer, with forecast, daily and weekly totals, and drop-size distribution.</h2>
+  <div class="rf-title">🌧️ Live Rainfall Dashboard</div>
+  <p class="rf-sub">Thies LNM disdrometer &mdash; real-time rain forecast, rainfall history, and drop-size distribution, powered by a machine-learning model.</p>
+  <div class="rf-live"><span class="rf-pulse"></span><span id="rf-updated">connecting…</span></div>
 
+  <!-- LIVE FORECAST -->
   <div class="rf-card">
-    <div class="rf-head">
-      <div class="rf-status" id="rfStatus"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</div>
-      <div class="rf-foot" id="rfUpdated"></div>
-    </div>
-
-    <div class="rf-stats" id="rfStats"></div>
-    <canvas id="rfCanvas"></canvas>
+    <div class="rf-h"><h2 id="rf-status" class="rf-statusline"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</h2>
+      <span class="rf-note" id="rf-fnote"></span></div>
+    <div id="rf-summary" class="rf-chips"></div>
+    <canvas id="cForecast" height="360" aria-label="Rain intensity forecast with probability band"></canvas>
     <div class="rf-legend">
-      <span><span class="rf-sw" style="background:#1f4e79"></span>Observed intensity</span>
+      <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
       <span><span class="rf-sw" style="background:#f59e0b"></span>Median forecast</span>
       <span><span class="rf-sw" style="background:#fed7aa"></span>P10–P90 (possible)</span>
       <span><span class="rf-sw" style="background:#fdba74"></span>P25–P75 (likely)</span>
     </div>
-    <div class="rf-foot">Updates automatically every minute. Forecast is only as current as the latest disdrometer data.</div>
   </div>
-</main>
+
+  <!-- TOTALS -->
+  <div class="rf-tiles" id="rf-tiles"></div>
+
+  <!-- DAILY + WEEKLY -->
+  <div class="rf-grid2">
+    <div class="rf-card"><div class="rf-h"><h2>Daily rainfall</h2><span class="rf-note">last 30 days · mm</span></div>
+      <canvas id="cDaily" height="240" aria-label="Daily rainfall last 30 days"></canvas></div>
+    <div class="rf-card"><div class="rf-h"><h2>Weekly rainfall</h2><span class="rf-note">last 12 weeks · mm</span></div>
+      <canvas id="cWeekly" height="240" aria-label="Weekly rainfall last 12 weeks"></canvas></div>
+  </div>
+
+  <!-- DROP SIZE -->
+  <div class="rf-card"><div class="rf-h"><h2>Drop-size distribution</h2><span class="rf-note" id="rf-dsnote"></span></div>
+    <canvas id="cDrop" height="260" aria-label="Drop size distribution"></canvas>
+    <div class="rf-foot" id="rf-dsstat"></div></div>
+
+  <p class="rf-foot">Updates automatically every minute from the live disdrometer feed. Forecast model: gradient-boosting survival + quantile intensity. Point estimates are indicative; probability bands are the reliable output.</p>
+</div>
+<div id="rf-tip"></div>
 
 <script>
-const HORIZON=60, PAST=60;
-const cv=document.getElementById('rfCanvas'), ctx=cv.getContext('2d');
-function mins(a,b){return (new Date(a)-new Date(b))/60000;}
+const GIST_URL = "https://gist.githubusercontent.com/pramodsoni41/bd457ffef8aa2c2451603f9d47ab4d90/raw/forecast.json"; // set by publish_gist.py
+const LOCAL_URL = "data/forecast.json";
+const DEV = ["127.0.0.1","localhost"].includes(location.hostname) || location.protocol==="file:";
+const FORECAST_URL = DEV ? LOCAL_URL : GIST_URL;
 
-function draw(d){
-  const now=d.now;
-  const dpr=window.devicePixelRatio||1;
-  const W=cv.clientWidth, H=cv.clientHeight;
-  cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,W,H);
-  const L=48,R=14,T=12,B=28, pw=W-L-R, ph=H-T-B;
-  // scales
-  const xmin=-PAST, xmax=HORIZON;
-  let ymax=2;
-  d.history.forEach(p=>ymax=Math.max(ymax,p.i));
-  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
-  ymax*=1.15;
-  const X=m=>L+(m-xmin)/(xmax-xmin)*pw;
-  const Y=v=>T+ph-(v/ymax)*ph;
-  // grid + y labels
-  ctx.strokeStyle='#eef2f7'; ctx.fillStyle='#94a3b8'; ctx.font='11px system-ui'; ctx.textAlign='right';
-  for(let g=0;g<=4;g++){const v=ymax*g/4,y=Y(v);
-    ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(L+pw,y);ctx.stroke();
-    ctx.fillText(v.toFixed(v<2?1:0),L-6,y+3);}
-  // x labels every 15 min
-  ctx.textAlign='center';
-  for(let m=xmin;m<=xmax;m+=15){const x=X(m);const t=new Date(new Date(now).getTime()+m*60000);
-    ctx.fillText(String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0'),x,H-10);}
-  // forecast band
-  if(d.forecast){
-    const f=d.forecast, lm=f.lead_min;
-    const bandFill=(lo,hi,color)=>{ctx.fillStyle=color;ctx.beginPath();
-      ctx.moveTo(X(0),Y(d.summary.current_intensity));
-      for(let i=0;i<lm.length;i++)ctx.lineTo(X(lm[i]),Y(hi[i]));
-      for(let i=lm.length-1;i>=0;i--)ctx.lineTo(X(lm[i]),Y(lo[i]));
-      ctx.closePath();ctx.fill();};
-    bandFill(f.p10,f.p90,'rgba(253,186,116,.35)');
-    bandFill(f.p25,f.p75,'rgba(249,115,22,.35)');
-    ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.beginPath();
-    ctx.moveTo(X(0),Y(d.summary.current_intensity));
-    for(let i=0;i<lm.length;i++)ctx.lineTo(X(lm[i]),Y(f.p50[i]));ctx.stroke();
-  }
-  // observed line
-  ctx.strokeStyle='#1f4e79';ctx.lineWidth=1.8;ctx.beginPath();let first=true;
-  d.history.forEach(p=>{const x=X(mins(p.t,now)),y=Y(p.i);
-    if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);});
-  ctx.stroke();
-  // now marker
-  ctx.strokeStyle='#94a3b8';ctx.setLineDash([4,4]);ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(X(0),T);ctx.lineTo(X(0),T+ph);ctx.stroke();ctx.setLineDash([]);
-  ctx.fillStyle='#94a3b8';ctx.textAlign='left';ctx.fillText('now',X(0)+4,T+10);
-  // y axis title
-  ctx.save();ctx.translate(12,T+ph/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';
-  ctx.fillStyle='#64748b';ctx.fillText('intensity (mm/h)',0,0);ctx.restore();
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const tip = document.getElementById('rf-tip');
+function setup(cv){
+  const dpr=window.devicePixelRatio||1, W=cv.clientWidth, H=cv.clientHeight;
+  cv.width=W*dpr; cv.height=H*dpr; const x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+  x.clearRect(0,0,W,H); return {x,W,H};
+}
+function rr(x,X,y,w,h,r){r=Math.min(r,w/2,h);X.beginPath();X.moveTo(x+r,y);X.arcTo(x+w,y,x+w,y+h,r);
+  X.lineTo(x+w,y+h);X.lineTo(x,y+h);X.lineTo(x,y+r);X.arcTo(x,y,x+w,y,r);X.closePath();}
+function niceMax(v){if(v<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;
+  return (n<=1?1:n<=2?2:n<=5?5:10)*p;}
+
+// ---- generic interactive bar chart ----
+function barChart(cv, items, {color, unit, xEvery, hiLast}){
+  const {x,W,H}=setup(cv); const L=40,R=10,T=12,B=34, pw=W-L-R, ph=H-T-B;
+  const max=niceMax(Math.max(1,...items.map(d=>d.v)));
+  const Y=v=>T+ph-(v/max)*ph;
+  x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut'); x.font='10.5px system-ui'; x.textAlign='right';
+  for(let g=0;g<=4;g++){const v=max*g/4,y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();
+    x.fillText(v>=100?v.toFixed(0):v.toFixed(v<10?1:0),L-5,y+3);}
+  const n=items.length, bw=pw/n, bar=Math.min(bw*0.7,26);
+  cv._bars=[];
+  items.forEach((d,i)=>{
+    const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
+    x.fillStyle = (hiLast&&i===n-1)?css('--rf-amber'):color;
+    if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();} else {x.fillRect(bx,T+ph-1,bar,1);}
+    cv._bars.push({x:bx,y:by,w:bar,h:Math.max(h,2),top:by,label:d.label,v:d.v});
+  });
+  x.fillStyle=css('--rf-mut'); x.textAlign='center';
+  items.forEach((d,i)=>{ if(i%xEvery===0){x.fillText(d.label, L+i*bw+bw/2, H-12);} });
+  cv._unit=unit;
+}
+function attachTip(cv){
+  cv.onmousemove=e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;
+    let hit=null;(cv._bars||[]).forEach(b=>{if(mx>=b.x-2&&mx<=b.x+b.w+2)hit=b;});
+    if(hit){tip.style.opacity=1;tip.textContent=`${hit.label}: ${hit.v} ${cv._unit||''}`;
+      tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';}else tip.style.opacity=0;};
+  cv.onmouseleave=()=>tip.style.opacity=0;
+}
+
+// ---- forecast band chart ----
+function drawForecast(cv,d){
+  const {x,W,H}=setup(cv); const PAST=60,HOR=60,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
+  const now=new Date(d.now); let ymax=2;
+  (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
+  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v)); ymax*=1.15;
+  const X=m=>L+(m+PAST)/(PAST+HOR)*pw, Y=v=>T+ph-(v/ymax)*ph;
+  x.strokeStyle=css('--rf-grid');x.fillStyle=css('--rf-mut');x.font='11px system-ui';x.textAlign='right';
+  for(let g=0;g<=4;g++){const v=ymax*g/4,y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();
+    x.fillText(v.toFixed(v<2?1:0),L-6,y+3);}
+  x.textAlign='center';
+  for(let m=-PAST;m<=HOR;m+=15){const t=new Date(now.getTime()+m*60000);
+    x.fillText(('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2),X(m),H-9);}
+  if(d.forecast){const f=d.forecast,lm=f.lead_min,I0=d.summary.current_intensity;
+    const band=(lo,hi,c)=>{x.fillStyle=c;x.beginPath();x.moveTo(X(0),Y(I0));
+      for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(hi[i]));
+      for(let i=lm.length-1;i>=0;i--)x.lineTo(X(lm[i]),Y(lo[i]));x.closePath();x.fill();};
+    band(f.p10,f.p90,'rgba(253,186,116,.35)');band(f.p25,f.p75,'rgba(249,115,22,.35)');
+    x.strokeStyle='#f59e0b';x.lineWidth=2;x.beginPath();x.moveTo(X(0),Y(I0));
+    for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(f.p50[i]));x.stroke();}
+  x.strokeStyle='#1f4e79';x.lineWidth=1.8;x.beginPath();let first=true;
+  (d.history||[]).forEach(p=>{const m=(new Date(p.t)-now)/60000,X0=X(m),Y0=Y(p.i);
+    first?(x.moveTo(X0,Y0),first=false):x.lineTo(X0,Y0);});x.stroke();
+  x.strokeStyle=css('--rf-mut');x.setLineDash([4,4]);x.lineWidth=1;x.beginPath();x.moveTo(X(0),T);x.lineTo(X(0),T+ph);x.stroke();x.setLineDash([]);
+  x.fillStyle=css('--rf-mut');x.textAlign='left';x.fillText('now',X(0)+4,T+10);
 }
 
 function render(d){
-  const st=document.getElementById('rfStatus'), stats=document.getElementById('rfStats');
-  document.getElementById('rfUpdated').textContent='data time: '+d.now.replace('T',' ');
-  if(d.status==='raining'){
-    const s=d.summary;
-    st.innerHTML='<span class="rf-dot" style="background:#c2410c"></span><span class="rf-rain">Raining now</span>';
-    const surv=s.survival;
-    const chip=(k,lbl)=>`<span class="rf-chip">${lbl}: ${Math.round(100*surv[k])}%</span>`;
-    stats.innerHTML=
-      `<div class="rf-stat"><b>${s.current_intensity}</b><span>current intensity (mm/h)</span></div>`+
-      `<div class="rf-stat"><b>${s.minutes_into_event}m</b><span>rain duration so far</span></div>`+
-      `<div class="rf-stat"><b>${s.p_stop_within_30}%</b><span>chance it stops within 30 min</span></div>`+
-      `<div class="rf-stat"><b>~${s.expected_end}</b><span>estimated end time</span></div>`+
-      `<div class="rf-stat" style="flex:1 1 100%"><span>Probability rain continues at least…</span>`+
-      `<div class="rf-chips">${chip('10','10 min')}${chip('20','20 min')}${chip('30','30 min')}${chip('60','60 min')}${chip('120','120 min')}</div></div>`;
-  }else{
-    st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span><span class="rf-dry">No rain right now</span>';
-    stats.innerHTML='<div class="rf-stat" style="flex:1 1 100%"><span>The forecast band appears when rain begins.</span></div>';
-  }
-  draw(d);
+  document.getElementById('rf-updated').textContent='Live · data '+d.now.replace('T',' ');
+  const st=document.getElementById('rf-status'), sm=document.getElementById('rf-summary'), fn=document.getElementById('rf-fnote');
+  if(d.status==='raining'){const s=d.summary,sv=s.survival,chip=(k,l)=>`<span class="rf-chip">${l}: <b>${Math.round(100*sv[k])}%</b></span>`;
+    st.innerHTML='<span class="rf-dot" style="background:#ea7317"></span>Raining now';
+    fn.textContent=`${s.minutes_into_event} min into this spell`;
+    sm.innerHTML=`<span class="rf-chip">Intensity: <b>${s.current_intensity}</b> mm/h</span>`+
+      `<span class="rf-chip">Stops within 30 min: <b>${s.p_stop_within_30}%</b></span>`+
+      `<span class="rf-chip">Likely ends ~<b>${s.expected_end}</b></span>`+
+      chip('20','lasts ≥20m')+chip('60','≥60m')+chip('120','≥120m');
+  }else{st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span>No rain right now';
+    fn.textContent='forecast band appears when rain starts'; sm.innerHTML='';}
+  drawForecast(document.getElementById('cForecast'),d);
+
+  if(d.totals){const t=d.totals,tl=[['Today',t.today,'#2563eb'],['This week',t.week,'#0ea5e9'],['This month',t.month,'#6366f1'],['This year',t.year,'#8b5cf6']];
+    document.getElementById('rf-tiles').innerHTML=tl.map(([k,v,c])=>
+      `<div class="rf-tile"><div class="v">${v} <small>mm</small></div><div class="k">${k}</div><div class="bar" style="background:${c}"></div></div>`).join('');}
+
+  if(d.daily){const c=document.getElementById('cDaily');
+    barChart(c,d.daily.map(x=>({label:x.d,v:x.mm})),{color:css('--rf-blue'),unit:'mm',xEvery:5,hiLast:true});attachTip(c);}
+  if(d.weekly){const c=document.getElementById('cWeekly');
+    barChart(c,d.weekly.map(x=>({label:x.w,v:x.mm})),{color:'#0ea5e9',unit:'mm',xEvery:2,hiLast:true});attachTip(c);}
+  if(d.dropsize){const ds=d.dropsize,c=document.getElementById('cDrop');
+    barChart(c,ds.diam.map((dm,i)=>({label:dm+'',v:ds.count[i]})),{color:'#14b8a6',unit:'drops',xEvery:3,hiLast:false});attachTip(c);
+    const tot=ds.count.reduce((a,b)=>a+b,0), md=tot?ds.diam.reduce((a,dm,i)=>a+dm*ds.count[i],0)/tot:0;
+    document.getElementById('rf-dsnote').textContent=ds.window+' · '+ds.wet_min+' rainy min';
+    document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops measured · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
 }
 
-const FORECAST_URL = "https://gist.githubusercontent.com/pramodsoni41/bd457ffef8aa2c2451603f9d47ab4d90/raw/forecast.json"; // auto-set to the Gist URL by publish_gist.py
+let LAST=null;
 async function load(){
-  try{
-    const sep = FORECAST_URL.indexOf('?')>=0 ? '&' : '?';
-    const r=await fetch(FORECAST_URL+sep+'t='+Date.now(),{cache:'no-store'});
-    render(await r.json());
-  }catch(e){document.getElementById('rfStatus').textContent='Forecast unavailable.';}
+  try{const sep=FORECAST_URL.indexOf('?')>=0?'&':'?';
+    const r=await fetch(FORECAST_URL+sep+'t='+Date.now(),{cache:'no-store'}); LAST=await r.json(); render(LAST);
+  }catch(e){document.getElementById('rf-status').innerHTML='<span class="rf-dot" style="background:#ef4444"></span>Forecast unavailable';}
 }
-load(); setInterval(load,60000); window.addEventListener('resize',()=>load());
-// mobile nav (matches site)
+load(); setInterval(load,60000);
+window.addEventListener('resize',()=>{if(LAST)render(LAST);});
 document.getElementById('navToggle')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
 </script>
 </body>
