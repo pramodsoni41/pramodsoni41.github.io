@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', function(){
     <canvas id="cForecast" height="320" aria-label="Combined observed + ML forecast + GFS forecast"></canvas>
     <div class="rf-legend">
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
-      <span><span class="rf-sw" style="background:#f59e0b"></span>ML median (3 hr)</span>
+      <span><span class="rf-sw" style="background:#f59e0b"></span>ML median (2 hr)</span>
       <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90</span>
-      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS hourly (6 hr)</span>
+      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS hourly mean (6 hr)</span>
     </div>
     <div id="gfs-chips" class="rf-chips" style="margin-top:10px"></div>
     <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · updates hourly · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
@@ -175,7 +175,7 @@ function attachTip(cv){
 // ---- combined observed + ML band + GFS bar chart ----
 function drawForecast(cv, d, gfsData){
   const {x,W,H}=setup(cv);
-  const PAST=180, HOR=360, L=44, R=12, T=14, B=30, pw=W-L-R, ph=H-T-B;
+  const PAST=180, ML_HOR=120, GFS_HOR=360, HOR=GFS_HOR, L=44, R=12, T=14, B=30, pw=W-L-R, ph=H-T-B;
   const now=new Date(d.now);
 
   // y-axis range: cover history, ML p90, and GFS hourly values
@@ -209,7 +209,7 @@ function drawForecast(cv, d, gfsData){
     const gh=gfsData.hourly;
     for(let i=0;i<gh.time.length;i++){
       const t=new Date(gh.time[i]), mFromNow=(t-now)/60000;
-      if(mFromNow<0||mFromNow>=HOR) continue;
+      if(mFromNow<0||mFromNow>=GFS_HOR) continue;
       const precip=gh.precipitation[i]||0;
       const bx=Xm(mFromNow), bx2=Xm(mFromNow+60), bw=bx2-bx;
       const by=Yv(precip), bh=T+ph-by;
@@ -219,7 +219,7 @@ function drawForecast(cv, d, gfsData){
     }
   }
 
-  // ML forecast band (next ~3 hrs)
+  // ML forecast band (next 2 hrs)
   if(d.forecast){
     const f=d.forecast, lm=f.lead_min, I0=d.summary.current_intensity;
     const band=(lo,hi,c)=>{
@@ -253,7 +253,7 @@ function drawForecast(cv, d, gfsData){
 
   // label regions
   x.fillStyle=css('--rf-mut'); x.font='9px system-ui'; x.textAlign='center';
-  if(d.forecast) x.fillText('← ML model (3 hr) →', Xm(90), T+4);
+  if(d.forecast) x.fillText('', Xm(60), T+4);
   if(gfsData) x.fillText('← GFS (6 hr) →', Xm(240), T+4);
 
   if(!d.forecast && !gfsData){
@@ -336,7 +336,7 @@ function renderGFS(d, liveInfo){
   document.getElementById('gfs-chips').innerHTML=
     liveChip+
     `<span class="rf-chip">GFS 24hr total: <b>${total.toFixed(1)} mm</b></span>`+
-    (peakItem.v>0?`<span class="rf-chip">Peak: <b>${peakItem.label} (${peakItem.v} mm)</b></span>`:'')+
+    (peakItem.v>0?`<span class="rf-chip">Peak hour: <b>${peakItem.label} (${peakItem.v} mm)</b></span>`:'')+
     `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>`+
     `<span class="rf-chip">Max prob: <b>${maxProb}%</b></span>`;
   document.getElementById('gfs-note').textContent=
