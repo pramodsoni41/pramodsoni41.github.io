@@ -281,7 +281,7 @@ function renderGFS(d, liveInfo){
   const cv = document.getElementById('cGFS');
   const {x,W,H} = setup(cv);
   const L=44,R=12,T=14,B=34, pw=W-L-R, ph=H-T-B;
-  const maxP = niceMax(Math.max(0.5,...items.map(d=>d.v)));
+  const maxP = niceMax(Math.max(10,...items.map(d=>d.v)));  // floor at 10 mm so light rain looks proportionally small
   const Y = v => T+ph-(v/maxP)*ph;
   const bw = pw/items.length, bar = Math.min(bw*0.6,18);
 
