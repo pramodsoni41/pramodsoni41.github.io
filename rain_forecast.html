@@ -292,7 +292,6 @@ function render(d){
     document.getElementById('rf-dsnote').textContent=ds.window+' · '+ds.wet_min+' rainy min';
     document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops measured · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
 
-  // cross-link: re-render GFS panel with live status
   if(GFS_LAST) renderGFS(GFS_LAST, d.status==='raining' ? d.summary : null);
 }
 
