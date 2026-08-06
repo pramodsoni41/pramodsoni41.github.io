@@ -321,6 +321,25 @@ function renderGFS(d, liveInfo){
   x.fillStyle=css('--rf-mut'); x.textAlign='left'; x.font='10px system-ui';
   x.fillText('now', L+3, T+11);
 
+  // observed intensity overlay from disdrometer
+  if(liveInfo){
+    const obs = parseFloat(liveInfo.current_intensity);
+    if(obs > 0){
+      const oy = Y(Math.min(obs, maxP));
+      // dashed horizontal line across full chart
+      x.save();
+      x.strokeStyle='#ea7317'; x.lineWidth=1.5; x.setLineDash([5,4]);
+      x.beginPath(); x.moveTo(L, oy); x.lineTo(L+pw, oy); x.stroke();
+      x.setLineDash([]); x.restore();
+      // dot at left edge
+      x.beginPath(); x.arc(L+6, oy, 4, 0, 2*Math.PI);
+      x.fillStyle='#ea7317'; x.fill();
+      // label
+      x.fillStyle='#ea7317'; x.textAlign='left'; x.font='bold 10px system-ui';
+      x.fillText(`Observed: ${obs} mm/h`, L+14, oy-3);
+    }
+  }
+
   cv._unit='mm';
   cv.onmousemove=e=>{
     const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;
