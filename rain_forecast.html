@@ -87,37 +87,25 @@ document.addEventListener('DOMContentLoaded', function(){
   <p class="rf-sub">IIT (BHU) Varanasi &nbsp;&bull;&nbsp; Thies LNM disdrometer &mdash; real-time rain forecast, rainfall history, and drop-size distribution, powered by a machine-learning model.</p>
   <div class="rf-live"><span class="rf-pulse"></span><span id="rf-updated">connecting…</span></div>
 
-  <!-- LIVE FORECAST -->
+  <!-- LIVE FORECAST + GFS (combined) -->
   <div class="rf-card">
     <div class="rf-h"><h2 id="rf-status" class="rf-statusline"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</h2>
       <span class="rf-note" id="rf-fnote"></span></div>
     <div id="rf-summary" class="rf-chips"></div>
-    <canvas id="cForecast" height="300" aria-label="Rain intensity forecast with probability band"></canvas>
+    <canvas id="cForecast" height="320" aria-label="Combined observed + ML forecast + GFS forecast"></canvas>
     <div class="rf-legend">
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
-      <span><span class="rf-sw" style="background:#f59e0b"></span>Median forecast</span>
-      <span><span class="rf-sw" style="background:#fed7aa"></span>P10–P90 (possible)</span>
-      <span><span class="rf-sw" style="background:#fdba74"></span>P25–P75 (likely)</span>
+      <span><span class="rf-sw" style="background:#f59e0b"></span>ML median (3 hr)</span>
+      <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90</span>
+      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS hourly (6 hr)</span>
     </div>
+    <div id="gfs-chips" class="rf-chips" style="margin-top:10px"></div>
+    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · updates hourly · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
   </div>
 
   <!-- TOTALS -->
   <div class="rf-tiles" id="rf-tiles"></div>
 
-  <!-- GFS 24-HR FORECAST -->
-  <div class="rf-card">
-    <div class="rf-h">
-      <h2>24-Hour GFS Rainfall Forecast</h2>
-      <span class="rf-note" id="gfs-note">IIT (BHU) Varanasi · loading…</span>
-    </div>
-    <div id="gfs-chips" class="rf-chips" style="margin-bottom:10px"></div>
-    <canvas id="cGFS" height="220" aria-label="GFS 24-hour hourly precipitation forecast"></canvas>
-    <div class="rf-legend" style="margin-top:8px">
-      <span><span class="rf-sw" style="background:#2563eb"></span>Precipitation (mm/hr)</span>
-      <span><span class="rf-sw" style="background:#bfdbfe;opacity:.8"></span>Rain probability (%)</span>
-    </div>
-    <p class="gfs-source">Source: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · GFS model · updates hourly · lat 25.27° N, lon 82.99° E</p>
-  </div>
 
   <!-- DAILY + WEEKLY -->
   <div class="rf-grid2">
@@ -182,33 +170,94 @@ function attachTip(cv){
   cv.onmouseleave=()=>tip.style.opacity=0;
 }
 
-// ---- forecast band chart ----
-function drawForecast(cv,d){
-  const {x,W,H}=setup(cv); const PAST=180,HOR=120,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
-  const now=new Date(d.now); let ymax=2;
+// ---- combined observed + ML band + GFS bar chart ----
+function drawForecast(cv, d, gfsData){
+  const {x,W,H}=setup(cv);
+  const PAST=180, HOR=360, L=44, R=12, T=14, B=30, pw=W-L-R, ph=H-T-B;
+  const now=new Date(d.now);
+
+  // y-axis range: cover history, ML p90, and GFS hourly values
+  let ymax=5;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
-  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v)); ymax*=1.15;
-  const X=m=>L+(m+PAST)/(PAST+HOR)*pw, Y=v=>T+ph-(v/ymax)*ph;
-  x.strokeStyle=css('--rf-grid');x.fillStyle=css('--rf-mut');x.font='11px system-ui';x.textAlign='right';
-  for(let g=0;g<=4;g++){const v=ymax*g/4,y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();
-    x.fillText(v.toFixed(v<2?1:0),L-6,y+3);}
+  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
+  if(gfsData) gfsData.hourly.precipitation.forEach(v=>ymax=Math.max(ymax,v||0));
+  ymax = niceMax(ymax * 1.15);
+
+  const Xm = m => L+(m+PAST)/(PAST+HOR)*pw;
+  const Yv = v => T+ph-(Math.min(v,ymax)/ymax)*ph;
+
+  // grid lines + y-axis labels
+  x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut');
+  x.font='11px system-ui'; x.textAlign='right';
+  for(let g=0;g<=4;g++){
+    const v=ymax*g/4, y=Yv(v);
+    x.beginPath(); x.moveTo(L,y); x.lineTo(L+pw,y); x.stroke();
+    x.fillText(v.toFixed(v<2?1:0), L-6, y+3);
+  }
+
+  // x-axis time labels every 60 min
   x.textAlign='center';
-  for(let m=-PAST;m<=HOR;m+=30){const t=new Date(now.getTime()+m*60000);
-    x.fillText(('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2),X(m),H-9);}
-  if(d.forecast){const f=d.forecast,lm=f.lead_min,I0=d.summary.current_intensity;
-    const band=(lo,hi,c)=>{x.fillStyle=c;x.beginPath();x.moveTo(X(0),Y(I0));
-      for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(hi[i]));
-      for(let i=lm.length-1;i>=0;i--)x.lineTo(X(lm[i]),Y(lo[i]));x.closePath();x.fill();};
-    band(f.p10,f.p90,'rgba(253,186,116,.35)');band(f.p25,f.p75,'rgba(249,115,22,.35)');
-    x.strokeStyle='#f59e0b';x.lineWidth=2;x.beginPath();x.moveTo(X(0),Y(I0));
-    for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(f.p50[i]));x.stroke();}
-  x.strokeStyle='#1f4e79';x.lineWidth=1.8;x.beginPath();let first=true;
-  (d.history||[]).forEach(p=>{const m=(new Date(p.t)-now)/60000,X0=X(m),Y0=Y(p.i);
-    first?(x.moveTo(X0,Y0),first=false):x.lineTo(X0,Y0);});x.stroke();
-  x.strokeStyle=css('--rf-mut');x.setLineDash([4,4]);x.lineWidth=1;x.beginPath();x.moveTo(X(0),T);x.lineTo(X(0),T+ph);x.stroke();x.setLineDash([]);
-  x.fillStyle=css('--rf-mut');x.textAlign='left';x.fillText('now',X(0)+4,T+10);
-  if(!d.forecast){x.fillStyle=css('--rf-mut');x.font='13px system-ui';x.textAlign='center';
-    x.fillText('☀️  No active rain — the live forecast band appears here when it starts', L+pw/2, T+ph/2);}
+  for(let m=-PAST; m<=HOR; m+=60){
+    const t=new Date(now.getTime()+m*60000);
+    x.fillText(('0'+t.getHours()).slice(-2)+':00', Xm(m), H-9);
+  }
+
+  // GFS hourly bars (background, semi-transparent blue) — next 6 hrs
+  if(gfsData){
+    const gh=gfsData.hourly;
+    for(let i=0;i<gh.time.length;i++){
+      const t=new Date(gh.time[i]), mFromNow=(t-now)/60000;
+      if(mFromNow<0||mFromNow>=HOR) continue;
+      const precip=gh.precipitation[i]||0;
+      const bx=Xm(mFromNow), bx2=Xm(mFromNow+60), bw=bx2-bx;
+      const by=Yv(precip), bh=T+ph-by;
+      x.fillStyle='rgba(147,197,253,0.55)';
+      if(bh>0.5) x.fillRect(bx, by, bw, bh);
+      else x.fillRect(bx, T+ph-1, bw, 1);
+    }
+  }
+
+  // ML forecast band (next ~3 hrs)
+  if(d.forecast){
+    const f=d.forecast, lm=f.lead_min, I0=d.summary.current_intensity;
+    const band=(lo,hi,c)=>{
+      x.fillStyle=c; x.beginPath(); x.moveTo(Xm(0),Yv(I0));
+      for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(hi[i]));
+      for(let i=lm.length-1;i>=0;i--) x.lineTo(Xm(lm[i]),Yv(lo[i]));
+      x.closePath(); x.fill();
+    };
+    band(f.p10,f.p90,'rgba(253,186,116,.40)');
+    band(f.p25,f.p75,'rgba(249,115,22,.40)');
+    x.strokeStyle='#f59e0b'; x.lineWidth=2;
+    x.beginPath(); x.moveTo(Xm(0),Yv(I0));
+    for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(f.p50[i]));
+    x.stroke();
+  }
+
+  // observed disdrometer line
+  x.strokeStyle='#1f4e79'; x.lineWidth=1.8; x.beginPath(); let first=true;
+  (d.history||[]).forEach(p=>{
+    const m=(new Date(p.t)-now)/60000;
+    if(m<-PAST) return;
+    first?(x.moveTo(Xm(m),Yv(p.i)),first=false):x.lineTo(Xm(m),Yv(p.i));
+  });
+  x.stroke();
+
+  // "now" dashed line
+  x.strokeStyle=css('--rf-mut'); x.setLineDash([4,4]); x.lineWidth=1;
+  x.beginPath(); x.moveTo(Xm(0),T); x.lineTo(Xm(0),T+ph); x.stroke(); x.setLineDash([]);
+  x.fillStyle=css('--rf-mut'); x.textAlign='left'; x.font='10px system-ui';
+  x.fillText('now', Xm(0)+4, T+12);
+
+  // label regions
+  x.fillStyle=css('--rf-mut'); x.font='9px system-ui'; x.textAlign='center';
+  if(d.forecast) x.fillText('← ML model (3 hr) →', Xm(90), T+4);
+  if(gfsData) x.fillText('← GFS (6 hr) →', Xm(240), T+4);
+
+  if(!d.forecast && !gfsData){
+    x.fillStyle=css('--rf-mut'); x.font='13px system-ui'; x.textAlign='center';
+    x.fillText('☀️  No active rain — the live forecast band appears here when it starts', L+pw/2, T+ph/2);
+  }
 }
 
 function render(d){
@@ -227,7 +276,7 @@ function render(d){
     sm.innerHTML='<span class="rf-chip">Rain intensity: <b>0</b> mm/h</span><span class="rf-chip">Signal: <b>ended</b></span>';
   }else{st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span>No rain right now';
     fn.textContent='forecast band appears when rain starts'; sm.innerHTML='';}
-  drawForecast(document.getElementById('cForecast'),d);
+  drawForecast(document.getElementById('cForecast'), d, GFS_LAST);
 
   if(d.totals){const t=d.totals,tl=[['Today',t.today,'#2563eb'],['This week',t.week,'#0ea5e9'],['This month',t.month,'#6366f1'],['This year',t.year,'#8b5cf6']];
     document.getElementById('rf-tiles').innerHTML=tl.map(([k,v,c])=>
@@ -263,124 +312,47 @@ const GFS_URL = "https://api.open-meteo.com/v1/forecast?latitude=25.27&longitude
 
 let GFS_LAST = null;
 
+// chips-only GFS summary (canvas drawing is inside drawForecast)
 function renderGFS(d, liveInfo){
   const now = new Date();
   const hours = d.hourly;
-  // pick next 24 hours only
   const items = [], probs = [];
   for(let i=0;i<hours.time.length;i++){
-    const t = new Date(hours.time[i]);
-    const diffH = (t - now) / 3600000;
+    const t=new Date(hours.time[i]), diffH=(t-now)/3600000;
     if(diffH >= -1 && diffH < 24){
-      items.push({ label: ('0'+t.getHours()).slice(-2)+':00', v: hours.precipitation[i] || 0, t });
-      probs.push(hours.precipitation_probability[i] || 0);
+      items.push({label:('0'+t.getHours()).slice(-2)+':00', v:hours.precipitation[i]||0});
+      probs.push(hours.precipitation_probability[i]||0);
     }
   }
   if(!items.length) return;
-
-  const cv = document.getElementById('cGFS');
-  const {x,W,H} = setup(cv);
-  const L=44,R=12,T=14,B=34, pw=W-L-R, ph=H-T-B;
-  const maxP = niceMax(Math.max(10,...items.map(d=>d.v)));  // floor at 10 mm so light rain looks proportionally small
-  const Y = v => T+ph-(v/maxP)*ph;
-  const bw = pw/items.length, bar = Math.min(bw*0.6,18);
-
-  // grid lines + y-axis labels
-  x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut');
-  x.font='10.5px system-ui'; x.textAlign='right';
-  for(let g=0;g<=4;g++){
-    const v=maxP*g/4, y=Y(v);
-    x.beginPath(); x.moveTo(L,y); x.lineTo(L+pw,y); x.stroke();
-    x.fillText(v>=10?v.toFixed(0):v.toFixed(1), L-5, y+3);
-  }
-
-  // probability shading behind bars
-  x.fillStyle='rgba(191,219,254,0.35)';
-  items.forEach((d,i)=>{
-    const px=L+i*bw, ph2=(probs[i]/100)*H;
-    x.fillRect(px, H-B-ph2, bw, ph2);
-  });
-
-  // precipitation bars
-  cv._bars=[]; items.forEach((d,i)=>{
-    const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
-    const isNow = i===0 || (d.t<=new Date() && (items[i+1]&&items[i+1].t>new Date()));
-    x.fillStyle = (isNow && liveInfo) ? '#ea7317' : isNow ? '#f59e0b' : '#2563eb';
-    if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();}
-    else{x.fillRect(bx,T+ph-1,bar,1);}
-    cv._bars.push({x:bx,y:by,w:bar,h:Math.max(h,2),label:d.label,v:d.v,prob:probs[i]});
-  });
-
-  // x-axis labels every 3 hrs
-  x.fillStyle=css('--rf-mut'); x.textAlign='center';
-  items.forEach((d,i)=>{ if(i%3===0) x.fillText(d.label, L+i*bw+bw/2, H-10); });
-
-  // "now" vertical line
-  x.strokeStyle=css('--rf-mut'); x.setLineDash([4,3]); x.lineWidth=1;
-  x.beginPath(); x.moveTo(L, T); x.lineTo(L, T+ph); x.stroke(); x.setLineDash([]);
-  x.fillStyle=css('--rf-mut'); x.textAlign='left'; x.font='10px system-ui';
-  x.fillText('now', L+3, T+11);
-
-  // observed intensity overlay from disdrometer
-  if(liveInfo){
-    const obs = parseFloat(liveInfo.current_intensity);
-    if(obs > 0){
-      const oy = Y(Math.min(obs, maxP));
-      // dashed horizontal line across full chart
-      x.save();
-      x.strokeStyle='#ea7317'; x.lineWidth=1.5; x.setLineDash([5,4]);
-      x.beginPath(); x.moveTo(L, oy); x.lineTo(L+pw, oy); x.stroke();
-      x.setLineDash([]); x.restore();
-      // dot at left edge
-      x.beginPath(); x.arc(L+6, oy, 4, 0, 2*Math.PI);
-      x.fillStyle='#ea7317'; x.fill();
-      // label
-      x.fillStyle='#ea7317'; x.textAlign='left'; x.font='bold 10px system-ui';
-      x.fillText(`Observed: ${obs} mm/h`, L+14, oy-3);
-    }
-  }
-
-  cv._unit='mm';
-  cv.onmousemove=e=>{
-    const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;
-    let hit=null;(cv._bars||[]).forEach(b=>{if(mx>=b.x-2&&mx<=b.x+b.w+2)hit=b;});
-    if(hit){tip.style.opacity=1;
-      tip.textContent=`${hit.label}  ${hit.v} mm  (prob ${hit.prob}%)`;
-      tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';}
-    else tip.style.opacity=0;
-  };
-  cv.onmouseleave=()=>tip.style.opacity=0;
-
-  // summary chips
-  const total = items.reduce((s,d)=>s+d.v,0);
-  const peakItem = items.reduce((a,b)=>b.v>a.v?b:a,items[0]);
-  const rainyHours = items.filter(d=>d.v>0.1).length;
-  const maxProb = Math.max(...probs);
-  const liveChip = liveInfo
-    ? `<span class="rf-chip" style="background:#fff3e0;border-color:#f59e0b;color:#92400e">🌧 Raining now · Observed: <b>${liveInfo.current_intensity} mm/h</b></span>`
-    : '';
-  document.getElementById('gfs-chips').innerHTML =
-    liveChip +
-    `<span class="rf-chip">Total expected: <b>${total.toFixed(1)} mm</b></span>` +
-    (peakItem.v>0 ? `<span class="rf-chip">Peak hour: <b>${peakItem.label} (${peakItem.v} mm)</b></span>` : '') +
-    `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>` +
-    `<span class="rf-chip">Max rain probability: <b>${maxProb}%</b></span>`;
-
-  const upd = new Date(d.generationtime_ms ? now : now);
-  document.getElementById('gfs-note').textContent =
-    `IIT (BHU) Varanasi · GFS · fetched ${('0'+now.getHours()).slice(-2)}:${('0'+now.getMinutes()).slice(-2)}`;
+  const total=items.reduce((s,it)=>s+it.v,0);
+  const peakItem=items.reduce((a,b)=>b.v>a.v?b:a,items[0]);
+  const rainyHours=items.filter(it=>it.v>0.1).length;
+  const maxProb=Math.max(...probs);
+  const liveChip=liveInfo
+    ?`<span class="rf-chip" style="background:#fff3e0;border-color:#f59e0b;color:#92400e">🌧 Raining · Observed: <b>${liveInfo.current_intensity} mm/h</b></span>`
+    :'';
+  document.getElementById('gfs-chips').innerHTML=
+    liveChip+
+    `<span class="rf-chip">GFS 24hr total: <b>${total.toFixed(1)} mm</b></span>`+
+    (peakItem.v>0?`<span class="rf-chip">Peak: <b>${peakItem.label} (${peakItem.v} mm)</b></span>`:'')+
+    `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>`+
+    `<span class="rf-chip">Max prob: <b>${maxProb}%</b></span>`;
+  document.getElementById('gfs-note').textContent=
+    `GFS fetched ${('0'+now.getHours()).slice(-2)}:${('0'+now.getMinutes()).slice(-2)}`;
 }
 
 async function loadGFS(){
   try{
-    const r = await fetch(GFS_URL+'&t='+Date.now(), {cache:'no-store'});
-    GFS_LAST = await r.json();
-    renderGFS(GFS_LAST);
+    const r=await fetch(GFS_URL+'&t='+Date.now(),{cache:'no-store'});
+    GFS_LAST=await r.json();
+    // re-render combined chart now that GFS data is available
+    if(LAST) render(LAST); else renderGFS(GFS_LAST);
   }catch(e){
     document.getElementById('gfs-note').textContent='GFS forecast unavailable';
   }
 }
-loadGFS(); setInterval(loadGFS, 3600000); // refresh every hour
+loadGFS(); setInterval(loadGFS,3600000);
 </script>
 
 <footer class="site-footer">
