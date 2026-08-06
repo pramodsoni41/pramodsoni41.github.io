@@ -142,9 +142,11 @@ function render(d){
   draw(d);
 }
 
+const FORECAST_URL = "data/forecast.json"; // auto-set to the Gist URL by publish_gist.py
 async function load(){
   try{
-    const r=await fetch('data/forecast.json?t='+Date.now(),{cache:'no-store'});
+    const sep = FORECAST_URL.indexOf('?')>=0 ? '&' : '?';
+    const r=await fetch(FORECAST_URL+sep+'t='+Date.now(),{cache:'no-store'});
     render(await r.json());
   }catch(e){document.getElementById('rfStatus').textContent='Forecast unavailable.';}
 }
