@@ -49,14 +49,29 @@
     @media(max-width:760px){.rf-tiles{grid-template-columns:repeat(2,1fr)}.rf-grid2{grid-template-columns:1fr}.rf-title{font-size:1.5rem}}
   </style>
 </head>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var links = document.querySelectorAll('.nav-links a');
+  var current = window.location.pathname.split('/').pop() || 'index.html';
+  links.forEach(function(a){ if(a.getAttribute('href')===current) a.classList.add('active'); });
+  document.getElementById('navToggle').addEventListener('click', function(){
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+});
+</script>
 <body>
 <nav class="navbar">
   <div class="wrap nav-inner">
     <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
     <div class="nav-links" id="navLinks">
-      <a href="index.html">Home</a><a href="publications.html">Publications</a>
-      <a href="projects.html">Projects</a><a href="teaching.html">Teaching</a>
+      <a href="index.html">Home</a>
+      <a href="Other_Activities.html">Other Activities</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="students.html">Students</a>
+      <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
     </div>
   </div>
@@ -65,7 +80,7 @@
 <div class="rf-wrap">
   <h2 class="sr-only">Live rainfall dashboard from a disdrometer, with forecast, daily and weekly totals, and drop-size distribution.</h2>
   <div class="rf-title">🌧️ Live Rainfall Dashboard</div>
-  <p class="rf-sub">Thies LNM disdrometer &mdash; real-time rain forecast, rainfall history, and drop-size distribution, powered by a machine-learning model.</p>
+  <p class="rf-sub">IIT (BHU) Varanasi &nbsp;&bull;&nbsp; Thies LNM disdrometer &mdash; real-time rain forecast, rainfall history, and drop-size distribution, powered by a machine-learning model.</p>
   <div class="rf-live"><span class="rf-pulse"></span><span id="rf-updated">connecting…</span></div>
 
   <!-- LIVE FORECAST -->
@@ -214,7 +229,11 @@ async function load(){
 }
 load(); setInterval(load,60000);
 window.addEventListener('resize',()=>{if(LAST)render(LAST);});
-document.getElementById('navToggle')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
 </script>
+
+<footer class="site-footer">
+  <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
+  &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
+</footer>
 </body>
 </html>
