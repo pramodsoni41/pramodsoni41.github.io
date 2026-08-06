@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Live Rain Forecast | Dr. Pramod Soni</title>
+  <meta name="description" content="Live disdrometer rain-intensity forecast with probability band, from a machine-learning survival model."/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .rf-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:18px 20px;
+      box-shadow:0 1px 3px rgba(0,0,0,.06);margin:18px 0}
+    .rf-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:10px}
+    .rf-status{font-weight:700;font-size:1.05rem}
+    .rf-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+    .rf-rain{color:#c2410c}.rf-dry{color:#2563eb}
+    .rf-stats{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+    .rf-stat{flex:1 1 130px;background:#f8fafc;border:1px solid #eef2f7;border-radius:10px;padding:10px 12px}
+    .rf-stat b{display:block;font-size:1.4rem;line-height:1.2;color:#0f172a}
+    .rf-stat span{font-size:.8rem;color:#64748b}
+    .rf-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .rf-chip{font-size:.78rem;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:999px;padding:3px 9px}
+    #rfCanvas{width:100%;height:420px;display:block;margin-top:8px}
+    .rf-legend{display:flex;flex-wrap:wrap;gap:16px;font-size:.82rem;color:#475569;margin-top:6px}
+    .rf-sw{display:inline-block;width:14px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+    .rf-foot{font-size:.78rem;color:#94a3b8;margin-top:10px}
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-brand">Dr. Pramod Soni</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="projects.html">Projects</a>
+      <a href="teaching.html">Teaching</a>
+      <a href="Important_Links.html">Important Links</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <h1>Live Rain Forecast</h1>
+  <p class="meta">Machine-learning forecast from a Thies LNM disdrometer &mdash; predicts rain intensity for the next hour with a probability band, and the chance rain stops soon.</p>
+
+  <div class="rf-card">
+    <div class="rf-head">
+      <div class="rf-status" id="rfStatus"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</div>
+      <div class="rf-foot" id="rfUpdated"></div>
+    </div>
+
+    <div class="rf-stats" id="rfStats"></div>
+    <canvas id="rfCanvas"></canvas>
+    <div class="rf-legend">
+      <span><span class="rf-sw" style="background:#1f4e79"></span>Observed intensity</span>
+      <span><span class="rf-sw" style="background:#f59e0b"></span>Median forecast</span>
+      <span><span class="rf-sw" style="background:#fed7aa"></span>P10–P90 (possible)</span>
+      <span><span class="rf-sw" style="background:#fdba74"></span>P25–P75 (likely)</span>
+    </div>
+    <div class="rf-foot">Updates automatically every minute. Forecast is only as current as the latest disdrometer data.</div>
+  </div>
+</main>
+
+<script>
+const HORIZON=60, PAST=60;
+const cv=document.getElementById('rfCanvas'), ctx=cv.getContext('2d');
+function mins(a,b){return (new Date(a)-new Date(b))/60000;}
+
+function draw(d){
+  const now=d.now;
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth, H=cv.clientHeight;
+  cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+  const L=48,R=14,T=12,B=28, pw=W-L-R, ph=H-T-B;
+  // scales
+  const xmin=-PAST, xmax=HORIZON;
+  let ymax=2;
+  d.history.forEach(p=>ymax=Math.max(ymax,p.i));
+  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
+  ymax*=1.15;
+  const X=m=>L+(m-xmin)/(xmax-xmin)*pw;
+  const Y=v=>T+ph-(v/ymax)*ph;
+  // grid + y labels
+  ctx.strokeStyle='#eef2f7'; ctx.fillStyle='#94a3b8'; ctx.font='11px system-ui'; ctx.textAlign='right';
+  for(let g=0;g<=4;g++){const v=ymax*g/4,y=Y(v);
+    ctx.beginPath();ctx.moveTo(L,y);ctx.lineTo(L+pw,y);ctx.stroke();
+    ctx.fillText(v.toFixed(v<2?1:0),L-6,y+3);}
+  // x labels every 15 min
+  ctx.textAlign='center';
+  for(let m=xmin;m<=xmax;m+=15){const x=X(m);const t=new Date(new Date(now).getTime()+m*60000);
+    ctx.fillText(String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0'),x,H-10);}
+  // forecast band
+  if(d.forecast){
+    const f=d.forecast, lm=f.lead_min;
+    const bandFill=(lo,hi,color)=>{ctx.fillStyle=color;ctx.beginPath();
+      ctx.moveTo(X(0),Y(d.summary.current_intensity));
+      for(let i=0;i<lm.length;i++)ctx.lineTo(X(lm[i]),Y(hi[i]));
+      for(let i=lm.length-1;i>=0;i--)ctx.lineTo(X(lm[i]),Y(lo[i]));
+      ctx.closePath();ctx.fill();};
+    bandFill(f.p10,f.p90,'rgba(253,186,116,.35)');
+    bandFill(f.p25,f.p75,'rgba(249,115,22,.35)');
+    ctx.strokeStyle='#f59e0b';ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(X(0),Y(d.summary.current_intensity));
+    for(let i=0;i<lm.length;i++)ctx.lineTo(X(lm[i]),Y(f.p50[i]));ctx.stroke();
+  }
+  // observed line
+  ctx.strokeStyle='#1f4e79';ctx.lineWidth=1.8;ctx.beginPath();let first=true;
+  d.history.forEach(p=>{const x=X(mins(p.t,now)),y=Y(p.i);
+    if(first){ctx.moveTo(x,y);first=false;}else ctx.lineTo(x,y);});
+  ctx.stroke();
+  // now marker
+  ctx.strokeStyle='#94a3b8';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(X(0),T);ctx.lineTo(X(0),T+ph);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#94a3b8';ctx.textAlign='left';ctx.fillText('now',X(0)+4,T+10);
+  // y axis title
+  ctx.save();ctx.translate(12,T+ph/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';
+  ctx.fillStyle='#64748b';ctx.fillText('intensity (mm/h)',0,0);ctx.restore();
+}
+
+function render(d){
+  const st=document.getElementById('rfStatus'), stats=document.getElementById('rfStats');
+  document.getElementById('rfUpdated').textContent='data time: '+d.now.replace('T',' ');
+  if(d.status==='raining'){
+    const s=d.summary;
+    st.innerHTML='<span class="rf-dot" style="background:#c2410c"></span><span class="rf-rain">Raining now</span>';
+    const surv=s.survival;
+    const chip=(k,lbl)=>`<span class="rf-chip">${lbl}: ${Math.round(100*surv[k])}%</span>`;
+    stats.innerHTML=
+      `<div class="rf-stat"><b>${s.current_intensity}</b><span>current intensity (mm/h)</span></div>`+
+      `<div class="rf-stat"><b>${s.minutes_into_event}m</b><span>rain duration so far</span></div>`+
+      `<div class="rf-stat"><b>${s.p_stop_within_30}%</b><span>chance it stops within 30 min</span></div>`+
+      `<div class="rf-stat"><b>~${s.expected_end}</b><span>estimated end time</span></div>`+
+      `<div class="rf-stat" style="flex:1 1 100%"><span>Probability rain continues at least…</span>`+
+      `<div class="rf-chips">${chip('10','10 min')}${chip('20','20 min')}${chip('30','30 min')}${chip('60','60 min')}${chip('120','120 min')}</div></div>`;
+  }else{
+    st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span><span class="rf-dry">No rain right now</span>';
+    stats.innerHTML='<div class="rf-stat" style="flex:1 1 100%"><span>The forecast band appears when rain begins.</span></div>';
+  }
+  draw(d);
+}
+
+async function load(){
+  try{
+    const r=await fetch('data/forecast.json?t='+Date.now(),{cache:'no-store'});
+    render(await r.json());
+  }catch(e){document.getElementById('rfStatus').textContent='Forecast unavailable.';}
+}
+load(); setInterval(load,60000); window.addEventListener('resize',()=>load());
+// mobile nav (matches site)
+document.getElementById('navToggle')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
+</script>
+</body>
+</html>
