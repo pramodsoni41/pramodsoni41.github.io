@@ -165,7 +165,7 @@ function attachTip(cv){
 
 // ---- forecast band chart ----
 function drawForecast(cv,d){
-  const {x,W,H}=setup(cv); const PAST=120,HOR=120,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
+  const {x,W,H}=setup(cv); const PAST=60,HOR=60,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
   const now=new Date(d.now); let ymax=2;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
   if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v)); ymax*=1.15;
@@ -174,7 +174,7 @@ function drawForecast(cv,d){
   for(let g=0;g<=4;g++){const v=ymax*g/4,y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();
     x.fillText(v.toFixed(v<2?1:0),L-6,y+3);}
   x.textAlign='center';
-  for(let m=-PAST;m<=HOR;m+=30){const t=new Date(now.getTime()+m*60000);
+  for(let m=-PAST;m<=HOR;m+=15){const t=new Date(now.getTime()+m*60000);
     x.fillText(('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2),X(m),H-9);}
   if(d.forecast){const f=d.forecast,lm=f.lead_min,I0=d.summary.current_intensity;
     const band=(lo,hi,c)=>{x.fillStyle=c;x.beginPath();x.moveTo(X(0),Y(I0));
@@ -202,10 +202,6 @@ function render(d){
       `<span class="rf-chip">Stops within 30 min: <b>${s.p_stop_within_30}%</b></span>`+
       `<span class="rf-chip">Likely ends ~<b>${s.expected_end}</b></span>`+
       chip('20','lasts ≥20m')+chip('60','≥60m')+chip('120','≥120m');
-  }else if(d.status==='ended'){
-    st.innerHTML='<span class="rf-dot" style="background:#22c55e"></span>Rain ended';
-    fn.textContent='last 5 minutes recorded 0 mm/h';
-    sm.innerHTML='<span class="rf-chip">Rain intensity: <b>0</b> mm/h</span><span class="rf-chip">Signal: <b>ended</b></span>';
   }else{st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span>No rain right now';
     fn.textContent='forecast band appears when rain starts'; sm.innerHTML='';}
   drawForecast(document.getElementById('cForecast'),d);
