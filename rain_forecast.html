@@ -242,6 +242,9 @@ function render(d){
     const tot=ds.count.reduce((a,b)=>a+b,0), md=tot?ds.diam.reduce((a,dm,i)=>a+dm*ds.count[i],0)/tot:0;
     document.getElementById('rf-dsnote').textContent=ds.window+' · '+ds.wet_min+' rainy min';
     document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops measured · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
+
+  // cross-link: re-render GFS panel with live status
+  if(GFS_LAST) renderGFS(GFS_LAST, d.status==='raining' ? d.summary : null);
 }
 
 let LAST=null;
@@ -260,7 +263,7 @@ const GFS_URL = "https://api.open-meteo.com/v1/forecast?latitude=25.27&longitude
 
 let GFS_LAST = null;
 
-function renderGFS(d){
+function renderGFS(d, liveInfo){
   const now = new Date();
   const hours = d.hourly;
   // pick next 24 hours only
@@ -302,7 +305,7 @@ function renderGFS(d){
   cv._bars=[]; items.forEach((d,i)=>{
     const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
     const isNow = i===0 || (d.t<=new Date() && (items[i+1]&&items[i+1].t>new Date()));
-    x.fillStyle = isNow ? '#f59e0b' : '#2563eb';
+    x.fillStyle = (isNow && liveInfo) ? '#ea7317' : isNow ? '#f59e0b' : '#2563eb';
     if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();}
     else{x.fillRect(bx,T+ph-1,bar,1);}
     cv._bars.push({x:bx,y:by,w:bar,h:Math.max(h,2),label:d.label,v:d.v,prob:probs[i]});
@@ -334,7 +337,11 @@ function renderGFS(d){
   const peakItem = items.reduce((a,b)=>b.v>a.v?b:a,items[0]);
   const rainyHours = items.filter(d=>d.v>0.1).length;
   const maxProb = Math.max(...probs);
+  const liveChip = liveInfo
+    ? `<span class="rf-chip" style="background:#fff3e0;border-color:#f59e0b;color:#92400e">🌧 Raining now · Observed: <b>${liveInfo.current_intensity} mm/h</b></span>`
+    : '';
   document.getElementById('gfs-chips').innerHTML =
+    liveChip +
     `<span class="rf-chip">Total expected: <b>${total.toFixed(1)} mm</b></span>` +
     (peakItem.v>0 ? `<span class="rf-chip">Peak hour: <b>${peakItem.label} (${peakItem.v} mm)</b></span>` : '') +
     `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>` +
