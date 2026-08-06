@@ -188,7 +188,14 @@ function drawForecast(cv, d, gfsData){
   const Xm = m => L+(m+PAST)/(PAST+HOR)*pw;
   const Yv = v => T+ph-(Math.min(v,ymax)/ymax)*ph;
 
-  // grid lines + y-axis labels
+  // y-axis label (rotated)
+  x.save();
+  x.fillStyle=css('--rf-mut'); x.font='10px system-ui'; x.textAlign='center';
+  x.translate(10, T+ph/2); x.rotate(-Math.PI/2);
+  x.fillText('Intensity (mm/h)', 0, 0);
+  x.restore();
+
+  // grid lines + y-axis tick labels
   x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut');
   x.font='11px system-ui'; x.textAlign='right';
   for(let g=0;g<=4;g++){
@@ -203,6 +210,9 @@ function drawForecast(cv, d, gfsData){
     const t=new Date(now.getTime()+m*60000);
     x.fillText(('0'+t.getHours()).slice(-2)+':00', Xm(m), H-9);
   }
+  // x-axis label
+  x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
+  x.fillText('Time (IST)', L+pw/2, H-0);
 
   // GFS hourly bars (background, semi-transparent blue) — next 6 hrs
   if(gfsData){
