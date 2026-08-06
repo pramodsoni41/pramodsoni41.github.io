@@ -46,6 +46,10 @@
     #rf-tip{position:fixed;pointer-events:none;background:var(--rf-ink);color:var(--rf-card);font-size:.75rem;
       padding:5px 8px;border-radius:7px;opacity:0;transition:opacity .1s;z-index:50;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.25)}
     .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+    /* GFS panel */
+    .gfs-source{font-size:.72rem;color:var(--rf-mut);margin-top:10px}
+    .gfs-prob-bar{height:4px;border-radius:2px;margin-top:2px;background:linear-gradient(90deg,#bfdbfe,#2563eb)}
+    .gfs-now-line{stroke:var(--rf-mut);stroke-dasharray:4 3;stroke-width:1}
     @media(max-width:760px){.rf-tiles{grid-template-columns:repeat(2,1fr)}.rf-grid2{grid-template-columns:1fr}.rf-title{font-size:1.5rem}}
   </style>
 </head>
@@ -99,6 +103,21 @@ document.addEventListener('DOMContentLoaded', function(){
 
   <!-- TOTALS -->
   <div class="rf-tiles" id="rf-tiles"></div>
+
+  <!-- GFS 24-HR FORECAST -->
+  <div class="rf-card">
+    <div class="rf-h">
+      <h2>24-Hour GFS Rainfall Forecast</h2>
+      <span class="rf-note" id="gfs-note">IIT (BHU) Varanasi · loading…</span>
+    </div>
+    <div id="gfs-chips" class="rf-chips" style="margin-bottom:10px"></div>
+    <canvas id="cGFS" height="220" aria-label="GFS 24-hour hourly precipitation forecast"></canvas>
+    <div class="rf-legend" style="margin-top:8px">
+      <span><span class="rf-sw" style="background:#2563eb"></span>Precipitation (mm/hr)</span>
+      <span><span class="rf-sw" style="background:#bfdbfe;opacity:.8"></span>Rain probability (%)</span>
+    </div>
+    <p class="gfs-source">Source: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · GFS model · updates hourly · lat 25.27° N, lon 82.99° E</p>
+  </div>
 
   <!-- DAILY + WEEKLY -->
   <div class="rf-grid2">
@@ -232,7 +251,110 @@ async function load(){
   }catch(e){document.getElementById('rf-status').innerHTML='<span class="rf-dot" style="background:#ef4444"></span>Forecast unavailable';}
 }
 load(); setInterval(load,60000);
-window.addEventListener('resize',()=>{if(LAST)render(LAST);});
+window.addEventListener('resize',()=>{if(LAST)render(LAST); if(GFS_LAST)renderGFS(GFS_LAST);});
+
+// ---- GFS 24-hr forecast via Open-Meteo ----
+const GFS_URL = "https://api.open-meteo.com/v1/forecast?latitude=25.27&longitude=82.99" +
+  "&hourly=precipitation,precipitation_probability,weathercode" +
+  "&forecast_days=2&timezone=Asia%2FKolkata&models=gfs_seamless";
+
+let GFS_LAST = null;
+
+function renderGFS(d){
+  const now = new Date();
+  const hours = d.hourly;
+  // pick next 24 hours only
+  const items = [], probs = [];
+  for(let i=0;i<hours.time.length;i++){
+    const t = new Date(hours.time[i]);
+    const diffH = (t - now) / 3600000;
+    if(diffH >= -1 && diffH < 24){
+      items.push({ label: ('0'+t.getHours()).slice(-2)+':00', v: hours.precipitation[i] || 0, t });
+      probs.push(hours.precipitation_probability[i] || 0);
+    }
+  }
+  if(!items.length) return;
+
+  const cv = document.getElementById('cGFS');
+  const {x,W,H} = setup(cv);
+  const L=44,R=12,T=14,B=34, pw=W-L-R, ph=H-T-B;
+  const maxP = niceMax(Math.max(0.5,...items.map(d=>d.v)));
+  const Y = v => T+ph-(v/maxP)*ph;
+  const bw = pw/items.length, bar = Math.min(bw*0.6,18);
+
+  // grid lines + y-axis labels
+  x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut');
+  x.font='10.5px system-ui'; x.textAlign='right';
+  for(let g=0;g<=4;g++){
+    const v=maxP*g/4, y=Y(v);
+    x.beginPath(); x.moveTo(L,y); x.lineTo(L+pw,y); x.stroke();
+    x.fillText(v>=10?v.toFixed(0):v.toFixed(1), L-5, y+3);
+  }
+
+  // probability shading behind bars
+  x.fillStyle='rgba(191,219,254,0.35)';
+  items.forEach((d,i)=>{
+    const px=L+i*bw, ph2=(probs[i]/100)*H;
+    x.fillRect(px, H-B-ph2, bw, ph2);
+  });
+
+  // precipitation bars
+  cv._bars=[]; items.forEach((d,i)=>{
+    const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
+    const isNow = i===0 || (d.t<=new Date() && (items[i+1]&&items[i+1].t>new Date()));
+    x.fillStyle = isNow ? '#f59e0b' : '#2563eb';
+    if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();}
+    else{x.fillRect(bx,T+ph-1,bar,1);}
+    cv._bars.push({x:bx,y:by,w:bar,h:Math.max(h,2),label:d.label,v:d.v,prob:probs[i]});
+  });
+
+  // x-axis labels every 3 hrs
+  x.fillStyle=css('--rf-mut'); x.textAlign='center';
+  items.forEach((d,i)=>{ if(i%3===0) x.fillText(d.label, L+i*bw+bw/2, H-10); });
+
+  // "now" vertical line
+  x.strokeStyle=css('--rf-mut'); x.setLineDash([4,3]); x.lineWidth=1;
+  x.beginPath(); x.moveTo(L, T); x.lineTo(L, T+ph); x.stroke(); x.setLineDash([]);
+  x.fillStyle=css('--rf-mut'); x.textAlign='left'; x.font='10px system-ui';
+  x.fillText('now', L+3, T+11);
+
+  cv._unit='mm';
+  cv.onmousemove=e=>{
+    const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;
+    let hit=null;(cv._bars||[]).forEach(b=>{if(mx>=b.x-2&&mx<=b.x+b.w+2)hit=b;});
+    if(hit){tip.style.opacity=1;
+      tip.textContent=`${hit.label}  ${hit.v} mm  (prob ${hit.prob}%)`;
+      tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';}
+    else tip.style.opacity=0;
+  };
+  cv.onmouseleave=()=>tip.style.opacity=0;
+
+  // summary chips
+  const total = items.reduce((s,d)=>s+d.v,0);
+  const peakItem = items.reduce((a,b)=>b.v>a.v?b:a,items[0]);
+  const rainyHours = items.filter(d=>d.v>0.1).length;
+  const maxProb = Math.max(...probs);
+  document.getElementById('gfs-chips').innerHTML =
+    `<span class="rf-chip">Total expected: <b>${total.toFixed(1)} mm</b></span>` +
+    (peakItem.v>0 ? `<span class="rf-chip">Peak hour: <b>${peakItem.label} (${peakItem.v} mm)</b></span>` : '') +
+    `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>` +
+    `<span class="rf-chip">Max rain probability: <b>${maxProb}%</b></span>`;
+
+  const upd = new Date(d.generationtime_ms ? now : now);
+  document.getElementById('gfs-note').textContent =
+    `IIT (BHU) Varanasi · GFS · fetched ${('0'+now.getHours()).slice(-2)}:${('0'+now.getMinutes()).slice(-2)}`;
+}
+
+async function loadGFS(){
+  try{
+    const r = await fetch(GFS_URL+'&t='+Date.now(), {cache:'no-store'});
+    GFS_LAST = await r.json();
+    renderGFS(GFS_LAST);
+  }catch(e){
+    document.getElementById('gfs-note').textContent='GFS forecast unavailable';
+  }
+}
+loadGFS(); setInterval(loadGFS, 3600000); // refresh every hour
 </script>
 
 <footer class="site-footer">
