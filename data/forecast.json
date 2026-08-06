@@ -1,20 +1,12 @@
 {
- "generated_at": "2026-08-06T14:54:00",
- "now": "2026-08-06T14:54",
+ "generated_at": "2026-08-06T14:56:00",
+ "now": "2026-08-06T14:56",
  "station": "Thies LNM disdrometer",
  "model": {
   "mit": 30,
   "horizon": 120
  },
  "history": [
-  {
-   "t": "2026-08-06T12:54",
-   "i": 0.0
-  },
-  {
-   "t": "2026-08-06T12:55",
-   "i": 0.0
-  },
   {
    "t": "2026-08-06T12:56",
    "i": 0.0
@@ -490,10 +482,18 @@
   {
    "t": "2026-08-06T14:54",
    "i": 0.0
+  },
+  {
+   "t": "2026-08-06T14:55",
+   "i": 0.0
+  },
+  {
+   "t": "2026-08-06T14:56",
+   "i": 0.0
   }
  ],
  "status": "ended",
- "recent_zero_minutes": 8,
+ "recent_zero_minutes": 10,
  "summary": {
   "message": "Rain ended",
   "zero_intensity_minutes": 5
