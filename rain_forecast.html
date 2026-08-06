@@ -303,7 +303,7 @@ async function load(){
   }catch(e){document.getElementById('rf-status').innerHTML='<span class="rf-dot" style="background:#ef4444"></span>Forecast unavailable';}
 }
 load(); setInterval(load,60000);
-window.addEventListener('resize',()=>{if(LAST)render(LAST); if(GFS_LAST)renderGFS(GFS_LAST);});
+window.addEventListener('resize',()=>{if(LAST)render(LAST);});
 
 // ---- GFS 24-hr forecast via Open-Meteo ----
 const GFS_URL = "https://api.open-meteo.com/v1/forecast?latitude=25.27&longitude=82.99" +
