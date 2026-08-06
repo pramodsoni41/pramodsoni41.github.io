@@ -175,14 +175,17 @@ function attachTip(cv){
 // ---- combined observed + ML band + GFS bar chart ----
 function drawForecast(cv, d, gfsData){
   const {x,W,H}=setup(cv);
-  const PAST=180, ML_HOR=120, GFS_HOR=360, HOR=GFS_HOR, L=44, R=12, T=14, B=30, pw=W-L-R, ph=H-T-B;
+  const PAST=180, HOR=360, L=58, R=12, T=24, B=38, pw=W-L-R, ph=H-T-B;
   const now=new Date(d.now);
 
-  // y-axis range: cover history, ML p90, and GFS hourly values
-  let ymax=5;
+  // y-axis range: cover history, ML p90, and next-6hr GFS only (not all 24hr)
+  let ymax=2;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
   if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
-  if(gfsData) gfsData.hourly.precipitation.forEach(v=>ymax=Math.max(ymax,v||0));
+  if(gfsData){ gfsData.hourly.time.forEach((t,i)=>{
+    const mFromNow=(new Date(t)-now)/60000;
+    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsData.hourly.precipitation[i]||0);
+  });}
   ymax = niceMax(ymax * 1.15);
 
   const Xm = m => L+(m+PAST)/(PAST+HOR)*pw;
@@ -191,7 +194,7 @@ function drawForecast(cv, d, gfsData){
   // y-axis label (rotated)
   x.save();
   x.fillStyle=css('--rf-mut'); x.font='10px system-ui'; x.textAlign='center';
-  x.translate(10, T+ph/2); x.rotate(-Math.PI/2);
+  x.translate(12, T+ph/2); x.rotate(-Math.PI/2);
   x.fillText('Intensity (mm/h)', 0, 0);
   x.restore();
 
@@ -208,8 +211,11 @@ function drawForecast(cv, d, gfsData){
   x.textAlign='center';
   for(let m=-PAST; m<=HOR; m+=60){
     const t=new Date(now.getTime()+m*60000);
-    x.fillText(('0'+t.getHours()).slice(-2)+':00', Xm(m), H-9);
+    x.fillText(('0'+t.getHours()).slice(-2)+':00', Xm(m), H-18);
   }
+  // x-axis label
+  x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
+  x.fillText('Time (IST)', L+pw/2, H-4);
   // x-axis label
   x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
   x.fillText('Time (IST)', L+pw/2, H-0);
