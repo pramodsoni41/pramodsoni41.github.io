@@ -165,7 +165,7 @@ function attachTip(cv){
 
 // ---- forecast band chart ----
 function drawForecast(cv,d){
-  const {x,W,H}=setup(cv); const PAST=120,HOR=120,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
+  const {x,W,H}=setup(cv); const PAST=180,HOR=120,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
   const now=new Date(d.now); let ymax=2;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
   if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v)); ymax*=1.15;
