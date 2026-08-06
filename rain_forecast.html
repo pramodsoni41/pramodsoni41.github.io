@@ -73,7 +73,7 @@
     <div class="rf-h"><h2 id="rf-status" class="rf-statusline"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</h2>
       <span class="rf-note" id="rf-fnote"></span></div>
     <div id="rf-summary" class="rf-chips"></div>
-    <canvas id="cForecast" height="360" aria-label="Rain intensity forecast with probability band"></canvas>
+    <canvas id="cForecast" height="300" aria-label="Rain intensity forecast with probability band"></canvas>
     <div class="rf-legend">
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
       <span><span class="rf-sw" style="background:#f59e0b"></span>Median forecast</span>
@@ -173,6 +173,8 @@ function drawForecast(cv,d){
     first?(x.moveTo(X0,Y0),first=false):x.lineTo(X0,Y0);});x.stroke();
   x.strokeStyle=css('--rf-mut');x.setLineDash([4,4]);x.lineWidth=1;x.beginPath();x.moveTo(X(0),T);x.lineTo(X(0),T+ph);x.stroke();x.setLineDash([]);
   x.fillStyle=css('--rf-mut');x.textAlign='left';x.fillText('now',X(0)+4,T+10);
+  if(!d.forecast){x.fillStyle=css('--rf-mut');x.font='13px system-ui';x.textAlign='center';
+    x.fillText('☀️  No active rain — the live forecast band appears here when it starts', L+pw/2, T+ph/2);}
 }
 
 function render(d){
