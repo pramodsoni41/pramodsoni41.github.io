@@ -142,7 +142,7 @@ function render(d){
   draw(d);
 }
 
-const FORECAST_URL = "data/forecast.json"; // auto-set to the Gist URL by publish_gist.py
+const FORECAST_URL = "https://gist.githubusercontent.com/pramodsoni41/bd457ffef8aa2c2451603f9d47ab4d90/raw/forecast.json"; // auto-set to the Gist URL by publish_gist.py
 async function load(){
   try{
     const sep = FORECAST_URL.indexOf('?')>=0 ? '&' : '?';
