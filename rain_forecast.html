@@ -188,10 +188,10 @@ function drawForecast(cv, d, gfsData){
   const intensityToMinuteDepth = v => (Number(v) || 0) / 60;
   const gfsMinuteDepthAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / (gfsHoursAt(gh, i) * 60);
 
-  // y-axis range: rainfall depth uses fixed practical steps: 0-20, 0-50, 0-100, etc.
+  // y-axis range: rainfall depth uses fixed practical steps: 0-10, 0-50, 0-100, etc.
   const rainfallAxisMax = v => {
     const padded = (Number(v) || 0) * 1.15;
-    if(padded <= 20) return 20;
+    if(padded <= 10) return 10;
     if(padded <= 50) return 50;
     if(padded <= 100) return 100;
     if(padded <= 200) return 200;
