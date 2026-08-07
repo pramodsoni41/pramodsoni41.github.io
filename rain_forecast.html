@@ -97,12 +97,12 @@ document.addEventListener('DOMContentLoaded', function(){
     <canvas id="cForecast" height="320" aria-label="Combined observed + ML forecast + GFS forecast"></canvas>
     <div class="rf-legend">
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
-      <span><span class="rf-sw" style="background:#f59e0b"></span>ML median (2 hr)</span>
-      <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90</span>
-      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS avg intensity (6 hr)</span>
+      <span><span class="rf-sw" style="background:#f59e0b"></span>ML rain / min (2 hr)</span>
+      <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90 / min</span>
+      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS rain / min (6 hr)</span>
     </div>
     <div id="gfs-chips" class="rf-chips" style="margin-top:10px"></div>
-    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · hourly mm converted to average mm/h on chart · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
+    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · hourly mm converted to mm per 1-min interval on chart · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
   </div>
 
   <!-- TOTALS -->
@@ -185,15 +185,16 @@ function drawForecast(cv, d, gfsData){
     const h = Math.abs(t1 - t0) / 3600000;
     return Number.isFinite(h) && h > 0 ? h : 1;
   };
-  const gfsIntensityAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / gfsHoursAt(gh, i);
+  const intensityToMinuteDepth = v => (Number(v) || 0) / 60;
+  const gfsMinuteDepthAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / (gfsHoursAt(gh, i) * 60);
 
-  // y-axis range: cover history, ML p90, and next-6hr GFS average intensity.
-  let ymax=2;
-  (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
-  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
+  // y-axis range: cover 1-minute rainfall depth from history, ML p90, and next-6hr GFS.
+  let ymax=0.05;
+  (d.history||[]).forEach(p=>ymax=Math.max(ymax,intensityToMinuteDepth(p.i)));
+  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,intensityToMinuteDepth(v)));
   if(gfsData){ const gh=gfsData.hourly; gh.time.forEach((t,i)=>{
     const mFromNow=(new Date(t)-now)/60000;
-    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsIntensityAt(gh,i));
+    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsMinuteDepthAt(gh,i));
   });}
   ymax = niceMax(ymax * 1.15);
 
@@ -204,7 +205,7 @@ function drawForecast(cv, d, gfsData){
   x.save();
   x.fillStyle=css('--rf-mut'); x.font='10px system-ui'; x.textAlign='center';
   x.translate(12, T+ph/2); x.rotate(-Math.PI/2);
-  x.fillText('Intensity (mm/h)', 0, 0);
+  x.fillText('Rainfall per min (mm)', 0, 0);
   x.restore();
 
   // grid lines + y-axis tick labels
@@ -213,7 +214,7 @@ function drawForecast(cv, d, gfsData){
   for(let g=0;g<=4;g++){
     const v=ymax*g/4, y=Yv(v);
     x.beginPath(); x.moveTo(L,y); x.lineTo(L+pw,y); x.stroke();
-    x.fillText(v.toFixed(v<2?1:0), L-6, y+3);
+    x.fillText(v.toFixed(v<0.1?3:(v<1?2:1)), L-6, y+3);
   }
 
   // x-axis time labels every 60 min
@@ -226,16 +227,16 @@ function drawForecast(cv, d, gfsData){
   x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
   x.fillText('Time (IST)', L+pw/2, H-4);
 
-  // GFS bars: Open-Meteo precipitation is hourly depth (mm); plot as average intensity (mm/h).
+  // GFS bars: Open-Meteo precipitation is hourly depth (mm); plot as mm per 1-minute interval.
   if(gfsData){
     const gh=gfsData.hourly;
     for(let i=0;i<gh.time.length;i++){
       const t=new Date(gh.time[i]), mFromNow=(t-now)/60000;
       if(mFromNow<0||mFromNow>=GFS_HOR) continue;
       const durationMin=gfsHoursAt(gh,i)*60;
-      const gfsIntensity=gfsIntensityAt(gh,i);
+      const gfsMinuteDepth=gfsMinuteDepthAt(gh,i);
       const bx=Xm(mFromNow), bx2=Xm(Math.min(mFromNow+durationMin,GFS_HOR)), bw=bx2-bx;
-      const by=Yv(gfsIntensity), bh=T+ph-by;
+      const by=Yv(gfsMinuteDepth), bh=T+ph-by;
       x.fillStyle='rgba(147,197,253,0.55)';
       if(bh>0.5) x.fillRect(bx, by, bw, bh);
       else x.fillRect(bx, T+ph-1, bw, 1);
@@ -244,18 +245,18 @@ function drawForecast(cv, d, gfsData){
 
   // ML forecast band (next 2 hrs)
   if(d.forecast){
-    const f=d.forecast, lm=f.lead_min, I0=d.summary.current_intensity;
+    const f=d.forecast, lm=f.lead_min, I0=intensityToMinuteDepth(d.summary.current_intensity);
     const band=(lo,hi,c)=>{
       x.fillStyle=c; x.beginPath(); x.moveTo(Xm(0),Yv(I0));
-      for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(hi[i]));
-      for(let i=lm.length-1;i>=0;i--) x.lineTo(Xm(lm[i]),Yv(lo[i]));
+      for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(hi[i])));
+      for(let i=lm.length-1;i>=0;i--) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(lo[i])));
       x.closePath(); x.fill();
     };
     band(f.p10,f.p90,'rgba(253,186,116,.40)');
     band(f.p25,f.p75,'rgba(249,115,22,.40)');
     x.strokeStyle='#f59e0b'; x.lineWidth=2;
     x.beginPath(); x.moveTo(Xm(0),Yv(I0));
-    for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(f.p50[i]));
+    for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(f.p50[i])));
     x.stroke();
   }
 
@@ -264,7 +265,7 @@ function drawForecast(cv, d, gfsData){
   (d.history||[]).forEach(p=>{
     const m=(new Date(p.t)-now)/60000;
     if(m<-PAST) return;
-    first?(x.moveTo(Xm(m),Yv(p.i)),first=false):x.lineTo(Xm(m),Yv(p.i));
+    first?(x.moveTo(Xm(m),Yv(intensityToMinuteDepth(p.i))),first=false):x.lineTo(Xm(m),Yv(intensityToMinuteDepth(p.i)));
   });
   x.stroke();
 
