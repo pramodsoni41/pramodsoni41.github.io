@@ -188,15 +188,23 @@ function drawForecast(cv, d, gfsData){
   const intensityToMinuteDepth = v => (Number(v) || 0) / 60;
   const gfsMinuteDepthAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / (gfsHoursAt(gh, i) * 60);
 
-  // y-axis range: cover 1-minute rainfall depth from history, ML p90, and next-6hr GFS.
-  let ymax=0.05;
+  // y-axis range: rainfall depth uses fixed practical steps: 0-20, 0-50, 0-100, etc.
+  const rainfallAxisMax = v => {
+    const padded = (Number(v) || 0) * 1.15;
+    if(padded <= 20) return 20;
+    if(padded <= 50) return 50;
+    if(padded <= 100) return 100;
+    if(padded <= 200) return 200;
+    return niceMax(padded);
+  };
+  let ymax=0;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,intensityToMinuteDepth(p.i)));
   if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,intensityToMinuteDepth(v)));
   if(gfsData){ const gh=gfsData.hourly; gh.time.forEach((t,i)=>{
     const mFromNow=(new Date(t)-now)/60000;
     if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsMinuteDepthAt(gh,i));
   });}
-  ymax = niceMax(ymax * 1.15);
+  ymax = rainfallAxisMax(ymax);
 
   const Xm = m => L+(m+PAST)/(PAST+HOR)*pw;
   const Yv = v => T+ph-(Math.min(v,ymax)/ymax)*ph;
