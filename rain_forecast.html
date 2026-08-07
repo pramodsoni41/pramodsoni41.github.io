@@ -99,10 +99,10 @@ document.addEventListener('DOMContentLoaded', function(){
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
       <span><span class="rf-sw" style="background:#f59e0b"></span>ML median (2 hr)</span>
       <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90</span>
-      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS hourly mean (6 hr)</span>
+      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS avg intensity (6 hr)</span>
     </div>
     <div id="gfs-chips" class="rf-chips" style="margin-top:10px"></div>
-    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · updates hourly · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
+    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · hourly mm converted to average mm/h on chart · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
   </div>
 
   <!-- TOTALS -->
@@ -175,16 +175,25 @@ function attachTip(cv){
 // ---- combined observed + ML band + GFS bar chart ----
 function drawForecast(cv, d, gfsData){
   const {x,W,H}=setup(cv);
-  const PAST=180, HOR=360, L=58, R=12, T=24, B=38, pw=W-L-R, ph=H-T-B;
+  const PAST=180, ML_HOR=120, GFS_HOR=360, HOR=GFS_HOR, L=58, R=12, T=24, B=38, pw=W-L-R, ph=H-T-B;
   const now=new Date(d.now);
 
-  // y-axis range: cover history, ML p90, and next-6hr GFS only (not all 24hr)
+  const gfsHoursAt = (gh, i) => {
+    const t0 = new Date(gh.time[i]);
+    const neighbor = gh.time[i+1] || gh.time[i-1];
+    const t1 = neighbor ? new Date(neighbor) : new Date(t0.getTime()+3600000);
+    const h = Math.abs(t1 - t0) / 3600000;
+    return Number.isFinite(h) && h > 0 ? h : 1;
+  };
+  const gfsIntensityAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / gfsHoursAt(gh, i);
+
+  // y-axis range: cover history, ML p90, and next-6hr GFS average intensity.
   let ymax=2;
   (d.history||[]).forEach(p=>ymax=Math.max(ymax,p.i));
   if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,v));
-  if(gfsData){ gfsData.hourly.time.forEach((t,i)=>{
+  if(gfsData){ const gh=gfsData.hourly; gh.time.forEach((t,i)=>{
     const mFromNow=(new Date(t)-now)/60000;
-    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsData.hourly.precipitation[i]||0);
+    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsIntensityAt(gh,i));
   });}
   ymax = niceMax(ymax * 1.15);
 
@@ -216,19 +225,17 @@ function drawForecast(cv, d, gfsData){
   // x-axis label
   x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
   x.fillText('Time (IST)', L+pw/2, H-4);
-  // x-axis label
-  x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
-  x.fillText('Time (IST)', L+pw/2, H-0);
 
-  // GFS hourly bars (background, semi-transparent blue) — next 6 hrs
+  // GFS bars: Open-Meteo precipitation is hourly depth (mm); plot as average intensity (mm/h).
   if(gfsData){
     const gh=gfsData.hourly;
     for(let i=0;i<gh.time.length;i++){
       const t=new Date(gh.time[i]), mFromNow=(t-now)/60000;
       if(mFromNow<0||mFromNow>=GFS_HOR) continue;
-      const precip=gh.precipitation[i]||0;
-      const bx=Xm(mFromNow), bx2=Xm(mFromNow+60), bw=bx2-bx;
-      const by=Yv(precip), bh=T+ph-by;
+      const durationMin=gfsHoursAt(gh,i)*60;
+      const gfsIntensity=gfsIntensityAt(gh,i);
+      const bx=Xm(mFromNow), bx2=Xm(Math.min(mFromNow+durationMin,GFS_HOR)), bw=bx2-bx;
+      const by=Yv(gfsIntensity), bh=T+ph-by;
       x.fillStyle='rgba(147,197,253,0.55)';
       if(bh>0.5) x.fillRect(bx, by, bw, bh);
       else x.fillRect(bx, T+ph-1, bw, 1);
