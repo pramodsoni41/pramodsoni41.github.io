@@ -4,15 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Live Rain Dashboard | Dr. Pramod Soni</title>
-  <meta name="description" content="Live disdrometer rainfall dashboard: real-time intensity forecast with probability band, daily & weekly rainfall, and drop-size distribution."/>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta name="description" content="Live disdrometer rainfall dashboard: real-time ML nowcast with probability band, GFS 3-day outlook, daily & weekly rainfall, and drop-size distribution."/>
   <link rel="stylesheet" href="style.css"/>
   <style>
     :root{
       --rf-bg:#f6f8fb; --rf-card:#fff; --rf-line:#e5e9f0; --rf-ink:#0f172a; --rf-mut:#64748b;
-      --rf-soft:#f1f5f9; --rf-blue:#2563eb; --rf-blued:#1e40af; --rf-amber:#ea7317; --rf-ambers:#fed7aa;
-      --rf-grid:#eef2f7; --rf-shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.05);
+      --rf-soft:#f1f5f9; --rf-blue:#2563eb; --rf-amber:#ea7317; --rf-grid:#eef2f7;
+      --rf-shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.05);
     }
     @media (prefers-color-scheme:dark){
       :root{--rf-bg:#0b1220; --rf-card:#131c2e; --rf-line:#243046; --rf-ink:#e8edf6; --rf-mut:#93a1b8;
@@ -23,7 +21,7 @@
     .rf-sub{color:var(--rf-mut);font-size:.95rem;margin:0 0 6px}
     .rf-live{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:700;color:var(--rf-mut);
       background:var(--rf-soft);border:1px solid var(--rf-line);border-radius:999px;padding:4px 11px}
-    .rf-pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:rfp 2s infinite}
+    .rf-pulse{width:8px;height:8px;border-radius:50%;background:#22c55e;animation:rfp 2s infinite}
     @keyframes rfp{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
     .rf-card{background:var(--rf-card);border:1px solid var(--rf-line);border-radius:16px;box-shadow:var(--rf-shadow);padding:18px 20px;margin:16px 0}
     .rf-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
@@ -39,7 +37,7 @@
     .rf-tile .v{font-size:1.7rem;font-weight:800;color:var(--rf-ink);line-height:1.1}
     .rf-tile .v small{font-size:.9rem;color:var(--rf-mut);font-weight:600}
     .rf-tile .k{font-size:.78rem;color:var(--rf-mut);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
-    .rf-tile .bar{height:4px;border-radius:3px;background:var(--rf-blue);margin-top:10px;opacity:.85}
+    .rf-tile .bar{height:4px;border-radius:3px;background:var(--rf-blue);margin-top:10px;opacity:.85;max-width:100%}
     .rf-grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     canvas{width:100%;display:block}
     .rf-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.8rem;color:var(--rf-mut);margin-top:8px}
@@ -48,23 +46,9 @@
     #rf-tip{position:fixed;pointer-events:none;background:var(--rf-ink);color:var(--rf-card);font-size:.75rem;
       padding:5px 8px;border-radius:7px;opacity:0;transition:opacity .1s;z-index:50;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.25)}
     .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-    /* GFS panel */
-    .gfs-source{font-size:.72rem;color:var(--rf-mut);margin-top:10px}
-    .gfs-prob-bar{height:4px;border-radius:2px;margin-top:2px;background:linear-gradient(90deg,#bfdbfe,#2563eb)}
-    .gfs-now-line{stroke:var(--rf-mut);stroke-dasharray:4 3;stroke-width:1}
-    @media(max-width:760px){.rf-tiles{grid-template-columns:repeat(2,1fr)}.rf-grid2{grid-template-columns:1fr}.rf-title{font-size:1.5rem}}
+    @media(max-width:760px){.rf-tiles{grid-template-columns:repeat(2,1fr)!important}.rf-grid2{grid-template-columns:1fr}.rf-title{font-size:1.5rem}}
   </style>
 </head>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  var links = document.querySelectorAll('.nav-links a');
-  var current = window.location.pathname.split('/').pop() || 'index.html';
-  links.forEach(function(a){ if(a.getAttribute('href')===current) a.classList.add('active'); });
-  document.getElementById('navToggle').addEventListener('click', function(){
-    document.getElementById('navLinks').classList.toggle('open');
-  });
-});
-</script>
 <body>
 <nav class="navbar">
   <div class="wrap nav-inner">
@@ -79,35 +63,41 @@ document.addEventListener('DOMContentLoaded', function(){
       <a href="students.html">Students</a>
       <a href="administration.html">Administration</a>
       <a href="Important_Links.html">Important Links</a>
+      <a href="rain_forecast.html" class="active">Live Rain</a>
     </div>
   </div>
 </nav>
 
 <div class="rf-wrap">
-  <h2 class="sr-only">Live rainfall dashboard from a disdrometer, with forecast, daily and weekly totals, and drop-size distribution.</h2>
+  <h2 class="sr-only">Live rainfall dashboard: ML nowcast, GFS outlook, daily and weekly totals, and drop-size distribution.</h2>
   <div class="rf-title">🌧️ Live Rainfall Dashboard</div>
-  <p class="rf-sub">IIT (BHU) Varanasi &nbsp;&bull;&nbsp; Thies LNM disdrometer &mdash; real-time rain forecast, rainfall history, and drop-size distribution, powered by a machine-learning model.</p>
+  <p class="rf-sub">Thies LNM disdrometer at IIT (BHU) Varanasi &mdash; real-time machine-learning nowcast, GFS outlook, rainfall history, and drop-size distribution.</p>
   <div class="rf-live"><span class="rf-pulse"></span><span id="rf-updated">connecting…</span></div>
 
-  <!-- LIVE FORECAST + GFS (combined) -->
+  <!-- LIVE NOWCAST -->
   <div class="rf-card">
     <div class="rf-h"><h2 id="rf-status" class="rf-statusline"><span class="rf-dot" style="background:#9ca3af"></span>Loading…</h2>
       <span class="rf-note" id="rf-fnote"></span></div>
     <div id="rf-summary" class="rf-chips"></div>
-    <canvas id="cForecast" height="320" aria-label="Combined observed + ML forecast + GFS forecast"></canvas>
+    <canvas id="cForecast" height="300" aria-label="Rain intensity nowcast with probability band"></canvas>
     <div class="rf-legend">
       <span><span class="rf-sw" style="background:#1f4e79"></span>Observed</span>
-      <span><span class="rf-sw" style="background:#f59e0b"></span>ML rain / min (2 hr)</span>
-      <span><span class="rf-sw" style="background:#fed7aa"></span>ML P10–P90 / min</span>
-      <span><span class="rf-sw" style="background:#93c5fd;opacity:.8"></span>GFS rain / min (6 hr)</span>
+      <span><span class="rf-sw" style="background:#f59e0b"></span>Median nowcast</span>
+      <span><span class="rf-sw" style="background:#fed7aa"></span>P10–P90 (possible)</span>
+      <span><span class="rf-sw" style="background:#fdba74"></span>P25–P75 (likely)</span>
     </div>
-    <div id="gfs-chips" class="rf-chips" style="margin-top:10px"></div>
-    <p class="gfs-source" style="margin-top:6px">GFS: <a href="https://open-meteo.com" target="_blank" rel="noreferrer" style="color:var(--rf-blue)">Open-Meteo</a> · hourly mm converted to mm per 1-min interval on chart · lat 25.27° N, lon 82.99° E &nbsp;|&nbsp; <span id="gfs-note">loading…</span></p>
+  </div>
+
+  <!-- GFS OUTLOOK -->
+  <div class="rf-card">
+    <div class="rf-h"><h2>3-day outlook — GFS global model</h2><span class="rf-note" id="gfs-note"></span></div>
+    <div class="rf-tiles" id="gfs-days" style="grid-template-columns:repeat(3,1fr)"></div>
+    <canvas id="cGfs" height="200" aria-label="GFS hourly precipitation next 24 hours"></canvas>
+    <div class="rf-foot">Hourly precipitation expected over the next 24&nbsp;h (hover for chance of rain). The global model complements the live nowcast above: the nowcast reacts to rain happening now; GFS shows the days ahead.</div>
   </div>
 
   <!-- TOTALS -->
   <div class="rf-tiles" id="rf-tiles"></div>
-
 
   <!-- DAILY + WEEKLY -->
   <div class="rf-grid2">
@@ -122,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <canvas id="cDrop" height="260" aria-label="Drop size distribution"></canvas>
     <div class="rf-foot" id="rf-dsstat"></div></div>
 
-  <p class="rf-foot">Updates automatically every minute from the live disdrometer feed. Forecast model: gradient-boosting survival + quantile intensity. Point estimates are indicative; probability bands are the reliable output.</p>
+  <p class="rf-foot">Nowcast: gradient-boosting survival + quantile intensity model trained on this station's history. Outlook: NOAA GFS via Open-Meteo. Updates automatically every minute.</p>
 </div>
 <div id="rf-tip"></div>
 
@@ -134,164 +124,62 @@ const FORECAST_URL = DEV ? LOCAL_URL : GIST_URL;
 
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
 const tip = document.getElementById('rf-tip');
-function setup(cv){
-  const dpr=window.devicePixelRatio||1, W=cv.clientWidth, H=cv.clientHeight;
-  cv.width=W*dpr; cv.height=H*dpr; const x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
-  x.clearRect(0,0,W,H); return {x,W,H};
-}
+function setup(cv){const dpr=window.devicePixelRatio||1,W=cv.clientWidth,H=cv.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;const x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);return {x,W,H};}
 function rr(x,X,y,w,h,r){r=Math.min(r,w/2,h);X.beginPath();X.moveTo(x+r,y);X.arcTo(x+w,y,x+w,y+h,r);
   X.lineTo(x+w,y+h);X.lineTo(x,y+h);X.lineTo(x,y+r);X.arcTo(x,y,x+w,y,r);X.closePath();}
-function niceMax(v){if(v<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(v)));const n=v/p;
-  return (n<=1?1:n<=2?2:n<=5?5:10)*p;}
+function niceScale(vmax, floor){vmax=Math.max(vmax, floor||0, 1e-9);let step=vmax/5;
+  const mag=Math.pow(10,Math.floor(Math.log10(step))),n=step/mag;
+  step=(n<=1?1:n<=2?2:n<=5?5:10)*mag;return {max:Math.ceil(vmax/step)*step, step};}
+function fmt(v){return v>=1e6?(v/1e6).toFixed(v%1e6?1:0)+'M':v>=1000?(v/1000).toFixed(v%1000?1:0)+'k':(v<10&&v%1?v.toFixed(1):v.toFixed(0));}
 
-// ---- generic interactive bar chart ----
-function barChart(cv, items, {color, unit, xEvery, hiLast}){
+function barChart(cv, items, {color, unit, xEvery, hiLast, floor}){
   const {x,W,H}=setup(cv); const L=40,R=10,T=12,B=34, pw=W-L-R, ph=H-T-B;
-  const max=niceMax(Math.max(1,...items.map(d=>d.v)));
+  const sc=niceScale(Math.max(0,...items.map(d=>d.v)), floor||0), max=sc.max;
   const Y=v=>T+ph-(v/max)*ph;
   x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut'); x.font='10.5px system-ui'; x.textAlign='right';
-  for(let g=0;g<=4;g++){const v=max*g/4,y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();
-    x.fillText(v>=100?v.toFixed(0):v.toFixed(v<10?1:0),L-5,y+3);}
-  const n=items.length, bw=pw/n, bar=Math.min(bw*0.7,26);
-  cv._bars=[];
-  items.forEach((d,i)=>{
-    const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
-    x.fillStyle = (hiLast&&i===n-1)?css('--rf-amber'):color;
-    if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();} else {x.fillRect(bx,T+ph-1,bar,1);}
-    cv._bars.push({x:bx,y:by,w:bar,h:Math.max(h,2),top:by,label:d.label,v:d.v});
-  });
+  for(let v=0; v<=max+1e-9; v+=sc.step){const y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();x.fillText(fmt(v),L-5,y+3);}
+  const n=items.length, bw=pw/n, bar=Math.min(bw*0.7,26); cv._bars=[];
+  items.forEach((d,i)=>{const bx=L+i*bw+(bw-bar)/2, by=Y(d.v), h=T+ph-by;
+    x.fillStyle=(hiLast&&i===n-1)?css('--rf-amber'):color;
+    if(h>0.5){rr(bx,x,by,bar,h,3);x.fill();}else{x.fillRect(bx,T+ph-1,bar,1);}
+    cv._bars.push({x:bx,w:bar,label:d.label,v:d.v,tip:d.tip});});
   x.fillStyle=css('--rf-mut'); x.textAlign='center';
-  items.forEach((d,i)=>{ if(i%xEvery===0){x.fillText(d.label, L+i*bw+bw/2, H-12);} });
+  items.forEach((d,i)=>{if(i%xEvery===0)x.fillText(d.label,L+i*bw+bw/2,H-12);});
   cv._unit=unit;
 }
-function attachTip(cv){
-  cv.onmousemove=e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;
-    let hit=null;(cv._bars||[]).forEach(b=>{if(mx>=b.x-2&&mx<=b.x+b.w+2)hit=b;});
-    if(hit){tip.style.opacity=1;tip.textContent=`${hit.label}: ${hit.v} ${cv._unit||''}`;
+function attachTip(cv){cv.onmousemove=e=>{const r=cv.getBoundingClientRect(),mx=e.clientX-r.left;let hit=null;
+    (cv._bars||[]).forEach(b=>{if(mx>=b.x-2&&mx<=b.x+b.w+2)hit=b;});
+    if(hit){tip.style.opacity=1;tip.textContent=hit.tip||(`${hit.label}: ${hit.v} ${cv._unit||''}`);
       tip.style.left=(e.clientX+12)+'px';tip.style.top=(e.clientY-10)+'px';}else tip.style.opacity=0;};
-  cv.onmouseleave=()=>tip.style.opacity=0;
-}
+  cv.onmouseleave=()=>tip.style.opacity=0;}
 
-// ---- combined observed + ML band + GFS bar chart ----
-function drawForecast(cv, d, gfsData){
-  const {x,W,H}=setup(cv);
-  const PAST=180, ML_HOR=120, GFS_HOR=360, HOR=GFS_HOR, L=58, R=12, T=24, B=38, pw=W-L-R, ph=H-T-B;
-  const now=new Date(d.now);
-
-  const gfsHoursAt = (gh, i) => {
-    const t0 = new Date(gh.time[i]);
-    const neighbor = gh.time[i+1] || gh.time[i-1];
-    const t1 = neighbor ? new Date(neighbor) : new Date(t0.getTime()+3600000);
-    const h = Math.abs(t1 - t0) / 3600000;
-    return Number.isFinite(h) && h > 0 ? h : 1;
-  };
-  const intensityToMinuteDepth = v => (Number(v) || 0) / 60;
-  const gfsMinuteDepthAt = (gh, i) => (Number(gh.precipitation[i]) || 0) / (gfsHoursAt(gh, i) * 60);
-
-  // y-axis range: rainfall depth uses fixed practical steps: 0-10, 0-50, 0-100, etc.
-  const rainfallAxisMax = v => {
-    const padded = (Number(v) || 0) * 1.15;
-    if(padded <= 10) return 10;
-    if(padded <= 50) return 50;
-    if(padded <= 100) return 100;
-    if(padded <= 200) return 200;
-    return niceMax(padded);
-  };
-  let ymax=0;
-  (d.history||[]).forEach(p=>ymax=Math.max(ymax,intensityToMinuteDepth(p.i)));
-  if(d.forecast) d.forecast.p90.forEach(v=>ymax=Math.max(ymax,intensityToMinuteDepth(v)));
-  if(gfsData){ const gh=gfsData.hourly; gh.time.forEach((t,i)=>{
-    const mFromNow=(new Date(t)-now)/60000;
-    if(mFromNow>=0&&mFromNow<HOR) ymax=Math.max(ymax,gfsMinuteDepthAt(gh,i));
-  });}
-  ymax = rainfallAxisMax(ymax);
-
-  const Xm = m => L+(m+PAST)/(PAST+HOR)*pw;
-  const Yv = v => T+ph-(Math.min(v,ymax)/ymax)*ph;
-
-  // y-axis label (rotated)
-  x.save();
-  x.fillStyle=css('--rf-mut'); x.font='10px system-ui'; x.textAlign='center';
-  x.translate(12, T+ph/2); x.rotate(-Math.PI/2);
-  x.fillText('Rainfall per min (mm)', 0, 0);
-  x.restore();
-
-  // grid lines + y-axis tick labels
-  x.strokeStyle=css('--rf-grid'); x.fillStyle=css('--rf-mut');
-  x.font='11px system-ui'; x.textAlign='right';
-  for(let g=0;g<=4;g++){
-    const v=ymax*g/4, y=Yv(v);
-    x.beginPath(); x.moveTo(L,y); x.lineTo(L+pw,y); x.stroke();
-    x.fillText(v.toFixed(v<0.1?3:(v<1?2:1)), L-6, y+3);
-  }
-
-  // x-axis time labels every 60 min
+function drawForecast(cv,d){
+  const {x,W,H}=setup(cv); const PAST=60,HOR=60,L=44,R=12,T=12,B=28,pw=W-L-R,ph=H-T-B;
+  const now=new Date(d.now); let dmax=0;
+  (d.history||[]).forEach(p=>dmax=Math.max(dmax,p.i));
+  if(d.forecast) d.forecast.p90.forEach(v=>dmax=Math.max(dmax,v));
+  const sc=niceScale(dmax,4), ymax=sc.max;
+  const X=m=>L+(m+PAST)/(PAST+HOR)*pw, Y=v=>T+ph-(v/ymax)*ph;
+  x.strokeStyle=css('--rf-grid');x.fillStyle=css('--rf-mut');x.font='11px system-ui';x.textAlign='right';
+  for(let v=0; v<=ymax+1e-9; v+=sc.step){const y=Y(v);x.beginPath();x.moveTo(L,y);x.lineTo(L+pw,y);x.stroke();x.fillText(fmt(v),L-6,y+3);}
   x.textAlign='center';
-  for(let m=-PAST; m<=HOR; m+=60){
-    const t=new Date(now.getTime()+m*60000);
-    x.fillText(('0'+t.getHours()).slice(-2)+':00', Xm(m), H-18);
-  }
-  // x-axis label
-  x.fillStyle=css('--rf-mut'); x.font='10px system-ui';
-  x.fillText('Time (IST)', L+pw/2, H-4);
-
-  // GFS bars: Open-Meteo precipitation is hourly depth (mm); plot as mm per 1-minute interval.
-  if(gfsData){
-    const gh=gfsData.hourly;
-    for(let i=0;i<gh.time.length;i++){
-      const t=new Date(gh.time[i]), mFromNow=(t-now)/60000;
-      if(mFromNow<0||mFromNow>=GFS_HOR) continue;
-      const durationMin=gfsHoursAt(gh,i)*60;
-      const gfsMinuteDepth=gfsMinuteDepthAt(gh,i);
-      const bx=Xm(mFromNow), bx2=Xm(Math.min(mFromNow+durationMin,GFS_HOR)), bw=bx2-bx;
-      const by=Yv(gfsMinuteDepth), bh=T+ph-by;
-      x.fillStyle='rgba(147,197,253,0.55)';
-      if(bh>0.5) x.fillRect(bx, by, bw, bh);
-      else x.fillRect(bx, T+ph-1, bw, 1);
-    }
-  }
-
-  // ML forecast band (next 2 hrs)
-  if(d.forecast){
-    const f=d.forecast, lm=f.lead_min, I0=intensityToMinuteDepth(d.summary.current_intensity);
-    const band=(lo,hi,c)=>{
-      x.fillStyle=c; x.beginPath(); x.moveTo(Xm(0),Yv(I0));
-      for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(hi[i])));
-      for(let i=lm.length-1;i>=0;i--) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(lo[i])));
-      x.closePath(); x.fill();
-    };
-    band(f.p10,f.p90,'rgba(253,186,116,.40)');
-    band(f.p25,f.p75,'rgba(249,115,22,.40)');
-    x.strokeStyle='#f59e0b'; x.lineWidth=2;
-    x.beginPath(); x.moveTo(Xm(0),Yv(I0));
-    for(let i=0;i<lm.length;i++) x.lineTo(Xm(lm[i]),Yv(intensityToMinuteDepth(f.p50[i])));
-    x.stroke();
-  }
-
-  // observed disdrometer line
-  x.strokeStyle='#1f4e79'; x.lineWidth=1.8; x.beginPath(); let first=true;
-  (d.history||[]).forEach(p=>{
-    const m=(new Date(p.t)-now)/60000;
-    if(m<-PAST) return;
-    first?(x.moveTo(Xm(m),Yv(intensityToMinuteDepth(p.i))),first=false):x.lineTo(Xm(m),Yv(intensityToMinuteDepth(p.i)));
-  });
-  x.stroke();
-
-  // "now" dashed line
-  x.strokeStyle=css('--rf-mut'); x.setLineDash([4,4]); x.lineWidth=1;
-  x.beginPath(); x.moveTo(Xm(0),T); x.lineTo(Xm(0),T+ph); x.stroke(); x.setLineDash([]);
-  x.fillStyle=css('--rf-mut'); x.textAlign='left'; x.font='10px system-ui';
-  x.fillText('now', Xm(0)+4, T+12);
-
-  // label regions
-  x.fillStyle=css('--rf-mut'); x.font='9px system-ui'; x.textAlign='center';
-  if(d.forecast) x.fillText('', Xm(60), T+4);
-  if(gfsData) x.fillText('← GFS (6 hr) →', Xm(240), T+4);
-
-  if(!d.forecast && !gfsData){
-    x.fillStyle=css('--rf-mut'); x.font='13px system-ui'; x.textAlign='center';
-    x.fillText('☀️  No active rain — the live forecast band appears here when it starts', L+pw/2, T+ph/2);
-  }
+  for(let m=-PAST;m<=HOR;m+=15){const t=new Date(now.getTime()+m*60000);
+    x.fillText(('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2),X(m),H-9);}
+  if(d.forecast){const f=d.forecast,lm=f.lead_min,I0=d.summary.current_intensity;
+    const band=(lo,hi,c)=>{x.fillStyle=c;x.beginPath();x.moveTo(X(0),Y(I0));
+      for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(hi[i]));
+      for(let i=lm.length-1;i>=0;i--)x.lineTo(X(lm[i]),Y(lo[i]));x.closePath();x.fill();};
+    band(f.p10,f.p90,'rgba(253,186,116,.35)');band(f.p25,f.p75,'rgba(249,115,22,.35)');
+    x.strokeStyle='#f59e0b';x.lineWidth=2;x.beginPath();x.moveTo(X(0),Y(I0));
+    for(let i=0;i<lm.length;i++)x.lineTo(X(lm[i]),Y(f.p50[i]));x.stroke();}
+  x.strokeStyle='#1f4e79';x.lineWidth=1.8;x.beginPath();let first=true;
+  (d.history||[]).forEach(p=>{const m=(new Date(p.t)-now)/60000,X0=X(m),Y0=Y(p.i);
+    first?(x.moveTo(X0,Y0),first=false):x.lineTo(X0,Y0);});x.stroke();
+  x.strokeStyle=css('--rf-mut');x.setLineDash([4,4]);x.lineWidth=1;x.beginPath();x.moveTo(X(0),T);x.lineTo(X(0),T+ph);x.stroke();x.setLineDash([]);
+  x.fillStyle=css('--rf-mut');x.textAlign='left';x.fillText('now',X(0)+4,T+10);
+  if(!d.forecast){x.fillStyle=css('--rf-mut');x.font='13px system-ui';x.textAlign='center';
+    x.fillText('☀️  No active rain — the live nowcast band appears here when it starts', L+pw/2, T+ph/2);}
 }
 
 function render(d){
@@ -304,29 +192,34 @@ function render(d){
       `<span class="rf-chip">Stops within 30 min: <b>${s.p_stop_within_30}%</b></span>`+
       `<span class="rf-chip">Likely ends ~<b>${s.expected_end}</b></span>`+
       chip('20','lasts ≥20m')+chip('60','≥60m')+chip('120','≥120m');
-  }else if(d.status==='ended'){
-    st.innerHTML='<span class="rf-dot" style="background:#22c55e"></span>Rain ended';
-    fn.textContent='last 5 minutes recorded 0 mm/h';
-    sm.innerHTML='<span class="rf-chip">Rain intensity: <b>0</b> mm/h</span><span class="rf-chip">Signal: <b>ended</b></span>';
   }else{st.innerHTML='<span class="rf-dot" style="background:#2563eb"></span>No rain right now';
-    fn.textContent='forecast band appears when rain starts'; sm.innerHTML='';}
-  drawForecast(document.getElementById('cForecast'), d, GFS_LAST);
+    fn.textContent='nowcast band appears when rain starts'; sm.innerHTML='';}
+  drawForecast(document.getElementById('cForecast'),d);
+
+  if(d.gfs){const g=d.gfs;
+    document.getElementById('gfs-note').textContent=`${g.source} · next 24h ≈ ${g.next24_mm} mm, peak ${g.peak_prob}% · updated ${g.updated.replace('T',' ')}`;
+    document.getElementById('gfs-days').innerHTML=g.daily.map(x=>
+      `<div class="rf-tile"><div class="v">${x.mm} <small>mm</small></div><div class="k">${x.d}</div>`+
+      `<div class="k" style="text-transform:none;margin-top:2px">${x.prob}% chance of rain</div>`+
+      `<div class="bar" style="background:#0ea5e9;width:${x.prob}%"></div></div>`).join('');
+    const c=document.getElementById('cGfs');
+    const items=g.hourly.map(h=>{const t=new Date(h.t),lbl=('0'+t.getHours()).slice(-2)+':00';
+      return {label:lbl,v:h.mm,tip:`${lbl} · ${h.mm} mm · ${h.prob}% chance`};});
+    barChart(c,items,{color:'#0ea5e9',unit:'mm',xEvery:3,hiLast:false,floor:2});attachTip(c);}
 
   if(d.totals){const t=d.totals,tl=[['Today',t.today,'#2563eb'],['This week',t.week,'#0ea5e9'],['This month',t.month,'#6366f1'],['This year',t.year,'#8b5cf6']];
     document.getElementById('rf-tiles').innerHTML=tl.map(([k,v,c])=>
-      `<div class="rf-tile"><div class="v">${v} <small>mm</small></div><div class="k">${k}</div><div class="bar" style="background:${c}"></div></div>`).join('');}
+      `<div class="rf-tile"><div class="v">${v} <small>mm</small></div><div class="k">${k}</div><div class="bar" style="background:${c};max-width:100%"></div></div>`).join('');}
 
   if(d.daily){const c=document.getElementById('cDaily');
-    barChart(c,d.daily.map(x=>({label:x.d,v:x.mm})),{color:css('--rf-blue'),unit:'mm',xEvery:5,hiLast:true});attachTip(c);}
+    barChart(c,d.daily.map(x=>({label:x.d,v:x.mm})),{color:css('--rf-blue'),unit:'mm',xEvery:5,hiLast:true,floor:10});attachTip(c);}
   if(d.weekly){const c=document.getElementById('cWeekly');
-    barChart(c,d.weekly.map(x=>({label:x.w,v:x.mm})),{color:'#0ea5e9',unit:'mm',xEvery:2,hiLast:true});attachTip(c);}
+    barChart(c,d.weekly.map(x=>({label:x.w,v:x.mm})),{color:'#0ea5e9',unit:'mm',xEvery:2,hiLast:true,floor:10});attachTip(c);}
   if(d.dropsize){const ds=d.dropsize,c=document.getElementById('cDrop');
     barChart(c,ds.diam.map((dm,i)=>({label:dm+'',v:ds.count[i]})),{color:'#14b8a6',unit:'drops',xEvery:3,hiLast:false});attachTip(c);
     const tot=ds.count.reduce((a,b)=>a+b,0), md=tot?ds.diam.reduce((a,dm,i)=>a+dm*ds.count[i],0)/tot:0;
     document.getElementById('rf-dsnote').textContent=ds.window+' · '+ds.wet_min+' rainy min';
-    document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops measured · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
-
-  if(GFS_LAST) renderGFS(GFS_LAST, d.status==='raining' ? d.summary : null);
+    document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
 }
 
 let LAST=null;
@@ -337,60 +230,7 @@ async function load(){
 }
 load(); setInterval(load,60000);
 window.addEventListener('resize',()=>{if(LAST)render(LAST);});
-
-// ---- GFS 24-hr forecast via Open-Meteo ----
-const GFS_URL = "https://api.open-meteo.com/v1/forecast?latitude=25.27&longitude=82.99" +
-  "&hourly=precipitation,precipitation_probability,weathercode" +
-  "&forecast_days=2&timezone=Asia%2FKolkata&models=gfs_seamless";
-
-let GFS_LAST = null;
-
-// chips-only GFS summary (canvas drawing is inside drawForecast)
-function renderGFS(d, liveInfo){
-  const now = new Date();
-  const hours = d.hourly;
-  const items = [], probs = [];
-  for(let i=0;i<hours.time.length;i++){
-    const t=new Date(hours.time[i]), diffH=(t-now)/3600000;
-    if(diffH >= -1 && diffH < 24){
-      items.push({label:('0'+t.getHours()).slice(-2)+':00', v:hours.precipitation[i]||0});
-      probs.push(hours.precipitation_probability[i]||0);
-    }
-  }
-  if(!items.length) return;
-  const total=items.reduce((s,it)=>s+it.v,0);
-  const peakItem=items.reduce((a,b)=>b.v>a.v?b:a,items[0]);
-  const rainyHours=items.filter(it=>it.v>0.1).length;
-  const maxProb=Math.max(...probs);
-  const liveChip=liveInfo
-    ?`<span class="rf-chip" style="background:#fff3e0;border-color:#f59e0b;color:#92400e">🌧 Raining · Observed: <b>${liveInfo.current_intensity} mm/h</b></span>`
-    :'';
-  document.getElementById('gfs-chips').innerHTML=
-    liveChip+
-    `<span class="rf-chip">GFS 24hr total: <b>${total.toFixed(1)} mm</b></span>`+
-    (peakItem.v>0?`<span class="rf-chip">Peak hour: <b>${peakItem.label} (${peakItem.v} mm)</b></span>`:'')+
-    `<span class="rf-chip">Rainy hours: <b>${rainyHours}/24</b></span>`+
-    `<span class="rf-chip">Max prob: <b>${maxProb}%</b></span>`;
-  document.getElementById('gfs-note').textContent=
-    `GFS fetched ${('0'+now.getHours()).slice(-2)}:${('0'+now.getMinutes()).slice(-2)}`;
-}
-
-async function loadGFS(){
-  try{
-    const r=await fetch(GFS_URL+'&t='+Date.now(),{cache:'no-store'});
-    GFS_LAST=await r.json();
-    // re-render combined chart now that GFS data is available
-    if(LAST) render(LAST); else renderGFS(GFS_LAST);
-  }catch(e){
-    document.getElementById('gfs-note').textContent='GFS forecast unavailable';
-  }
-}
-loadGFS(); setInterval(loadGFS,3600000);
+document.getElementById('navToggle')?.addEventListener('click',()=>document.getElementById('navLinks').classList.toggle('open'));
 </script>
-
-<footer class="site-footer">
-  <p>&copy; 2026 Dr. Pramod Soni &nbsp;&bull;&nbsp; Assistant Professor, Civil Engineering, IIT (BHU) Varanasi
-  &nbsp;&bull;&nbsp; <a href="mailto:pramod.civ@iitbhu.ac.in">pramod.civ@iitbhu.ac.in</a></p>
-</footer>
 </body>
 </html>
