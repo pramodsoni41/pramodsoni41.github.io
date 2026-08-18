@@ -117,7 +117,7 @@
     <div class="rf-h"><h2>Synoptic report (IMD)</h2>
       <button id="synCsv" style="font-size:.8rem;font-weight:700;color:#fff;background:#2563eb;border:none;border-radius:8px;padding:6px 12px;cursor:pointer">&#11015; Download CSV</button></div>
     <div class="rf-foot" id="syn-note" style="margin:0 0 8px"></div>
-    <div style="overflow-x:auto"><table id="synTable" style="width:100%;border-collapse:collapse;font-size:.82rem"></table></div>
+    <div style="overflow:auto;max-height:430px"><table id="synTable" style="width:100%;border-collapse:collapse;font-size:.82rem"></table></div>
     <div class="rf-foot">3-hourly synoptic observations (00&ndash;21 UTC). Rainfall measured by the disdrometer. Temperature columns are <b>instrument housing / laser diagnostics &mdash; not air temperature</b> (this unit has no air-temperature probe).</div>
   </div>
 
@@ -231,11 +231,11 @@ function render(d){
     document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
 
   if(d.synoptic){const sy=d.synoptic;
-    document.getElementById('syn-note').textContent=`${sy.station} · last ${sy.obs.length} observations · generated ${sy.generated}`;
+    document.getElementById('syn-note').textContent=`${sy.station} · last ${sy.obs.length} observations (7 days) · generated ${sy.generated}`;
     const cols=[['utc','Obs (UTC)'],['ist','IST'],['rain3h','Rain 3h (mm)'],['int3h','Intensity (mm/h)'],
       ['rain03z','Since 03Z (mm)'],['rain12z','Since 12Z (mm)'],['t_obs','Housing °C'],['tmax','Tmax °C'],['tmin','Tmin °C'],['laser','Laser °C']];
     const cell=v=>(v===''||v==null)?'–':v;
-    const th='<tr>'+cols.map(c=>`<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--rf-line);white-space:nowrap;color:var(--rf-mut)">${c[1]}</th>`).join('')+'</tr>';
+    const th='<tr>'+cols.map(c=>`<th style="position:sticky;top:0;background:var(--rf-card);text-align:left;padding:6px 8px;border-bottom:2px solid var(--rf-line);white-space:nowrap;color:var(--rf-mut)">${c[1]}</th>`).join('')+'</tr>';
     const tr=sy.obs.map(o=>'<tr>'+cols.map(c=>`<td style="padding:5px 8px;border-bottom:1px solid var(--rf-line);white-space:nowrap">${cell(o[c[0]])}</td>`).join('')+'</tr>').join('');
     document.getElementById('synTable').innerHTML=th+tr;
     document.getElementById('synCsv').onclick=()=>{
