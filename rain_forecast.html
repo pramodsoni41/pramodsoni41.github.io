@@ -118,7 +118,7 @@
       <button id="synCsv" style="font-size:.8rem;font-weight:700;color:#fff;background:#2563eb;border:none;border-radius:8px;padding:6px 12px;cursor:pointer">&#11015; Download CSV</button></div>
     <div class="rf-foot" id="syn-note" style="margin:0 0 8px"></div>
     <div style="overflow:auto;max-height:430px"><table id="synTable" style="width:100%;border-collapse:collapse;font-size:.82rem"></table></div>
-    <div class="rf-foot">3-hourly synoptic observations (00&ndash;21 UTC). Rainfall measured by the disdrometer. Temperature columns are <b>instrument housing / laser diagnostics &mdash; not air temperature</b> (this unit has no air-temperature probe).</div>
+    <div class="rf-foot">3-hourly synoptic observations (00&ndash;21 UTC). <b>Data %</b> = share of the 3-hour window with valid 1-min records; <b>&ldquo;M&rdquo;</b> = missing (no data in the window, <i>not</i> zero rain). Amber rows are partly incomplete (&lt;90%), red rows fully missing &mdash; their totals under-report. Temperature columns are <b>instrument housing / laser diagnostics &mdash; not air temperature</b> (this unit has no air-temperature probe).</div>
   </div>
 
   <p class="rf-foot">Nowcast: gradient-boosting survival + quantile intensity model trained on this station's history. Outlook: NOAA GFS via Open-Meteo. Updates automatically every minute.</p>
