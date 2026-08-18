@@ -232,11 +232,16 @@ function render(d){
 
   if(d.synoptic){const sy=d.synoptic;
     document.getElementById('syn-note').textContent=`${sy.station} · last ${sy.obs.length} observations (7 days) · generated ${sy.generated}`;
-    const cols=[['utc','Obs (UTC)'],['ist','IST'],['rain3h','Rain 3h (mm)'],['int3h','Intensity (mm/h)'],
+    const cols=[['utc','Obs (UTC)'],['ist','IST'],['rain3h','Rain 3h (mm)'],['int3h','Intensity (mm/h)'],['cov','Data %'],
       ['rain03z','Since 03Z (mm)'],['rain12z','Since 12Z (mm)'],['t_obs','Housing °C'],['tmax','Tmax °C'],['tmin','Tmin °C'],['laser','Laser °C']];
     const cell=v=>(v===''||v==null)?'–':v;
     const th='<tr>'+cols.map(c=>`<th style="position:sticky;top:0;background:var(--rf-card);text-align:left;padding:6px 8px;border-bottom:2px solid var(--rf-line);white-space:nowrap;color:var(--rf-mut)">${c[1]}</th>`).join('')+'</tr>';
-    const tr=sy.obs.map(o=>'<tr>'+cols.map(c=>`<td style="padding:5px 8px;border-bottom:1px solid var(--rf-line);white-space:nowrap">${cell(o[c[0]])}</td>`).join('')+'</tr>').join('');
+    const tr=sy.obs.map(o=>{
+      const bad=(o.rain3h==='M'), low=(!bad && o.cov!=null && o.cov<90);
+      const bg=bad?'background:rgba(239,68,68,.15);':(low?'background:rgba(234,179,8,.15);':'');
+      return '<tr>'+cols.map(c=>{const v=(c[0]==='cov')?(o.cov==null?'–':o.cov+'%'):cell(o[c[0]]);
+        return `<td style="padding:5px 8px;border-bottom:1px solid var(--rf-line);white-space:nowrap;${bg}">${v}</td>`;}).join('')+'</tr>';
+    }).join('');
     document.getElementById('synTable').innerHTML=th+tr;
     document.getElementById('synCsv').onclick=()=>{
       const head=cols.map(c=>c[1]).join(',');
