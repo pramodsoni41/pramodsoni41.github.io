@@ -112,6 +112,15 @@
     <canvas id="cDrop" height="260" aria-label="Drop size distribution"></canvas>
     <div class="rf-foot" id="rf-dsstat"></div></div>
 
+  <!-- SYNOPTIC REPORT (IMD) -->
+  <div class="rf-card">
+    <div class="rf-h"><h2>Synoptic report (IMD)</h2>
+      <button id="synCsv" style="font-size:.8rem;font-weight:700;color:#fff;background:#2563eb;border:none;border-radius:8px;padding:6px 12px;cursor:pointer">&#11015; Download CSV</button></div>
+    <div class="rf-foot" id="syn-note" style="margin:0 0 8px"></div>
+    <div style="overflow-x:auto"><table id="synTable" style="width:100%;border-collapse:collapse;font-size:.82rem"></table></div>
+    <div class="rf-foot">3-hourly synoptic observations (00&ndash;21 UTC). Rainfall measured by the disdrometer. Temperature columns are <b>instrument housing / laser diagnostics &mdash; not air temperature</b> (this unit has no air-temperature probe).</div>
+  </div>
+
   <p class="rf-foot">Nowcast: gradient-boosting survival + quantile intensity model trained on this station's history. Outlook: NOAA GFS via Open-Meteo. Updates automatically every minute.</p>
 </div>
 <div id="rf-tip"></div>
@@ -220,6 +229,23 @@ function render(d){
     const tot=ds.count.reduce((a,b)=>a+b,0), md=tot?ds.diam.reduce((a,dm,i)=>a+dm*ds.count[i],0)/tot:0;
     document.getElementById('rf-dsnote').textContent=ds.window+' · '+ds.wet_min+' rainy min';
     document.getElementById('rf-dsstat').textContent=`${tot.toLocaleString()} drops · mean diameter ${md.toFixed(2)} mm · x-axis = drop diameter (mm)`;}
+
+  if(d.synoptic){const sy=d.synoptic;
+    document.getElementById('syn-note').textContent=`${sy.station} · last ${sy.obs.length} observations · generated ${sy.generated}`;
+    const cols=[['utc','Obs (UTC)'],['ist','IST'],['rain3h','Rain 3h (mm)'],['int3h','Intensity (mm/h)'],
+      ['rain03z','Since 03Z (mm)'],['rain12z','Since 12Z (mm)'],['t_obs','Housing °C'],['tmax','Tmax °C'],['tmin','Tmin °C'],['laser','Laser °C']];
+    const cell=v=>(v===''||v==null)?'–':v;
+    const th='<tr>'+cols.map(c=>`<th style="text-align:left;padding:6px 8px;border-bottom:2px solid var(--rf-line);white-space:nowrap;color:var(--rf-mut)">${c[1]}</th>`).join('')+'</tr>';
+    const tr=sy.obs.map(o=>'<tr>'+cols.map(c=>`<td style="padding:5px 8px;border-bottom:1px solid var(--rf-line);white-space:nowrap">${cell(o[c[0]])}</td>`).join('')+'</tr>').join('');
+    document.getElementById('synTable').innerHTML=th+tr;
+    document.getElementById('synCsv').onclick=()=>{
+      const head=cols.map(c=>c[1]).join(',');
+      const body=sy.obs.map(o=>cols.map(c=>(o[c[0]]===''||o[c[0]]==null)?'':o[c[0]]).join(',')).join('\n');
+      const csv='Station,'+sy.station+'\nGenerated,'+sy.generated+'\n\n'+head+'\n'+body+
+        '\n\nNote,Temperature columns are instrument housing/laser diagnostics - NOT air temperature.';
+      const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');
+      a.href=URL.createObjectURL(blob);a.download='synoptic_report_BHU_Varanasi.csv';a.click();URL.revokeObjectURL(a.href);};
+  }
 }
 
 let LAST=null;
