@@ -123,6 +123,8 @@
     </div>
     <label>Title on sheet</label>
     <input id="g_title" type="text" value="IIT (BHU) - OMR ANSWER SHEET">
+    <label>ID block label (e.g. ROLL NUMBER or APPLICATION NO.)</label>
+    <input id="g_idlabel" type="text" value="ROLL NUMBER">
     <button id="g_btn" onclick="generate()">Generate sheets</button>
     <div id="g_out"></div>
   </section>
@@ -275,7 +277,7 @@ async function generate(){
       n_questions:+$("g_q").value, n_options:+$("g_o").value,
       roll_digits:+$("g_r").value, n_sets:+$("g_s").value,
       questions_per_column:+$("g_pc").value, n_sheets:+$("g_n").value,
-      title:$("g_title").value
+      title:$("g_title").value, id_label:$("g_idlabel").value
     };
     const r = await fetch(api("/generate"), {method:"POST",
       headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
